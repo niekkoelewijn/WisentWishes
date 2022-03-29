@@ -95,4 +95,29 @@ LandUseClass <- c("agrarisch gras", "maïs", "aardappelen", "bieten", "granen",
                   "struikvegetatie in moerasgebied (hoog)", "overige struikvegetatie (hoog)")
 LUTLNG <- data.frame(value, LandUseClass)
 
+# Get Kraansvlak location data
+KraansvlakPoints <- read.csv("MScThesisData/GPS location data/Kraansvlak/Kraansvlak.csv")
+
+# Get temperature attribute from most recent port 12 message
+KraansvlakPointsCopy <- KraansvlakPoints
+for(i in 1:length(KraansvlakPointsCopy[,"temperature"])){
+  if(KraansvlakPointsCopy[i,"temperature"] == "\\N"){
+    KraansvlakPointsCopy[i,"temperature"] = KraansvlakPointsCopy[i-1,"temperature"]
+}
+}
+
+# Get port 1 only
+KraansvlakPointsOnly1 <- KraansvlakPointsCopy[KraansvlakPointsCopy$port == 1, ]
+
+# Omit rows with hdop values greater then 10
+KraansvlakPointsAccurate <- KraansvlakPointsOnly1[as.numeric(KraansvlakPointsOnly1$hdop) < 10,]
+
+# Remove unnessesary attributes
+KraansvlakPointsCleaned <- KraansvlakPointsOnly1[, c(1, 3, 31, 30, 21, 22, 12, 25)]
+
+# Create date attributes
+KraansvlakPointsCleaned$season <- NA
+KraansvlakPointsCleaned$date <- as.Date(KraansvlakPointsCleaned$time_of_fix_decoded, "%d/%m/%Y")
+KraansvlakPointsCleaned$time <- as.POSIXct(KraansvlakPointsCleaned$time_of_fix_decoded, format="%d/%m/%Y %H:%M",tz=Sys.timezone())
+KraansvlakPointsCleaned$weekday <-  weekdays(KraansvlakPointsCleaned$date, abbreviate = F)
 

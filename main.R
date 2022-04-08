@@ -2,7 +2,7 @@
 # Project: Wisent Wishes
 # Name: Niek Koelewijn
 # Organisation: Wageningen University
-# Supervisor: Henjo de Knegt
+# Supervisor: dr. ir. H.J. de Knegt
 # Year: 2022
 
 
@@ -17,3 +17,6 @@
 
 # Spatial filtering to study area polygons
 source("~/WisentWishes/R/SpatialFiltering.R")
+
+# Quality filtering the GPS datasets so that all points with hdop > 10 are removed
+source("~/WisentWishes/R/QualityFiltering.R")

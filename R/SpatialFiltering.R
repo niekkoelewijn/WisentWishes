@@ -2,7 +2,7 @@
 # Project: Wisent Wishes
 # Name: Niek Koelewijn
 # Organisation: Wageningen University
-# Supervisor: Henjo de Knegt
+# Supervisor: dr. ir. H.J. de Knegt
 # Year: 2022
 
 ## function to load shapefiles of study areas in R ##
@@ -86,7 +86,6 @@ SpatialFilter <- function(GPSfile, polygon, x, y, remove= F, path, name_file){
                                                    sf_polygon = polygon,
                                                    remove_inside = remove)
   write.csv(SpatialFiltered, file = paste0(path, name_file, "_spatialfiltered.csv"))
-  return(SpatialFiltered)
 }
 
 

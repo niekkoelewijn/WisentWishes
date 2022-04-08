@@ -85,3 +85,6 @@ DeliaMaashorst2016QF$speed_out <- atl_get_speed(DeliaMaashorst2016QF, x = "lng",
 DeliaMaashorst2016QF$turning_angle <- atl_turning_angle(DeliaMaashorst2016QF, x = "lng", y = "lat",
                                                          time = "time_coded")
 
+### THIS IS THE CODE TO GO TO SF, WHAY TO SOLVE SPEED ISSUE ###
+DeliaMaashorst2016QFSpatialFeature <- st_as_sf(DeliaMaashorst2016QF, coords = c("lng", "lat"), crs = st_crs(4326))
+

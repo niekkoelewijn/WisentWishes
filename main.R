@@ -15,4 +15,5 @@
 
 ### PREPROSSESSING ###
 
-# Load study area shape files
+# Spatial filtering to study area polygons
+source("~/WisentWishes/R/SpatialFiltering.R")

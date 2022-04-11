@@ -24,3 +24,4 @@ source("~/WisentWishes/R/SpatialFiltering.R")
 source("~/WisentWishes/R/QualityFiltering.R")
 
 # Filter speed and turning angle
+source("~/WisentWishes/R/SpeedAngleFilter.R")

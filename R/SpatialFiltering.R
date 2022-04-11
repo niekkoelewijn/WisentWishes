@@ -45,7 +45,7 @@ Maashorst2022StudyAreaSf <- st_as_sf(Maashorst2022StudyArea)
 SlikkenvdHeenStudyAreaSf <- st_as_sf(SlikkenvdHeenStudyArea)
 KraansvlakStudyAreaSf <- st_as_sf(KraansvlakStudyArea)
 
-# Load location csv's into R
+# Load GPS-data csv's into R
 
 # Veluwe
 SharaVeluwe20162020 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/Veluwe/VeluweData2016-2020.csv")
@@ -166,4 +166,17 @@ SpatialFilter(GPSfile = Kraansvlak20202022,
                 polygon = KraansvlakStudyAreaSf, 
                 x = "lng", y = "lat", name_file = "Kraansvlak20202022",
                 path = "~/WisentWishes/MScThesisData/GPS location data/Kraansvlak/Preprocessed/")
+
+
+## Transform study areas to RDnew for later steps
+VeluweStudyAreaSfRDn <- st_transform(VeluweStudyAreaSf, st_crs(28992))
+Maashorst2016StudyAreaSfRDn <- st_transform(Maashorst2016StudyAreaSf, st_crs(28992))
+Maashorst20172021StudyAreaSfRDn <- st_transform(Maashorst20172021StudyAreaSf, st_crs(28992))
+Maashorst2022StudyAreaSfRDn <- st_transform(Maashorst2022StudyAreaSf, st_crs(28992))
+SlikkenvdHeenStudyAreaSfRDn <- st_transform(SlikkenvdHeenStudyAreaSf, st_crs(28992))
+KraansvlakStudyAreaSfRDn <- st_transform(KraansvlakStudyAreaSf, st_crs(28992))
+
+
+
+
 

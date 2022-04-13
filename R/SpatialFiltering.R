@@ -13,7 +13,7 @@
 # Paths to GPS input files
 setwd("~/WisentWishes")
 StudyAreas <- "~/WisentWishes/MScThesisData/GISFilesAreas/StudyAreas/"
-StudyAreasVec <- list.files(path = StudyAreas)
+StudyAreasVec <- list.files(path = StudyAreas, pattern = ".shp")
 
 # Load study areas
 KraansvlakStudyArea <- readOGR(paste0(StudyAreas, StudyAreasVec[1]))
@@ -23,6 +23,7 @@ MaashorstStudyArea2022 <- readOGR(paste0(StudyAreas, StudyAreasVec[4]))
 SlikkenvdHeenStudyArea <- readOGR(paste0(StudyAreas, StudyAreasVec[5]))
 VeluweHabituateArea  <- readOGR(paste0(StudyAreas, StudyAreasVec[6]))
 VeluweStudyArea <- readOGR(paste0(StudyAreas, StudyAreasVec[7]))
+
 
 # Put study areas in a list
 StudyAreaList <- list(KraansvlakStudyArea, MaashorstStudyArea2016, 
@@ -47,6 +48,9 @@ TransformPolygon <- function(polygon){
 
 # Apply TransformPolygon to all study areas
 StudyAreas <- lapply(StudyAreaList, TransformPolygon) 
+
+# Give elements in StudyAreas list appropriate names
+names(StudyAreas) <- StudyAreasVec
 
 
 ## Now spatially filter the cleaned GPS datasets of step 1
@@ -95,19 +99,18 @@ SpatialyFilter <- function(GPSfile, studyarea){
   return(TransformedTable)
 }
 
-
 # Spatially filter the GPS tables with the study areas
-EverestSpaFil <- SpatialyFilter(Everest, StudyAreas[[3]])
-CaliopeSpaFil <- SpatialyFilter(Caliope, StudyAreas[[5]])
-DeliaSpaFil <- SpatialyFilter(Delia, StudyAreas[[2]])
-KraansvlakSpaFil <- SpatialyFilter(Kraansvlak, StudyAreas[[1]])
-KraylaSpaFil <- SpatialyFilter(Krayla, StudyAreas[[2]])
-KroosjaSpaFil <- SpatialyFilter(Kroosja, StudyAreas[[2]])
-MaaikeSpaFil <- SpatialyFilter(Maaike, StudyAreas[[3]])
-NadiaSpaFil <- SpatialyFilter(Nadia, StudyAreas[[5]])
-NevayaSpaFil <- SpatialyFilter(Nevaya, StudyAreas[[4]])
-SharaSpaFil <- SpatialyFilter(Shara, StudyAreas[[7]])
-VeluweSpaFil <- SpatialyFilter(Veluwe, StudyAreas[[7]])
+EverestSpaFil <- SpatialyFilter(Everest, StudyAreas[["MaashorstStudyArea2017-2021.shp"]])
+CaliopeSpaFil <- SpatialyFilter(Caliope, StudyAreas[["SlikkenvdHeenStudyArea.shp"]])
+DeliaSpaFil <- SpatialyFilter(Delia, StudyAreas[["MaashorstStudyArea2016.shp"]])
+KraansvlakSpaFil <- SpatialyFilter(Kraansvlak, StudyAreas[["KraansvlakStudyArea.shp"]])
+KraylaSpaFil <- SpatialyFilter(Krayla, StudyAreas[["MaashorstStudyArea2016.shp"]])
+KroosjaSpaFil <- SpatialyFilter(Kroosja, StudyAreas[["MaashorstStudyArea2016.shp"]])
+MaaikeSpaFil <- SpatialyFilter(Maaike, StudyAreas[["MaashorstStudyArea2017-2021.shp"]])
+NadiaSpaFil <- SpatialyFilter(Nadia, StudyAreas[["SlikkenvdHeenStudyArea.shp"]])
+NevayaSpaFil <- SpatialyFilter(Nevaya, StudyAreas[["MaashorstStudyArea2022.shp"]])
+SharaSpaFil <- SpatialyFilter(Shara, StudyAreas[["VeluweStudyArea.shp"]])
+VeluweSpaFil <- SpatialyFilter(Veluwe, StudyAreas[["VeluweStudyArea.shp"]])
 
 
 ## Write the elements of the list to a file

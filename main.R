@@ -23,11 +23,6 @@ source("~/WisentWishes/R/SpatialFiltering.R")
 
 # Here comes eventually some temporal filtering, if needed!
 
-# Quality filtering the GPS datasets so that all points with hdop > 10 are removed
-source("~/WisentWishes/R/QualityFiltering.R")
-
-# Filter speed and turning angle
-source("~/WisentWishes/R/SpeedAngleFilter.R")
 
 
 

@@ -15,7 +15,10 @@
 
 ### PREPROSSESSING ###
 
-# Spatial filtering to study area polygons
+# Step 1: Cleaning input data
+source("~/WisentWishes/R/CleanInputdata.R")
+
+# Step 2: Spatial filtering of input data
 source("~/WisentWishes/R/SpatialFiltering.R")
 
 # Here comes eventually some temporal filtering, if needed!
@@ -25,3 +28,8 @@ source("~/WisentWishes/R/QualityFiltering.R")
 
 # Filter speed and turning angle
 source("~/WisentWishes/R/SpeedAngleFilter.R")
+
+
+
+
+

@@ -180,6 +180,8 @@ GeneralCleaning <- function(GPSfile){
     
     # Get column with time since unix epoch
     mutate(time_coded = as.integer(time))
+  
+  return(ProcessedGPSfile)
 }
 
 # Now get the 11 datasets in a list

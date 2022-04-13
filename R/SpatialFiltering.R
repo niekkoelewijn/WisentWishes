@@ -5,179 +5,133 @@
 # Supervisor: dr. ir. H.J. de Knegt
 # Year: 2022
 
-## function to load shapefiles of study areas in R ##
 
-# Install required packages
-if(!"rgdal" %in% rownames(installed.packages())){install.packages("rgdal")}
-if(!"sf" %in% rownames(installed.packages())){install.packages("sf")}
-if(!"raster" %in% rownames(installed.packages())){install.packages("raster")}
-if(!"atlastools" %in% rownames(installed.packages())){install.packages("atlastools")}
-if(!"tidyverse" %in% rownames(installed.packages())){install.packages("tidyverse")}
+### Script to spatially filter GPS dataset based on study area polygons
 
-# Load required packages
-library(rgdal)
-library(sf)
-library(raster)
-library(atlastools)
-library(tidyverse)
+## Load studyarea shapefiles in R
 
-# Create vector of paths to study area shapefiles
-VeluwePath <- "~/WisentWishes/MScThesisData/GISFilesAreas/Veluwe/WisentGebiedVeluwe.shp"
-Maashorst2016Path <- "~/WisentWishes/MScThesisData/GISFilesAreas/Maashorst/WisentGebied2016.shp"
-Maashorst20172021Path <- "~/WisentWishes/MScThesisData/GISFilesAreas/Maashorst/WisentGebied2017-2021.shp"
-Maashorst2022Path <- "~/WisentWishes/MScThesisData/GISFilesAreas/Maashorst/WisentGebied2022.shp"
-SlikkenvdHeenPath <- "~/WisentWishes/MScThesisData/GISFilesAreas/SlikkenvdHeen/WisentGebied.shp"
-KraansvlakPath <- "~/WisentWishes/MScThesisData/GISFilesAreas/Kraansvlak/WisentGebiedKraansvlak.shp"
-PathVec <- c(VeluwePath, Maashorst2016Path,Maashorst20172021Path,Maashorst2022Path, SlikkenvdHeenPath, KraansvlakPath)
+# Paths to GPS input files
+setwd("~/WisentWishes")
+StudyAreas <- "~/WisentWishes/MScThesisData/GISFilesAreas/StudyAreas/"
+StudyAreasVec <- list.files(path = StudyAreas)
 
-# Read study area shapefiles into R
-VeluweStudyArea <- readOGR(PathVec[1])
-Maashorst2016StudyArea <- readOGR(PathVec[2])
-Maashorst20172021StudyArea <- readOGR(PathVec[3])
-Maashorst2022StudyArea <- readOGR(PathVec[4])
-SlikkenvdHeenStudyArea <- readOGR(PathVec[5])
-KraansvlakStudyArea <- readOGR(PathVec[6])
+# Load study areas
+KraansvlakStudyArea <- readOGR(paste0(StudyAreas, StudyAreasVec[1]))
+MaashorstStudyArea2016 <- readOGR(paste0(StudyAreas, StudyAreasVec[2]))
+MaashorstStudyArea20172021 <- readOGR(paste0(StudyAreas, StudyAreasVec[3]))
+MaashorstStudyArea2022 <- readOGR(paste0(StudyAreas, StudyAreasVec[4]))
+SlikkenvdHeenStudyArea <- readOGR(paste0(StudyAreas, StudyAreasVec[5]))
+VeluweHabituateArea  <- readOGR(paste0(StudyAreas, StudyAreasVec[6]))
+VeluweStudyArea <- readOGR(paste0(StudyAreas, StudyAreasVec[7]))
 
-# Convert polygons to sf
-VeluweStudyAreaSf <- st_as_sf(VeluweStudyArea)
-Maashorst2016StudyAreaSf <- st_as_sf(Maashorst2016StudyArea)
-Maashorst20172021StudyAreaSf <- st_as_sf(Maashorst20172021StudyArea)
-Maashorst2022StudyAreaSf <- st_as_sf(Maashorst2022StudyArea)
-SlikkenvdHeenStudyAreaSf <- st_as_sf(SlikkenvdHeenStudyArea)
-KraansvlakStudyAreaSf <- st_as_sf(KraansvlakStudyArea)
+# Put study areas in a list
+StudyAreaList <- list(KraansvlakStudyArea, MaashorstStudyArea2016, 
+                      MaashorstStudyArea20172021, MaashorstStudyArea2022,
+                      SlikkenvdHeenStudyArea, VeluweHabituateArea, 
+                      VeluweStudyArea)
 
-# Load GPS-data csv's into R
-
-# Veluwe
-SharaVeluwe20162020 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/Veluwe/VeluweData2016-2020.csv")
-names(SharaVeluwe20162020)[names(SharaVeluwe20162020) == 'Latitude'] <- "lat"
-names(SharaVeluwe20162020)[names(SharaVeluwe20162020) == 'Longitude'] <- "lng"
-SharaVeluwe2022 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/Veluwe/SharaVeluwe2022.csv")
-
-# Maashorst
-DeliaMaashorst2016 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/Maashorst/DeliaMaashorst2016.csv")
-KraylaMaashorst2016 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/Maashorst/KraylaMaashorst2016.csv")
-KroosjaMaashorst20162018 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/Maashorst/KroosjaMaashorst2016-2018.csv")
-MaaikeMaashorst20192022 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/Maashorst/MaaikeMaashorst2019-2022.csv")
-NevayaMaashorst2022 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/Maashorst/NevayaMaashorst2022.csv")
-BullEverestMaashorst2022 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/Maashorst/BullEverestMaashorst2022.csv")
-
-# Slikken vd Heen
-CaliopeSvdH20202021 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/SlikkenvdHeen/CaliopeSvdH2020-2021.csv")
-NadiaSvdH20202022 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/SlikkenvdHeen/NadiaSvdH2020-2022.csv")
-
-# Kraansvlak, rename columns and filter for port 1 and assign most recent temperature attribute 
-Kraansvlak20202022 <- read.csv("~/WisentWishes/MScThesisData/GPS location data/Kraansvlak/Kraansvlak.csv")
-names(Kraansvlak20202022)[names(Kraansvlak20202022) == 'latitude'] <- "lat"
-names(Kraansvlak20202022)[names(Kraansvlak20202022) == 'longitude'] <- "lng"
-for(i in 1:length(Kraansvlak20202022[,"temperature"])){
-  if(Kraansvlak20202022[i,"temperature"] == "\\N"){
-    Kraansvlak20202022[i,"temperature"] = Kraansvlak20202022[i-1,"temperature"]
-  }
-}
-Kraansvlak20202022 <- Kraansvlak20202022[Kraansvlak20202022$port == 1, ]
-Kraansvlak20202022 <- Kraansvlak20202022[, c(31, 30, 1, 21, 22, 12, 25)]
-
-### Filter with polygons ###
-
-# Function
-SpatialFilter <- function(GPSfile, polygon, x, y, remove= F, path, name_file){
-  SpatialFiltered <- atlastools::atl_filter_bounds(data = GPSfile, 
-                                                   x = x, y = y, 
-                                                   sf_polygon = polygon,
-                                                   remove_inside = remove)
-  write.csv(SpatialFiltered, file = paste0(path, name_file, "_spatialfiltered.csv"))
+# Define function to transform study area datasets
+TransformPolygon <- function(polygon){
+  
+  # Transform polygons in piped structure
+  TransformedPolygon <- polygon %>% 
+    
+    # Change class to sf
+    st_as_sf() %>% 
+    
+    # Transform polygons to RDnew
+    st_transform(st_crs(28992))
+  
+  return(TransformedPolygon)
 }
 
+# Apply TransformPolygon to all study areas
+StudyAreas <- lapply(StudyAreaList, TransformPolygon) 
 
-## Veluwe 
 
-# Preprocessed directory
-dir <- "~/WisentWishes/MScThesisData/GPS location data/Veluwe/Preprocessed"
-if(!dir.exists(dir)){
-  dir.create(dir)
+## Now spatially filter the cleaned GPS datasets of step 1
+
+# Paths to GPS files step 1
+setwd("~/WisentWishes")
+GPSStep1Path <- "~/WisentWishes/MScThesisData/GPS location data/Step1Preprocess/"
+GPSStep1Vec <- list.files(path = GPSStep1Path)
+
+# Load GPS tables as tibbles
+Caliope <- read_csv(paste0(GPSStep1Path, GPSStep1Vec[1]))
+Delia <- read_csv(paste0(GPSStep1Path, GPSStep1Vec[2]))
+Everest <- read_csv(paste0(GPSStep1Path, GPSStep1Vec[3]))
+Kraansvlak <- read_csv(paste0(GPSStep1Path, GPSStep1Vec[4]))
+Krayla <- read_csv(paste0(GPSStep1Path, GPSStep1Vec[5]))
+Kroosja <- read_csv(paste0(GPSStep1Path, GPSStep1Vec[6]))
+Maaike <- read_csv(paste0(GPSStep1Path, GPSStep1Vec[7]))
+Nadia <- read_csv(paste0(GPSStep1Path, GPSStep1Vec[8]))
+Nevaya <- read_csv(paste0(GPSStep1Path, GPSStep1Vec[9]))
+Shara <- read_csv(paste0(GPSStep1Path, GPSStep1Vec[10]))
+Veluwe <- read_csv(paste0(GPSStep1Path, GPSStep1Vec[11]))
+
+# Define function to transform GPS tables
+SpatialyFilter <- function(GPSfile, studyarea){
+  
+  # Transform GPS files in piped structure
+  TransformedTable <- GPSfile %>% 
+    
+    # Transform to class sf
+    st_as_sf(coords = c("lng", "lat"), crs = st_crs(4326)) %>% 
+    
+    # Transfrom WGS84 to RD new
+    st_transform(crs = st_crs(28992))
+    
+  # Get x and y column
+  TransformedTable$X <- st_coordinates(TransformedTable)[,1]
+  TransformedTable$Y <- st_coordinates(TransformedTable)[,2]
+  
+  # Spatially filter with alt_filterbounds
+  TransformedTable <- atl_filter_bounds(TransformedTable , x = "X", y = "Y", 
+                                        sf_polygon = studyarea, remove_inside = F)
+  
+  # Return to sf
+  TransformedTable <- st_as_sf(TransformedTable)
+  
+  return(TransformedTable)
 }
 
-# List with gps data and vector with names
-VeluweTracks <- list(SharaVeluwe20162020, SharaVeluwe2022)
-VeluweTracksChar <- c("SharaVeluwe20162020", "SharaVeluwe2022")
 
-# For loop to write files
-for(i in 1:length(VeluweTracks)){
-  SpatialFilter(GPSfile = VeluweTracks[[i]], 
-                polygon = VeluweStudyAreaSf, 
-                x = "lng", y = "lat", name_file = VeluweTracksChar[i],
-                path = "~/WisentWishes/MScThesisData/GPS location data/Veluwe/Preprocessed/")
+# Spatially filter the GPS tables with the study areas
+EverestSpaFil <- SpatialyFilter(Everest, StudyAreas[[3]])
+CaliopeSpaFil <- SpatialyFilter(Caliope, StudyAreas[[5]])
+DeliaSpaFil <- SpatialyFilter(Delia, StudyAreas[[2]])
+KraansvlakSpaFil <- SpatialyFilter(Kraansvlak, StudyAreas[[1]])
+KraylaSpaFil <- SpatialyFilter(Krayla, StudyAreas[[2]])
+KroosjaSpaFil <- SpatialyFilter(Kroosja, StudyAreas[[2]])
+MaaikeSpaFil <- SpatialyFilter(Maaike, StudyAreas[[3]])
+NadiaSpaFil <- SpatialyFilter(Nadia, StudyAreas[[5]])
+NevayaSpaFil <- SpatialyFilter(Nevaya, StudyAreas[[4]])
+SharaSpaFil <- SpatialyFilter(Shara, StudyAreas[[7]])
+VeluweSpaFil <- SpatialyFilter(Veluwe, StudyAreas[[7]])
+
+
+## Write the elements of the list to a file
+
+# Create path
+path <- "MScThesisData/GPS location data/Step2Preprocess/"
+
+# Create directory
+if(!dir.exists(path)){
+  dir.create(path)
 }
 
-## Maashorst
+# Create list of spatially filtered datasets
+Step2ProcessingList <- list( 
+  EverestSpaFil, CaliopeSpaFil, DeliaSpaFil, KraansvlakSpaFil, KraylaSpaFil,
+  KroosjaSpaFil, MaaikeSpaFil, NadiaSpaFil, NevayaSpaFil, SharaSpaFil, VeluweSpaFil
+)
 
-# Preprocessed directory
-dir <- "~/WisentWishes/MScThesisData/GPS location data/Maashorst/Preprocessed"
-if(!dir.exists(dir)){
-  dir.create(dir)
-}
+# Create vector of file names
+NameVec <- c("EverestStep2", "CaliopeStep2", "DeliaStep2", "KraansvlakStep2", 
+             "KraylaStep2", "KroosjaStep2", "MaaikeStep2", "NadiaStep2", "NevayaStep2",
+             "SharaStep2", "VeluweStep2")
 
-# List with gps data, vector with names and list with study area polygons
-MaashorstIndividuals <- list(DeliaMaashorst2016, KraylaMaashorst2016, KroosjaMaashorst20162018,
-                             MaaikeMaashorst20192022, NevayaMaashorst2022, BullEverestMaashorst2022)
-MaashorstIndividualsChar <- c("DeliaMaashorst2016", "KraylaMaashorst2016", "KroosjaMaashorst20162018",
-                                  "MaaikeMaashorst20192022", "NevayaMaashorst2022", "BullEverestMaashorst2022")
-MaashorstAreas <- list(Maashorst2016StudyAreaSf, Maashorst2016StudyAreaSf, Maashorst20172021StudyAreaSf, 
-                       Maashorst20172021StudyAreaSf, Maashorst2022StudyAreaSf, Maashorst2022StudyAreaSf)
-
-# For loop to write files
-for(i in 1:length(MaashorstIndividuals)){
-  SpatialFilter(GPSfile = MaashorstIndividuals[[i]], 
-                polygon = MaashorstAreas[[i]], 
-                x = "lng", y = "lat", name_file = MaashorstIndividualsChar[i],
-                path = "~/WisentWishes/MScThesisData/GPS location data/Maashorst/Preprocessed/")
-}
-
-## Slikken vd Heen
-
-# Preprocessed directory
-dir <- "~/WisentWishes/MScThesisData/GPS location data/SlikkenvdHeen/Preprocessed"
-if(!dir.exists(dir)){
-  dir.create(dir)
-}
-
-# List with gps data and vector with names
-SlikkenvdHeenIndividuals <- list(CaliopeSvdH20202021, NadiaSvdH20202022)
-SlikkenvdHeenIndividualsChar <- c("CaliopeSvdH20202021", "NadiaSvdH20202022")
-
-# For loop to write files
-for(i in 1:length(SlikkenvdHeenIndividuals)){
-  SpatialFilter(GPSfile = SlikkenvdHeenIndividuals[[i]], 
-                polygon = SlikkenvdHeenStudyAreaSf, 
-                x = "lng", y = "lat", name_file = SlikkenvdHeenIndividualsChar[i],
-                path = "~/WisentWishes/MScThesisData/GPS location data/SlikkenvdHeen/Preprocessed/")
-}
-
-## Kraansvlak
-
-# Preprocessed directory
-dir <- "~/WisentWishes/MScThesisData/GPS location data/Kraansvlak/Preprocessed"
-if(!dir.exists(dir)){
-  dir.create(dir)
-}
-
-# Spatial Filter
-SpatialFilter(GPSfile = Kraansvlak20202022, 
-                polygon = KraansvlakStudyAreaSf, 
-                x = "lng", y = "lat", name_file = "Kraansvlak20202022",
-                path = "~/WisentWishes/MScThesisData/GPS location data/Kraansvlak/Preprocessed/")
-
-
-## Transform study areas to RDnew for later steps
-VeluweStudyAreaSfRDn <- st_transform(VeluweStudyAreaSf, st_crs(28992))
-Maashorst2016StudyAreaSfRDn <- st_transform(Maashorst2016StudyAreaSf, st_crs(28992))
-Maashorst20172021StudyAreaSfRDn <- st_transform(Maashorst20172021StudyAreaSf, st_crs(28992))
-Maashorst2022StudyAreaSfRDn <- st_transform(Maashorst2022StudyAreaSf, st_crs(28992))
-SlikkenvdHeenStudyAreaSfRDn <- st_transform(SlikkenvdHeenStudyAreaSf, st_crs(28992))
-KraansvlakStudyAreaSfRDn <- st_transform(KraansvlakStudyAreaSf, st_crs(28992))
-
-
-
-
-
+# Write csv's
+for(i in seq_along(Step2ProcessingList)){
+  write_csv(Step2ProcessingList[[i]], file = paste0(path, NameVec[i], ".csv"))
+} 

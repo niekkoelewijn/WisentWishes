@@ -12,13 +12,14 @@ if(!"rgdal" %in% rownames(installed.packages())){install.packages("rgdal")}
 if(!"sf" %in% rownames(installed.packages())){install.packages("sf")}
 if(!"raster" %in% rownames(installed.packages())){install.packages("raster")}
 if(!"atlastools" %in% rownames(installed.packages())){install.packages("atlastools")}
-
+if(!"tidyverse" %in% rownames(installed.packages())){install.packages("tidyverse")}
 
 # Load required packages
 library(rgdal)
 library(sf)
 library(raster)
 library(atlastools)
+library(tidyverse)
 
 # Create vector of paths to study area shapefiles
 VeluwePath <- "~/WisentWishes/MScThesisData/GISFilesAreas/Veluwe/WisentGebiedVeluwe.shp"

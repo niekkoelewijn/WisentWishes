@@ -39,9 +39,16 @@ AddAttributes <- function(GPSfile){
   # Filter GPS files in piped structure
   FilteredGPSfile <- GPSfile %>% 
     
+    # Filter out points that are on a point earlier in time
+    filter(ptid > lag(ptid,order_by=time)) %>% 
+    
+    # Filter out points that are on the exact same time or on a point earlier in time
+    filter(time_coded != lag(time_coded)) %>%
+    
     # Filter out points that are on the exact same location
     filter(X != lag(X) & Y != lag(Y))
-  
+    
+
   # Edit GPS files in piped structure
   ExpandedGPSfile <- FilteredGPSfile %>% 
     
@@ -57,11 +64,11 @@ AddAttributes <- function(GPSfile){
     mutate(angle = atl_turning_angle(data = FilteredGPSfile, x = "X", y = "Y",
                                      time = "time_coded")) %>% 
     
-    # Check out points that are on the exact same location
-    filter(speed_out > 0) %>% 
-    
     # Add attribute for time interval
-    mutate(time_interval = time_coded - lag(time_coded))
+    mutate(time_interval = time_coded - lag(time_coded)) %>% 
+    
+    # Filter out points that are on the exact same time
+    #filter(speed_out > 0) %>%
   
   return(as_tibble(ExpandedGPSfile))
   

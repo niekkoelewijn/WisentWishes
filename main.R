@@ -21,7 +21,11 @@ source("~/WisentWishes/R/CleanInputdata.R")
 # Step 2: Spatial filtering of input data
 source("~/WisentWishes/R/SpatialFiltering.R")
 
-# Here comes eventually some temporal filtering, if needed!
+# Step 3: Add speed / angle attributes
+source("~/WisentWishes/R/SpeedAngleAttributes.R")
+
+# Step 4: Temporal splitting
+
 
 
 

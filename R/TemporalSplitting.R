@@ -40,36 +40,45 @@ TemporalSplitter <- function(GPSfile){
   # 10 hours is 3600 * 10 = 36000 seconds
   BreakVec <- which(GPSfile$time_interval > 36000)
   
-  
-  ## Split GPS file into separate tracks with a for loop
-  
-  # Create variable to store result
+  # Create variable to store result of next step
   TrackList <- list()
   
   # Return input file if no rows have time_interval > 10 hours
   if(length(BreakVec) == 0){
-    return(GPSfile)
-  }
-  
-  # Iterate over elements of the BreakVec 
-  for(i in seq_along(BreakVec)){
     
-    # Return input file if no rows have time_interval > 10 hours
-    if(i == 1){
-      TrackList[[1]] = GPSfile[1:BreakVec[i+1], ]
-    }
-    else if(is.na(BreakVec[i+1])){
-      TrackList[[i]] <- GPSfile[BreakVec[i]:nrow(GPSfile), ]
-    }
-    else{
-      TrackList[[i]] = GPSfile[BreakVec[i]:BreakVec[i+1], ]
+    # Tracklist becomes equal to GPSfile
+    TrackList[[1]] <- GPSfile
+    
+  }else if(length(BreakVec) == 1){
+    
+    # Assign values to elements
+    TrackList[[1]] = GPSfile[1:BreakVec[1]-1, ]
+    TrackList[[2]] = GPSfile[BreakVec[1]:nrow(GPSfile), ]
+    
+  }else{
+    
+    # Iterate over elements of the BreakVec 
+    for(i in seq_along(BreakVec)+1){
+      
+      # Return input file if no rows have time_interval > 10 hours
+      if(i != 1 & !is.na(BreakVec[i])){
+        TrackList[[i]] = GPSfile[BreakVec[i-1]:BreakVec[i], ]
+      }
+      else{
+        TrackList[[i]] <- GPSfile[BreakVec[i-1]:nrow(GPSfile), ]
+      }
+      
+      # Remove row with large time interval from list
+      TrackList[[i]] = slice(TrackList[[i]], 1:(n()-1))
     }
     
-    # Remove row with large time interval from list
-    TrackList[[i]] = slice(TrackList[[i]], 1:(n()-1))
+    # In loop, first element returns of TrackList returns NULL, but should be GPSfile[1:BreakVec[1], ]
+    if(is.null(TrackList[[1]])){
+      TrackList[[1]] = GPSfile[1:BreakVec[1], ]
+      TrackList[[1]] = slice(TrackList[[1]], 1:(n()-1))
+    }
   }
-  
-  
+
   # Filter out first 3 days to reduce disturbing impact of disturbing activities, 
   # such as replacement of GPS device
   
@@ -104,6 +113,13 @@ TemporalSplitter <- function(GPSfile){
   # Remove null values from list
   FinalTrackList <- FinalTrackList[!sapply(FinalTrackList, is.null)]
   
+  # adapt speed_in, angle & time_interval of first element in each element of FinalTrack
+  for(i in seq_along(FinalTrackList)){
+    FinalTrackList[[i]]$speed_in[1] <- NA
+    FinalTrackList[[i]]$angle[1] <- NA
+    FinalTrackList[[i]]$time_interval[1] <- NA
+  }
+  
   return(FinalTrackList)
 
 }
@@ -121,7 +137,72 @@ NevayaTracks <- TemporalSplitter(TibbleList[[9]])
 SharaTracks <- TemporalSplitter(TibbleList[[10]])
 VeluweTracks <- TemporalSplitter(TibbleList[[11]])
 
+### Write the elements of the lists to files
 
+# Create path
+path <- "~/WisentWishes/MScThesisData/GPS location data/Step4Preprocess/"
+
+# Create directory
+if(!dir.exists(path)){
+  dir.create(path)
+}
+
+## Write csv's
+
+# Everest
+for(i in seq_along(EverestTracks)){
+  write_csv(EverestTracks[[i]], file = paste0(path, "EverestStep4Track", as.character(i), ".csv"))
+} 
+
+# Caliope
+for(i in seq_along(CaliopeTracks)){
+  write_csv(CaliopeTracks[[i]], file = paste0(path, "CaliopeStep4Track", as.character(i), ".csv"))
+} 
+
+# Delia
+for(i in seq_along(DeliaTracks)){
+  write_csv(DeliaTracks[[i]], file = paste0(path, "DeliaStep4Track", as.character(i), ".csv"))
+} 
+
+# Kraansvlak
+for(i in seq_along(KraansvlakTracks)){
+  write_csv(KraansvlakTracks[[i]], file = paste0(path, "KraansvlakStep4Track", as.character(i), ".csv"))
+} 
+
+# Krayla
+for(i in seq_along(KraylaTracks)){
+  write_csv(KraylaTracks[[i]], file = paste0(path, "KraylaStep4Track", as.character(i), ".csv"))
+} 
+
+# Kroosja
+for(i in seq_along(KroosjaTracks)){
+  write_csv(KroosjaTracks[[i]], file = paste0(path, "KroosjaStep4Track", as.character(i), ".csv"))
+} 
+
+# Maaike
+for(i in seq_along(MaaikeTracks)){
+  write_csv(MaaikeTracks[[i]], file = paste0(path, "MaaikeStep4Track", as.character(i), ".csv"))
+} 
+
+# Nadia
+for(i in seq_along(NadiaTracks)){
+  write_csv(NadiaTracks[[i]], file = paste0(path, "NadiaStep4Track", as.character(i), ".csv"))
+} 
+
+# Nevaya
+for(i in seq_along(NevayaTracks)){
+  write_csv(NevayaTracks[[i]], file = paste0(path, "NevayaStep4Track", as.character(i), ".csv"))
+} 
+
+# Shara
+for(i in seq_along(SharaTracks)){
+  write_csv(SharaTracks[[i]], file = paste0(path, "SharaStep4Track", as.character(i), ".csv"))
+} 
+
+# Veluwe
+for(i in seq_along(VeluweTracks)){
+  write_csv(VeluweTracks[[i]], file = paste0(path, "VeluweStep4Track", as.character(i), ".csv"))
+} 
 
 
 

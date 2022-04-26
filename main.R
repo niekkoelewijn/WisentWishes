@@ -25,9 +25,10 @@ source("~/WisentWishes/R/SpatialFiltering.R")
 source("~/WisentWishes/R/SpeedAngleAttributes.R")
 
 # Step 4: Temporal splitting
+source("~/WisentWishes/R/TemporalSplitting.R")
 
-
-
+# Step 5a: Adapt Kraansvlak based on logbook with interventions
+source()
 
 
 

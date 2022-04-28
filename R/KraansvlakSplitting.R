@@ -30,8 +30,8 @@ Track3 <- read_csv(paste0(GPSStep4aPath, GPSStep4aVec[3]))
 ## Filtering of track 2
 
 # Get numeric start and end date of management intervention
-start <- as.numeric(as.POSIXct(strptime("2021-03-04 00:00:00", format = "%Y-%m-%d %H:%M:%S")))
-end <- as.numeric(as.POSIXct(strptime("2021-04-12 00:00:00", format = "%Y-%m-%d %H:%M:%S")))
+start <- as.numeric(as.POSIXct(strptime("2021-03-04 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+end <- as.numeric(as.POSIXct(strptime("2021-04-12 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
 
 # Pipe in which the following steps are taken
 # 1: Filter out dates in which the management interventions took place
@@ -43,16 +43,14 @@ Track2Filtered <- Track2 %>%
   )
   ) %>% 
   AddAttributes() %>% 
-  TemporalSplitter()
-
-
+  TemporalSplitter2()
 
 
 ## Filtering of track 3
 
 # Get numeric start and end date of management intervention
-start <- as.numeric(as.POSIXct(strptime("2022-02-15 00:00:00", format = "%Y-%m-%d %H:%M:%S")))
-end <- as.numeric(as.POSIXct(strptime("2022-03-30 00:00:00", format = "%Y-%m-%d %H:%M:%S")))
+start <- as.numeric(as.POSIXct(strptime("2022-02-15 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+end <- as.numeric(as.POSIXct(strptime("2022-03-30 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
 
 # Pipe in which the following steps are taken
 # 1: Filter out dates in which the management interventions took place
@@ -64,7 +62,7 @@ Track3Filtered <- Track3 %>%
   )
   ) %>% 
   AddAttributes() %>% 
-  TemporalSplitter()
+  TemporalSplitter2()
   
 
 ## Create list of filtered Kraansvlak tracks

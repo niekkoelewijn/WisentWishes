@@ -124,6 +124,81 @@ TemporalSplitter <- function(GPSfile){
 
 }
 
+# Create duplicate of temporal filter function, but without filtering the first
+# three days out. Function required in step 5 of the preprocessing
+TemporalSplitter2 <- function(GPSfile){
+  
+  # Get places where tables must be split
+  # 10 hours is 3600 * 10 = 36000 seconds
+  BreakVec <- which(GPSfile$time_interval > 36000)
+  
+  # Create variable to store result of next step
+  TrackList <- list()
+  
+  # Return input file if no rows have time_interval > 10 hours
+  if(length(BreakVec) == 0){
+    
+    # Tracklist becomes equal to GPSfile
+    TrackList[[1]] <- GPSfile
+    
+  }else if(length(BreakVec) == 1){
+    
+    # Assign values to elements
+    TrackList[[1]] = GPSfile[1:BreakVec[1]-1, ]
+    TrackList[[2]] = GPSfile[BreakVec[1]:nrow(GPSfile), ]
+    
+  }else{
+    
+    # Iterate over elements of the BreakVec 
+    for(i in seq_along(BreakVec)+1){
+      
+      # Return input file if no rows have time_interval > 10 hours
+      if(i != 1 & !is.na(BreakVec[i])){
+        TrackList[[i]] = GPSfile[BreakVec[i-1]:BreakVec[i], ]
+      }
+      else{
+        TrackList[[i]] <- GPSfile[BreakVec[i-1]:nrow(GPSfile), ]
+      }
+      
+      # Remove row with large time interval from list
+      TrackList[[i]] = slice(TrackList[[i]], 1:(n()-1))
+    }
+    
+    # In loop, first element returns of TrackList returns NULL, but should be GPSfile[1:BreakVec[1], ]
+    if(is.null(TrackList[[1]])){
+      TrackList[[1]] = GPSfile[1:BreakVec[1], ]
+      TrackList[[1]] = slice(TrackList[[1]], 1:(n()-1))
+    }
+  }
+  
+  
+  # Create new empty list to store result of next step
+  FinalTrackList <- list()
+  
+  # Iterate over track list to exclude tracks with fewer than 100 points from analysis
+  for(i in seq_along(TrackList)){
+    if(nrow(TrackList[[i]]) > 100){
+      FinalTrackList[i] <- TrackList[i]
+    }
+    else{
+      next
+    }
+  }
+  
+  # Remove null values from list
+  FinalTrackList <- FinalTrackList[!sapply(FinalTrackList, is.null)]
+  
+  # adapt speed_in, angle & time_interval of first element in each element of FinalTrack
+  for(i in seq_along(FinalTrackList)){
+    FinalTrackList[[i]]$speed_in[1] <- NA
+    FinalTrackList[[i]]$angle[1] <- NA
+    FinalTrackList[[i]]$time_interval[1] <- NA
+  }
+  
+  return(FinalTrackList)
+  
+}
+
 # Create list of seperate tracks for each GPS dataset
 EverestTracks <- TemporalSplitter(TibbleList[[1]])
 CaliopeTracks <- TemporalSplitter(TibbleList[[2]])

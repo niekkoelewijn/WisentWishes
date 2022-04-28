@@ -7,3 +7,7 @@
 
 ### Script to select and split the GPS tracks of the Veluwe based on the 
 ### activity logbook
+
+setwd("~/WisentWishes")
+GPSStep4bPath <- "~/WisentWishes/MScThesisData/GPS location data/Step4Preprocess/"
+GPSStep4bVec <- list.files(path = GPSStep4Path, pattern = regex("^Veluwe"))

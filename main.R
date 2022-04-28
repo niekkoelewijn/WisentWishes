@@ -27,8 +27,11 @@ source("~/WisentWishes/R/SpeedAngleAttributes.R")
 # Step 4: Temporal splitting
 source("~/WisentWishes/R/TemporalSplitting.R")
 
-# Step 5a: Adapt Kraansvlak based on logbook with interventions
-source()
+# Step 5a: Adapt Kraansvlak tracks based on logbook with interventions
+source("~/WisentWishes/R/KraansvlakSplitting.R")
+
+# Step 5b: Adapt Veluwe tracks on logbook with interventions
+source("~/WisentWishes/R/VeluweSplitting.R")
 
 
 

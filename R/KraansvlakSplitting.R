@@ -33,15 +33,60 @@ Track3 <- read_csv(paste0(GPSStep4aPath, GPSStep4aVec[3]))
 start <- as.numeric(as.POSIXct(strptime("2021-03-04 00:00:00", format = "%Y-%m-%d %H:%M:%S")))
 end <- as.numeric(as.POSIXct(strptime("2021-04-12 00:00:00", format = "%Y-%m-%d %H:%M:%S")))
 
-# Filter out dates in which the management interventions took place
+# Pipe in which the following steps are taken
+# 1: Filter out dates in which the management interventions took place
+# 2: Recalculate the speed, angle and time interval attributes
+# 3: Split the into track separate tracks when the time interval exceeds 10 hours
 Track2Filtered <- Track2 %>% 
   atl_filter_covariates(filters = c(
     "!inrange(time_coded, start, end)"
   )
+  ) %>% 
+  AddAttributes() %>% 
+  TemporalSplitter()
+
+
+
+
+## Filtering of track 3
+
+# Get numeric start and end date of management intervention
+start <- as.numeric(as.POSIXct(strptime("2022-02-15 00:00:00", format = "%Y-%m-%d %H:%M:%S")))
+end <- as.numeric(as.POSIXct(strptime("2022-03-30 00:00:00", format = "%Y-%m-%d %H:%M:%S")))
+
+# Pipe in which the following steps are taken
+# 1: Filter out dates in which the management interventions took place
+# 2: Recalculate the speed, angle and time interval attributes
+# 3: Split the into track separate tracks when the time interval exceeds 10 hours
+Track3Filtered <- Track3 %>% 
+  atl_filter_covariates(filters = c(
+    "!inrange(time_coded, start, end)"
   )
+  ) %>% 
+  AddAttributes() %>% 
+  TemporalSplitter()
+  
 
+## Create list of filtered Kraansvlak tracks
+KraansvlakFilteredTracks <- lst()
+KraansvlakFilteredTracks[[1]] <- Track1
+KraansvlakFilteredTracks <- append(KraansvlakFilteredTracks, Track2Filtered)
+KraansvlakFilteredTracks <- append(KraansvlakFilteredTracks, Track3Filtered)
 
+## Write the elements of the lists to files
 
+# Create path
+path <- "~/WisentWishes/MScThesisData/GPS location data/Step5Preprocess/"
+
+# Create directory
+if(!dir.exists(path)){
+  dir.create(path)
+}
+
+# Write elements
+for(i in seq_along(KraansvlakFilteredTracks)){
+  write_csv(KraansvlakFilteredTracks[[i]], file = paste0(path, "KraansvlakTracks", as.character(i), ".csv"))
+} 
 
 
 

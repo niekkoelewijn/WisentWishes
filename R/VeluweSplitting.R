@@ -62,7 +62,8 @@ endhab <- as.numeric(as.POSIXct(strptime("2016-06-15 12:00:00", format = "%Y-%m-
 # Get Veluwe habituate study area
 HabituateArea <- TransformPolygon(VeluweHabituateArea)
 
-# First track of the temporally filtered tracks of the Veluwe 
+# Create track of datapoints that fall in the range of dates of track 2 in which
+# habituate area confinement took place 
 Track1Habituate <- Track2 %>% 
   atl_filter_covariates(filters = c(
     "inrange(time_coded, starthab, endhab)"
@@ -77,7 +78,7 @@ Track1Habituate <- Track2 %>%
 startsub <- as.numeric(as.POSIXct(strptime("2016-12-19 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
 endsub <- as.numeric(as.POSIXct(strptime("2017-04-02 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
 
-# Third track of the temporally filtered tracks of the Veluwe WITH supplementary feeding
+# Create track of datapoints that fall in the range of dates in which supplementary feeding took place
 Track1SuppFed <- Track2 %>% 
   atl_filter_covariates(filters = c(
     "inrange(time_coded, startsub, endsub)"
@@ -98,6 +99,229 @@ Track1Filtered <- Track2 %>%
 
 
 ## Filtering of track 3
+
+# Get numeric start and end date of habituate area confinement
+starthab <- as.numeric(as.POSIXct(strptime("2017-06-24 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+endhab <- as.numeric(as.POSIXct(strptime("2017-07-16 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+
+# Create track of data points that fall in the range of dates in which
+# habituate area confinement took place 
+Track2Habituate <- Track3 %>% 
+  atl_filter_covariates(filters = c(
+    "inrange(time_coded, starthab, endhab)"
+  )
+  ) %>% 
+  atl_filter_bounds(x = "X", y = "Y", sf_polygon = HabituateArea, 
+                    remove_inside = F) %>% 
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+# Get tracks out of track 3 in which no management interventions took place
+Track2Filtered <- Track3 %>% 
+  atl_filter_covariates(filters = c(
+    "!inrange(time_coded, starthab, endhab)"
+  )
+  ) %>%
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+
+## Track 4 & 5 do not need extra filtering
+Track3Filtered <- Track4
+Track4Filtered <- Track5
+
+
+## Filtering of track 6 and 7
+
+# Track 6 and 7 overlap completely with a period of supplementary feeding
+Track2SuppFed <- Track6
+Track3SuppFed <- Track7
+
+
+## Filtering of track 8
+
+# Get numeric start and end date of supplementary feeding period 1 of track 8
+startsub1 <- as.numeric(as.POSIXct(strptime("2018-02-10 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+endsub1 <- as.numeric(as.POSIXct(strptime("2018-04-20 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+
+# Get numeric start and end date of habituate area confinement period 1 of track 8
+starthab1 <- as.numeric(as.POSIXct(strptime("2018-02-10 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+endhab1 <- as.numeric(as.POSIXct(strptime("2018-02-13 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+
+# Create track of datapoints that fall in the range of dates in which supplementary 
+# feeding took place. Remove first 3 days out of the track, as during these days, 
+# the bisons where confinned to the habituate area, a too short period to create a seperate track.
+Track4SuppFed <- Track8 %>% 
+  atl_filter_covariates(filters = c(
+    "!inrange(time_coded, starthab1, endhab1)",
+    "inrange(time_coded, startsub1, endsub1)"
+  )
+  ) %>%
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+# Get numeric start and end date of supplementary feeding period 2 of track 8
+startsub2 <- as.numeric(as.POSIXct(strptime("2018-10-30 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+endsub2 <- as.numeric(as.POSIXct(strptime("2019-02-7 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+
+# Get numeric start and end date of habituate area confinement period 2 of track 8 
+# in which NO supplementary feeding took place
+starthab2 <- as.numeric(as.POSIXct(strptime("2018-09-10 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+endhab2 <- as.numeric(as.POSIXct(strptime("2018-11-30 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+
+# Create track of data points that fall in the range of dates in which habituate 
+# area confinement took place, and no supplementary feeding took place
+Track3Habituate <- Track8 %>% 
+  atl_filter_covariates(filters = c(
+    "inrange(time_coded, starthab2, endhab2)"
+  )
+  ) %>% 
+  atl_filter_bounds(x = "X", y = "Y", sf_polygon = HabituateArea, 
+                    remove_inside = F) %>% 
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+# Get numeric start and end date of habituate area confinement in which 
+# suppelementary feeding took place
+starthabsub <- as.numeric(as.POSIXct(strptime("2018-11-30 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+endhabsub <- as.numeric(as.POSIXct(strptime("2018-12-27 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+
+# Create track of datapoints that fall in the range of dates in which supplementary feeding took place
+# during the period of habituate area confinement
+Track1HabSubb <- Track8 %>% 
+  atl_filter_covariates(filters = c(
+    "inrange(time_coded, starthabsub, endhabsub)"
+  )
+  ) %>%
+  atl_filter_bounds(x = "X", y = "Y", sf_polygon = HabituateArea, 
+                    remove_inside = F) %>% 
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+# Get tracks out of track 8 in which no management interventions took place
+Track5Filtered <- Track8 %>% 
+  atl_filter_covariates(filters = c(
+    "!inrange(time_coded, startsub1, endsub1)",
+    "!inrange(time_coded, startsub2, endsub2)",
+    "!inrange(time_coded, starthab2, endhab2)"
+  )
+  ) %>%
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+
+## Track 9, 10 & 11 do not need extra filtering
+Track6Filtered <- Track9
+Track7Filtered <- Track10
+Track8Filtered <- Track11
+
+
+## Filtering of track 12 
+
+# Get numeric start and end date of habituate area confinement of track 12
+starthab <- as.numeric(as.POSIXct(strptime("2020-03-12 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+endhab <- as.numeric(as.POSIXct(strptime("2020-03-20 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+
+# Create track of data points that fall in the range of dates in which habituate 
+# area confinement took place
+Track4Habituate <- Track12 %>% 
+  atl_filter_covariates(filters = c(
+    "inrange(time_coded, starthab, endhab)"
+  )
+  ) %>% 
+  atl_filter_bounds(x = "X", y = "Y", sf_polygon = HabituateArea, 
+                    remove_inside = F) %>% 
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+# Get numeric start and end date of supplementary feeding of track 12
+startsub <- as.numeric(as.POSIXct(strptime("2020-05-20 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+endsub <- as.numeric(as.POSIXct(strptime("2020-07-30 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+
+# Create track of data points that fall in the range of dates in which supplementary feeding took place
+Track5SuppFed <- Track12 %>% 
+  atl_filter_covariates(filters = c(
+    "inrange(time_coded, startsub, endsub)"
+  )
+  ) %>%
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+# Get tracks out of track 12 in which no management interventions took place
+Track9Filtered <- Track12 %>% 
+  atl_filter_covariates(filters = c(
+    "!inrange(time_coded, startsub, endsub)",
+    "!inrange(time_coded, starthab, endhab)"
+  )
+  ) %>%
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+## Create list of filtered Veluwe tracks
+VeluweFilteredTracks <- lst()
+VeluweFilteredTracks <- append(VeluweFilteredTracks, Track1Filtered)
+VeluweFilteredTracks <- append(VeluweFilteredTracks, Track2Filtered)
+VeluweFilteredTracks[[5]] <- Track3Filtered
+VeluweFilteredTracks[[6]] <- Track4Filtered
+VeluweFilteredTracks <- append(VeluweFilteredTracks, Track5Filtered)
+VeluweFilteredTracks[[8]] <- Track6Filtered
+VeluweFilteredTracks[[9]] <- Track7Filtered
+VeluweFilteredTracks[[10]] <- Track8Filtered
+VeluweFilteredTracks <- append(VeluweFilteredTracks, Track9Filtered)
+
+
+## Create list of Veluwe tracks where supplementary feeding took place
+VeluweSuppTracks <- lst()
+VeluweSuppTracks <- append(VeluweSuppTracks, Track1SuppFed)
+VeluweSuppTracks[[2]] <- Track2SuppFed
+VeluweSuppTracks[[3]] <- Track3SuppFed
+VeluweSuppTracks <- append(VeluweSuppTracks, Track4SuppFed)
+VeluweSuppTracks <- append(VeluweSuppTracks, Track5SuppFed)
+
+
+## Create list of Veluwe tracks where habituate area confinement took place
+VeluweHabTracks <- lst()
+VeluweHabTracks <- append(VeluweHabTracks, Track1Habituate)
+VeluweHabTracks <- append(VeluweHabTracks, Track2Habituate)
+VeluweHabTracks <- append(VeluweHabTracks, Track3Habituate)
+VeluweHabTracks <- append(VeluweHabTracks, Track4Habituate)
+
+## Create list of Veluwe tracks where habituate area confinement took place
+VeluweSuppHabTracks <- lst()
+VeluweSuppHabTracks <- append(VeluweSuppHabTracks, Track1HabSubb)
+
+## Write the elements of the lists to files
+
+# Tracks where no management interventions took place
+for(i in seq_along(VeluweFilteredTracks)){
+  write_csv(VeluweFilteredTracks[[i]], file = paste0(path, "VeluweTracks", as.character(i), ".csv"))
+} 
+
+# Tracks where supplementary feeding took place
+for(i in seq_along(VeluweSuppTracks)){
+  write_csv(VeluweSuppTracks[[i]], file = paste0(path, "VeluweSuppFedTracks", as.character(i), ".csv"))
+} 
+
+# Tracks where habituate area confinement took place
+for(i in seq_along(VeluweHabTracks)){
+  write_csv(VeluweHabTracks[[i]], file = paste0(path, "VeluweHabTracks", as.character(i), ".csv"))
+} 
+
+# Tracks where both supplementary feeding and habituate area confinement took place
+for(i in seq_along(VeluweSuppHabTracks)){
+  write_csv(VeluweSuppHabTracks[[i]], file = paste0(path, "VeluweSuppFedHabTracks", as.character(i), ".csv"))
+} 
+
+
+
+
+
+
+
+
+
+
+
 
 
 

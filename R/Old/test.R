@@ -95,6 +95,9 @@ LandUseClass <- c("agrarisch gras", "maïs", "aardappelen", "bieten", "granen",
                   "struikvegetatie in moerasgebied (hoog)", "overige struikvegetatie (hoog)")
 LUTLNG <- data.frame(value, LandUseClass)
 
+# Load landuse tif into R
+Landuse <- raster("~/WisentWishes/MScThesisData/EnvironmentalVariables/LGN2020/LGN2020_5m.tif")
+
 # Get Kraansvlak location data
 KraansvlakPoints <- read.csv("MScThesisData/GPS location data/Kraansvlak/Kraansvlak.csv")
 

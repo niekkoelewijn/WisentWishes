@@ -33,6 +33,13 @@ source("~/WisentWishes/R/KraansvlakSplitting.R")
 # Step 5b: Adapt Veluwe tracks on logbook with interventions
 source("~/WisentWishes/R/VeluweSplitting.R")
 
+# Step 5c: Adapt Maashorst tracks on logbook with interventions
+source("~/WisentWishes/R/MaashorstSplitting.R")
 
+# Step 5d: Adapt Slikken vd Heen tracks on logbook with interventions
+source("~/WisentWishes/R/SlikkenvdHeenSplitting.R")
+
+# Step 6: Interpolation of tracks to get equal step sizes
+source("~/WisentWishes/R/Interpolating.R")
 
 

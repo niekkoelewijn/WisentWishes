@@ -6,7 +6,7 @@
 # Year: 2022
 
 ### Script to interpolate GPS tracks to get the same temporal resolution
-### everywhere.
+### of 1 hour for each track.
 IDTrack <- mutate(VeluweTracks[[2]], ID = 1)
 InterpolatedTrack <- momentuHMM::crawlWrap(IDTrack, Time.name = "time", coord = c("X", "Y"), 
                                            time.scale = "hours", proj = 28992, timeStep = 3600)

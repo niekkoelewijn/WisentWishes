@@ -56,8 +56,8 @@ Track9 <- read_csv(paste0(GPSStep4bPath, GPSStep4bVec[12]))
 ## Filtering of track 2
 
 # Get numeric start and end date of habituate area confinement
-start <- as.numeric(as.POSIXct(strptime("2016-04-12 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
-end <- as.numeric(as.POSIXct(strptime("2016-06-15 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+starthab <- as.numeric(as.POSIXct(strptime("2016-04-12 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+endhab <- as.numeric(as.POSIXct(strptime("2016-06-15 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
 
 # Get Veluwe habituate study area
 HabituateArea <- TransformPolygon(VeluweHabituateArea)
@@ -65,7 +65,7 @@ HabituateArea <- TransformPolygon(VeluweHabituateArea)
 # First track of the temporally filtered tracks of the Veluwe 
 Track1Habituate <- Track2 %>% 
   atl_filter_covariates(filters = c(
-    "inrange(time_coded, start, end)"
+    "inrange(time_coded, starthab, endhab)"
   )
   ) %>% 
   atl_filter_bounds(x = "X", y = "Y", sf_polygon = HabituateArea, 
@@ -73,44 +73,26 @@ Track1Habituate <- Track2 %>%
   AddAttributes() %>% 
   TemporalSplitter2()
 
-
-# Get numeric start and end date of days without interventions
-start <- as.numeric(as.POSIXct(strptime("2016-06-15 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
-end <- as.numeric(as.POSIXct(strptime("2017-12-19 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
-
-# First track of the temporally filtered tracks of the Veluwe 
-Track1Filtered <- Track2 %>% 
-  atl_filter_covariates(filters = c(
-    "inrange(time_coded, start, end)"
-  )
-  ) %>% 
-  AddAttributes() %>% 
-  TemporalSplitter2()
-
-
 # Get numeric start and end date of supplementary feeding
-start <- as.numeric(as.POSIXct(strptime("2016-12-19 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
-end <- as.numeric(as.POSIXct(strptime("2017-04-02 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+startsub <- as.numeric(as.POSIXct(strptime("2016-12-19 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+endsub <- as.numeric(as.POSIXct(strptime("2017-04-02 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
 
 # Third track of the temporally filtered tracks of the Veluwe WITH supplementary feeding
 Track1SuppFed <- Track2 %>% 
   atl_filter_covariates(filters = c(
-    "inrange(time_coded, start, end)"
+    "inrange(time_coded, startsub, endsub)"
   )
   ) %>%
   AddAttributes() %>% 
   TemporalSplitter2()
 
-# Get numeric start and end date of days without interventions
-start <- as.numeric(as.POSIXct(strptime("2017-04-02 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
-end <- as.numeric(as.POSIXct(strptime("2017-05-17 23:00:00", format = "%Y-%m-%d %H:%M:%S")))
-
-# First track of the temporally filtered tracks of the Veluwe 
-Track2Filtered <- Track2 %>% 
+# Get tracks out of track 2 in which no management interventions took place
+Track1Filtered <- Track2 %>% 
   atl_filter_covariates(filters = c(
-    "inrange(time_coded, start, end)"
+    "!inrange(time_coded, starthab, endhab)",
+    "!inrange(time_coded, startsub, endsub)"
   )
-  ) %>% 
+  ) %>%
   AddAttributes() %>% 
   TemporalSplitter2()
 

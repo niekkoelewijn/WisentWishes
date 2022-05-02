@@ -13,6 +13,7 @@ if(!"atlastools" %in% rownames(installed.packages())){install.packages("atlastoo
 if(!"tidyverse" %in% rownames(installed.packages())){install.packages("tidyverse")}
 if(!"lubridate" %in% rownames(installed.packages())){install.packages("lubridate")}
 if(!"momentuHMM" %in% rownames(installed.packages())){install.packages("momentuHMM")}
+if(!"tools" %in% rownames(installed.packages())){install.packages("tools")}
 
 # Load required packages
 library(rgdal)
@@ -22,6 +23,7 @@ library(atlastools)
 library(tidyverse)
 library(lubridate)
 library(momentuHMM)
+library(tools)
 
 
 ### Clean GPS-input data

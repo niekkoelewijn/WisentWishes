@@ -294,22 +294,22 @@ VeluweSuppHabTracks <- append(VeluweSuppHabTracks, Track1HabSubb)
 
 # Tracks where no management interventions took place
 for(i in seq_along(VeluweFilteredTracks)){
-  write_csv(VeluweFilteredTracks[[i]], file = paste0(path, "VeluweTracks", as.character(i), ".csv"))
+  write_csv(VeluweFilteredTracks[[i]], file = paste0(path, "VeluweTrack", as.character(i), ".csv"))
 } 
 
 # Tracks where supplementary feeding took place
 for(i in seq_along(VeluweSuppTracks)){
-  write_csv(VeluweSuppTracks[[i]], file = paste0(path, "VeluweSuppFedTracks", as.character(i), ".csv"))
+  write_csv(VeluweSuppTracks[[i]], file = paste0(path, "VeluweSuppFedTrack", as.character(i), ".csv"))
 } 
 
 # Tracks where habituate area confinement took place
 for(i in seq_along(VeluweHabTracks)){
-  write_csv(VeluweHabTracks[[i]], file = paste0(path, "VeluweHabTracks", as.character(i), ".csv"))
+  write_csv(VeluweHabTracks[[i]], file = paste0(path, "VeluweHabTrack", as.character(i), ".csv"))
 } 
 
 # Tracks where both supplementary feeding and habituate area confinement took place
 for(i in seq_along(VeluweSuppHabTracks)){
-  write_csv(VeluweSuppHabTracks[[i]], file = paste0(path, "VeluweSuppFedHabTracks", as.character(i), ".csv"))
+  write_csv(VeluweSuppHabTracks[[i]], file = paste0(path, "VeluweSuppFedHabTrack", as.character(i), ".csv"))
 } 
 
 

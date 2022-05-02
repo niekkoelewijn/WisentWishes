@@ -83,7 +83,7 @@ if(!dir.exists(path)){
 
 # Write elements
 for(i in seq_along(KraansvlakFilteredTracks)){
-  write_csv(KraansvlakFilteredTracks[[i]], file = paste0(path, "KraansvlakTracks", as.character(i), ".csv"))
+  write_csv(KraansvlakFilteredTracks[[i]], file = paste0(path, "KraansvlakTrack", as.character(i), ".csv"))
 } 
 
 

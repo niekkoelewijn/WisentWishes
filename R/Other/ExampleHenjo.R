@@ -17,9 +17,22 @@ temp_fun <- approxfun(x=x$t, y=x$temp, method = "linear")
 temp_fun(15000)
 
 # Tryout
-temp_fun <- approxfun(x=InterpolatedTrackList$KraansvlakTrack1$time_coded, y=InterpolatedTrackList$KraansvlakTrack1$temp, method = "linear")
-interpolated_temp_timestemp <- as.numeric(as.POSIXct(strptime("2020-10-25 15:56:43", format = "%Y-%m-%d %H:%M:%S")))
-temp_fun(interpolated_temp_timestemp)
+KraansvlakTrack1 <- InterpolatedTrackList$KraansvlakTrack1 %>% 
+  as.tibble() %>% 
+  drop_na(TimeNum) %>% 
+  arrange(time_coded)
+
+x <- KraansvlakTrack1$time_coded
+y <- KraansvlakTrack1$temp
+
+temp_fun <- approxfun(x=x, y=y, method = "linear")
+interpolated_temp_timestemp <- as.numeric(as.POSIXct(strptime("2020-10-25 09:56:43", format = "%Y-%m-%d %H:%M:%S")))
+interpolated_temp_timestemp <- as.numeric(InterpolatedTrackList$KraansvlakTrack1$time[218])
+temp_fun(as.numeric(InterpolatedTrackList$KraansvlakTrack1$time[219]))
+
+KraansvlakTrack1 <- InterpolatedTrackList$KraansvlakTrack1 %>%
+  as.tibble() %>% 
+  mutate(temp = ifelse(is.na(temp), temp_fun(as.numeric(time)), temp))
 
 tseq <- seq(from=min(x$t), to=max(x$t), length.out=100)
 points(tseq, temp_fun(tseq), col=2, cex=0.5, pch=16)

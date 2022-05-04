@@ -12,8 +12,15 @@ plot(x$t, x$temp)
 ?approx()
 ?approxfun()
 
+# Example
 temp_fun <- approxfun(x=x$t, y=x$temp, method = "linear")
 temp_fun(15000)
+
+# Tryout
+temp_fun <- approxfun(x=InterpolatedTrackList$KraansvlakTrack1$time_coded, y=InterpolatedTrackList$KraansvlakTrack1$temp, method = "linear")
+interpolated_temp_timestemp <- as.numeric(as.POSIXct(strptime("2020-10-25 15:56:43", format = "%Y-%m-%d %H:%M:%S")))
+temp_fun(interpolated_temp_timestemp)
+
 tseq <- seq(from=min(x$t), to=max(x$t), length.out=100)
 points(tseq, temp_fun(tseq), col=2, cex=0.5, pch=16)
 

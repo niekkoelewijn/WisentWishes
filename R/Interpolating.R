@@ -82,12 +82,27 @@ for(i in seq_along(names(InterpolatedTrackList))){
 } 
 
 # Script to visualize an interpolation
-#VeluweSuppFedHabTracks1 <- InterpolatedTrackList$VeluweSuppFedHabTracks1$crwPredict
-#InterpolatedTrackSf <- st_as_sf(VeluweSuppFedHabTracks1, coords = c("mu.x", "mu.y"))
-#InterpolatedTrackSf$X <- st_coordinates(InterpolatedTrackSf)[,1]
-#InterpolatedTrackSf$Y <- st_coordinates(InterpolatedTrackSf)[,2]
-#plot(st_geometry(VeluweStudyAreaSfRDn))
-#plot(st_geometry(InterpolatedTrackSf), add=T)
+VeluweTrack7 <- InterpolatedTrackList$VeluweTrack7
+VeluweTrack7 <- as.tibble(VeluweTrack7)
+
+distance <- function(x1, x2, y1, y2){
+  distancesquared <- (x1 - x2)^2 + (y1 - y2)^2
+  distance <- sqrt(distancesquared)
+  return(distance)
+}
+
+VeluweTrack7 <- VeluweTrack7 %>% 
+  mutate(step_size = distance(mu.x, lead(mu.x), mu.y, lead(mu.y)))
+
+
+
+distance(184244.458, 184233.972, 463989.389, 464027.157)
+
+InterpolatedTrackSf <- st_as_sf(VeluweTrack7, coords = c("mu.x", "mu.y"))
+InterpolatedTrackSf$X <- st_coordinates(InterpolatedTrackSf)[,1]
+InterpolatedTrackSf$Y <- st_coordinates(InterpolatedTrackSf)[,2]
+plot(st_geometry(VeluweStudyAreaSfRDn))
+plot(st_geometry(InterpolatedTrackSf), add=T)
 
 
 

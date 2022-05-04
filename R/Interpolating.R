@@ -82,45 +82,13 @@ for(i in seq_along(names(InterpolatedTrackList))){
 } 
 
 # Script to visualize an interpolation
-VeluweTrack7 <- InterpolatedTrackList$VeluweTrack7
-VeluweTrack7 <- as.tibble(VeluweTrack7)
-
-distance <- function(x1, x2, y1, y2){
-  distancesquared <- (x1 - x2)^2 + (y1 - y2)^2
-  distance <- sqrt(distancesquared)
-  return(distance)
-}
-
-VeluweTrack7 <- VeluweTrack7 %>% 
-  mutate(step_size = distance(mu.x, lead(mu.x), mu.y, lead(mu.y)))
-
-
-
-distance(184244.458, 184233.972, 463989.389, 464027.157)
-
-InterpolatedTrackSf <- st_as_sf(VeluweTrack7, coords = c("mu.x", "mu.y"))
+VeluweTrack15 <- InterpolatedTrackList$VeluweTrack15
+VeluweTrack15 <- as.tibble(VeluweTrack15)
+InterpolatedTrackSf <- st_as_sf(VeluweTrack15, coords = c("mu.x", "mu.y"))
 InterpolatedTrackSf$X <- st_coordinates(InterpolatedTrackSf)[,1]
 InterpolatedTrackSf$Y <- st_coordinates(InterpolatedTrackSf)[,2]
 plot(st_geometry(VeluweStudyAreaSfRDn))
 plot(st_geometry(InterpolatedTrackSf), add=T)
-
-
-
-
-
-
-# Create path
-path <- "~/WisentWishes/MScThesisData/GPS location data/Step6Preprocess/"
-
-# Create directory
-if(!dir.exists(path)){
-  dir.create(path)
-}
-
-# Write interpolation results to step 6 folder
-write_csv(InterpolatedTrackSf, file = paste0(path, "SlikkenvdHeenInterpolTracks", "Test1", ".csv"))
-
-
 
 
 

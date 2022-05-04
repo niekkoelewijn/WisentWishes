@@ -100,27 +100,18 @@ KraansvlakRaw <- KraansvlakRaw %>%
 # Nevaya
 NevayaRaw <- NevayaRaw %>% 
   
-  # Nevaya has no hdop attribute unfortunately, so I exclude that attribute in
-  # the analysis of Nevaya. I make the assumption that all GPS fixes in this 
-  # dataset have a sufficient quality.
-  
-  mutate(hdop = 1) %>% 
-  
   # Select columns of interest
   select(time, lat, lng, temp, hdop) %>% 
   
   # Select only does rows with a temperature attribute
-  drop_na()
+  drop_na(temp)
 
 
 # Shara
 SharaRaw <- SharaRaw %>% 
   
-  # Shara has no temp and no hdop attribute unfortunately I make the assumption 
-  # that all GPS fixes in this dataset have a sufficient quality. I will assign
-  # the average temperature to the gps fixes for convenience
-  mutate(hdop = 1) %>%  
-  
+  # Shara has no temp attribute. I will assignthe average temperature of the 
+  # Veluwe area to the gps fixes for convenience
   mutate(temp = 10.1) %>%
   
   # Select columns of interest

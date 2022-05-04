@@ -33,6 +33,22 @@ TibbleList <- list(Everest, Caliope, Delia, Kraansvlak,
                    Krayla, Kroosja, Maaike, Nadia, Nevaya,
                    Shara, Veluwe)
 
+# Create function to calculate distance between two points in a GPS track
+distance <- function(x1, x2, y1, y2){
+  
+  # D^2 <- X^2 + Y^2
+  # D = distance
+  # X = first x - second x
+  # Y = first y - second y
+  distancesquared <- (x1 - x2)^2 + (y1 - y2)^2
+  
+  # Take squareroot of result
+  distance <- sqrt(distancesquared)
+  
+  # Return distance
+  return(distance)
+}
+
 # Define function to add speed, angle, and time interval attibutes to GPS tables
 AddAttributes <- function(GPSfile){
   
@@ -67,8 +83,8 @@ AddAttributes <- function(GPSfile){
     # Add attribute for time interval
     mutate(time_interval = time_coded - lag(time_coded)) %>% 
     
-    # Filter out points that are on the exact same time
-    #filter(speed_out > 0) %>%
+    # Add attribute for time length
+    mutate(step_length = distance(X, lag(X), Y, lag(Y)))
   
   return(as_tibble(ExpandedGPSfile))
   

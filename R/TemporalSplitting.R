@@ -113,11 +113,12 @@ TemporalSplitter <- function(GPSfile){
   # Remove null values from list
   FinalTrackList <- FinalTrackList[!sapply(FinalTrackList, is.null)]
   
-  # adapt speed_in, angle & time_interval of first element in each element of FinalTrack
+  # adapt speed_in, angle, time_interval & step lenght of first element in each element of FinalTrack
   for(i in seq_along(FinalTrackList)){
     FinalTrackList[[i]]$speed_in[1] <- NA
     FinalTrackList[[i]]$angle[1] <- NA
     FinalTrackList[[i]]$time_interval[1] <- NA
+    FinalTrackList[[i]]$step_length[1] <- NA
   }
   
   return(FinalTrackList)
@@ -188,11 +189,12 @@ TemporalSplitter2 <- function(GPSfile){
   # Remove null values from list
   FinalTrackList <- FinalTrackList[!sapply(FinalTrackList, is.null)]
   
-  # adapt speed_in, angle & time_interval of first element in each element of FinalTrack
+  # adapt speed_in, angle, time_interval & step lenght of first element in each element of FinalTrack
   for(i in seq_along(FinalTrackList)){
     FinalTrackList[[i]]$speed_in[1] <- NA
     FinalTrackList[[i]]$angle[1] <- NA
     FinalTrackList[[i]]$time_interval[1] <- NA
+    FinalTrackList[[i]]$step_length[1] <- NA
   }
   
   return(FinalTrackList)

@@ -9,14 +9,15 @@
 ### activity logbook
 
 
-## Get the Kraansvlak GPS data from step 4
+## Get the Veluwe GPS data from step 4
 
-# Paths to Kraansvlak tracks
+# Paths to Veluwe tracks
 setwd("~/WisentWishes")
 GPSStep4bPath <- "~/WisentWishes/MScThesisData/GPS location data/Step4Preprocess/"
 GPSStep4bVec <- list.files(path = GPSStep4Path, pattern = regex("^Veluwe"))
+GPSStep4SharaVec <- list.files(path = GPSStep4Path, pattern = regex("^Shara"))
 
-# Load GPS tracks of the Kraansvlak as tibbles
+# Load GPS tracks of the Veluwe as tibbles
 Track1 <- read_csv(paste0(GPSStep4bPath, GPSStep4bVec[1]))
 Track10 <- read_csv(paste0(GPSStep4bPath, GPSStep4bVec[2]))
 Track11 <- read_csv(paste0(GPSStep4bPath, GPSStep4bVec[3]))
@@ -29,6 +30,8 @@ Track6 <- read_csv(paste0(GPSStep4bPath, GPSStep4bVec[9]))
 Track7 <- read_csv(paste0(GPSStep4bPath, GPSStep4bVec[10]))
 Track8 <- read_csv(paste0(GPSStep4bPath, GPSStep4bVec[11]))
 Track9 <- read_csv(paste0(GPSStep4bPath, GPSStep4bVec[12]))
+Track13 <- read_csv(paste0(GPSStep4bPath, GPSStep4SharaVec[1]))
+Track14 <- read_csv(paste0(GPSStep4bPath, GPSStep4SharaVec[2]))
 
 ### Judging from the logbook of intervention actions, track 1 should be removed
 ### as the European bison was released in the Veluwe area in 12-04-2016,
@@ -51,7 +54,14 @@ Track9 <- read_csv(paste0(GPSStep4bPath, GPSStep4bVec[12]))
 ### No spacial management interventions took place in the date range of track 9, 10 and 11.
 ### Track 12 ranged from 17-02-2019 until 31-08-2020. Confinement to habituate area
 ### from 12-03-2020 until 20-03-2020. Supplementary feeding from 20-05-2020 until
-### 20-07-2020 due to dryness.
+### 20-07-2020 due to dryness. The last habituate area confinement occured until 
+### the 5th of Februari 2022. The first track of Shara with the new collar starts
+### the 8th of Februari 2022, so I don't have to correct for that in the tracks of
+### Shara. Besides, the no supplementary feeding took place in the Shara tracks.
+
+
+## Track 1 is skipped from the analysis
+
 
 ## Filtering of track 2
 
@@ -257,6 +267,10 @@ Track9Filtered <- Track12 %>%
   AddAttributes() %>% 
   TemporalSplitter2()
 
+## Track 13 & 14 do not need extra filtering
+Track10Filtered <- Track13
+Track11Filtered <- Track14
+
 ## Create list of filtered Veluwe tracks
 VeluweFilteredTracks <- lst()
 VeluweFilteredTracks <- append(VeluweFilteredTracks, Track1Filtered)
@@ -268,6 +282,8 @@ VeluweFilteredTracks[[8]] <- Track6Filtered
 VeluweFilteredTracks[[9]] <- Track7Filtered
 VeluweFilteredTracks[[10]] <- Track8Filtered
 VeluweFilteredTracks <- append(VeluweFilteredTracks, Track9Filtered)
+VeluweFilteredTracks[[14]] <- Track10Filtered
+VeluweFilteredTracks[[15]] <- Track11Filtered
 
 
 ## Create list of Veluwe tracks where supplementary feeding took place
@@ -291,6 +307,9 @@ VeluweSuppHabTracks <- lst()
 VeluweSuppHabTracks <- append(VeluweSuppHabTracks, Track1HabSubb)
 
 ## Write the elements of the lists to files
+
+# Create path
+path <- "~/WisentWishes/MScThesisData/GPS location data/Step5Preprocess/"
 
 # Tracks where no management interventions took place
 for(i in seq_along(VeluweFilteredTracks)){

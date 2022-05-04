@@ -20,16 +20,17 @@ KraansvlakStudyArea <- readOGR(paste0(StudyAreas, StudyAreasVec[1]))
 MaashorstStudyArea2016 <- readOGR(paste0(StudyAreas, StudyAreasVec[2]))
 MaashorstStudyArea20172021 <- readOGR(paste0(StudyAreas, StudyAreasVec[3]))
 MaashorstStudyArea2022 <- readOGR(paste0(StudyAreas, StudyAreasVec[4]))
-SlikkenvdHeenStudyArea <- readOGR(paste0(StudyAreas, StudyAreasVec[5]))
-VeluweHabituateArea  <- readOGR(paste0(StudyAreas, StudyAreasVec[6]))
-VeluweStudyArea <- readOGR(paste0(StudyAreas, StudyAreasVec[7]))
+SlikkenvdHeenHabituateArea <- readOGR(paste0(StudyAreas, StudyAreasVec[5]))
+SlikkenvdHeenStudyArea <- readOGR(paste0(StudyAreas, StudyAreasVec[6]))
+VeluweHabituateArea  <- readOGR(paste0(StudyAreas, StudyAreasVec[7]))
+VeluweStudyArea <- readOGR(paste0(StudyAreas, StudyAreasVec[8]))
 
 
 # Put study areas in a list
 StudyAreaList <- list(KraansvlakStudyArea, MaashorstStudyArea2016, 
                       MaashorstStudyArea20172021, MaashorstStudyArea2022,
-                      SlikkenvdHeenStudyArea, VeluweHabituateArea, 
-                      VeluweStudyArea)
+                      SlikkenvdHeenHabituateArea, SlikkenvdHeenStudyArea, 
+                      VeluweHabituateArea, VeluweStudyArea)
 
 # Define function to transform study area datasets
 TransformPolygon <- function(polygon){

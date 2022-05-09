@@ -302,7 +302,8 @@ VeluweHabTracks <- append(VeluweHabTracks, Track2Habituate)
 VeluweHabTracks <- append(VeluweHabTracks, Track3Habituate)
 VeluweHabTracks <- append(VeluweHabTracks, Track4Habituate)
 
-## Create list of Veluwe tracks where habituate area confinement took place
+## Create list of Veluwe tracks where habituate area confinement and 
+## supplementary feeding took place
 VeluweSuppHabTracks <- lst()
 VeluweSuppHabTracks <- append(VeluweSuppHabTracks, Track1HabSubb)
 

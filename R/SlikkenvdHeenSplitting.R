@@ -40,7 +40,7 @@ Track5 <- read_csv(paste0(GPSStep4Path, GPSStep4NadiaVec[3]))
 
 # Get numeric start and end date of habituate area confinement
 starthab <- as.numeric(as.POSIXct(strptime("2020-02-17 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
-endhab <- as.numeric(as.POSIXct(strptime("2020-09-10 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
+endhab <- as.numeric(as.POSIXct(strptime("2020-09-01 12:00:00", format = "%Y-%m-%d %H:%M:%S")))
 
 # Get Slikken vd Heen habituate study area
 HabituateArea <- TransformPolygon(SlikkenvdHeenHabituateArea)
@@ -57,6 +57,103 @@ Track1Habituate <- Track1 %>%
   AddAttributes() %>% 
   TemporalSplitter2()
 
+
+## Filtering of track 2
+
+# Create track of data points that fall in the range of dates in which
+# habituate area confinement took place
+Track2Habituate <- Track2 %>% 
+  atl_filter_covariates(filters = c(
+    "inrange(time_coded, starthab, endhab)"
+  )
+  ) %>% 
+  atl_filter_bounds(x = "X", y = "Y", sf_polygon = HabituateArea, 
+                    remove_inside = F) %>% 
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+# Get points from track where no management interventions took place
+Track1Filtered <- Track2 %>% 
+  atl_filter_covariates(filters = c(
+    "!inrange(time_coded, starthab, endhab)"
+  )
+  ) %>% 
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+
+## Filtering of track 3
+
+# Create track of data points that fall in the range of dates in which
+# habituate area confinement took place
+Track3Habituate <- Track3 %>% 
+  atl_filter_covariates(filters = c(
+    "inrange(time_coded, starthab, endhab)"
+  )
+  ) %>% 
+  atl_filter_bounds(x = "X", y = "Y", sf_polygon = HabituateArea, 
+                    remove_inside = F) %>% 
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+
+## Filtering of track 4
+
+# Create track of data points that fall in the range of dates in which
+# habituate area confinement took place
+Track4Habituate <- Track4 %>% 
+  atl_filter_covariates(filters = c(
+    "inrange(time_coded, starthab, endhab)"
+  )
+  ) %>% 
+  atl_filter_bounds(x = "X", y = "Y", sf_polygon = HabituateArea, 
+                    remove_inside = F) %>% 
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+# Get points from track where no management interventions took place
+Track2Filtered <- Track4 %>% 
+  atl_filter_covariates(filters = c(
+    "!inrange(time_coded, starthab, endhab)"
+  )
+  ) %>% 
+  AddAttributes() %>% 
+  TemporalSplitter2()
+
+
+## No filtering needed for track 5
+Track3Filtered <- Track5
+
+
+## Create list of filtered Slikken vd Heen tracks
+SlikkenvdHeenFilteredTracks <- lst()
+SlikkenvdHeenFilteredTracks <- append(SlikkenvdHeenFilteredTracks, Track1Filtered)
+SlikkenvdHeenFilteredTracks <- append(SlikkenvdHeenFilteredTracks, Track2Filtered)
+SlikkenvdHeenFilteredTracks[[3]] <- Track3Filtered
+
+
+## Create list of Slikken vd Heen tracks where habituate area confinement took place
+SlikkenvdHeenHabTracks <- lst()
+SlikkenvdHeenHabTracks <- append(SlikkenvdHeenHabTracks, Track1Habituate)
+SlikkenvdHeenHabTracks <- append(SlikkenvdHeenHabTracks, Track2Habituate)
+SlikkenvdHeenHabTracks <- append(SlikkenvdHeenHabTracks, Track3Habituate)
+SlikkenvdHeenHabTracks <- append(SlikkenvdHeenHabTracks, Track4Habituate)
+
+
+## Write the elements of the lists to files
+
+# Create path
+path <- "~/WisentWishes/MScThesisData/GPS location data/Step5Preprocess/"
+
+# Tracks where no management interventions took place
+for(i in seq_along(SlikkenvdHeenFilteredTracks)){
+  write_csv(SlikkenvdHeenFilteredTracks[[i]], file = paste0(path, "SlikkenvdHeenTrack", as.character(i), ".csv"))
+} 
+
+# Tracks where habituate area confinement took place
+for(i in seq_along(SlikkenvdHeenHabTracks)){
+  write_csv(SlikkenvdHeenHabTracks[[i]], file = paste0(path, "SlikkenvdHeenHabTrack", as.character(i), ".csv"))
+} 
 
 
 

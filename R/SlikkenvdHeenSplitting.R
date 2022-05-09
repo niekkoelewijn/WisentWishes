@@ -24,7 +24,7 @@ Track4 <- read_csv(paste0(GPSStep4Path, GPSStep4NadiaVec[2]))
 Track5 <- read_csv(paste0(GPSStep4Path, GPSStep4NadiaVec[3]))
 
 
-### I didn't recieve a specific logbook of the management interventions regarding
+### I didn't receive a specific logbook of the management interventions regarding
 ### the bison population at the Slikken vd Heen. I found out in a news paper
 ### that the population was released in the area the 17th of februari 2020
 ### and that the population was confined to a habituate area from the start

@@ -44,4 +44,31 @@ for(i in seq_along(GPSStep6Vec)){
 # Add names to list to understand what tibbles are from which tracks
 names(Step6Tracks) <- NameVec
 
-## All tracks of the Kraansvlak area have some points outside 
+
+## Create general function to adapt coordinates of a point in the dataset
+ReplacePoint <- function(GPStrack, time, new_x, new_y){
+  
+  # Make shure the track is arranged on time
+  UpdatedGPStrack <- GPStrack %>% 
+    arrange(time)
+  
+  # Get row of the input time, the time where I want to adapt the coordinates
+  RowNum <- which(
+    UpdatedGPStrack$time == as.POSIXct(strptime(time, 
+                                                format = "%Y-%m-%d %H:%M:%S", 
+                                                tz = "GMT"))
+    , arr.ind = TRUE)[1]
+  
+  # Replace current mu.x and mu.y with new, desired, coordinates
+  UpdatedGPStrack[RowNum, ]$mu.x <- new_x
+  UpdatedGPStrack[RowNum, ]$mu.y <- new_y
+  
+  # Return the updated GPS track
+  Return(UpdatedGPStrack)
+}
+
+
+
+
+
+

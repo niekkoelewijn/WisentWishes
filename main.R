@@ -42,4 +42,6 @@ source("~/WisentWishes/R/SlikkenvdHeenSplitting.R")
 # Step 6: Interpolation of tracks to get equal step sizes
 source("~/WisentWishes/R/Interpolating.R")
 
+# Step 7: Replace interpolated points that fall outside the study area
+source("~/WisentWishes/R/ReplacePoints.R")
 

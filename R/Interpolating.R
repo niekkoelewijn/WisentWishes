@@ -31,6 +31,7 @@ for(i in seq_along(GPSStep5Vec)){
 # Add names to list to understand what tibbles are from which tracks
 names(Step5Tracks) <- NameVec
 
+
 ## Create function to interpolate points in tracks
 InterpolateTracks <- function(GPSTrackList, NameVec){
   

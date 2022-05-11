@@ -82,22 +82,14 @@ for(i in seq_along(names(InterpolatedTrackList))){
 } 
 
 # Script to visualize an interpolation
-VeluweTrack15 <- InterpolatedTrackList$VeluweTrack15
-VeluweTrack15 <- as.tibble(VeluweTrack15)
-InterpolatedTrackSf <- st_as_sf(VeluweTrack15, coords = c("mu.x", "mu.y"))
-InterpolatedTrackSf$X <- st_coordinates(InterpolatedTrackSf)[,1]
-InterpolatedTrackSf$Y <- st_coordinates(InterpolatedTrackSf)[,2]
-plot(st_geometry(VeluweStudyAreaSfRDn))
-plot(st_geometry(InterpolatedTrackSf), add=T)
-
-
-
-
-
-
-
-
-
+#KraansvlakTrack4 <- InterpolatedTrackList$KraansvlakTrack4
+#KraansvlakTrack4 <- as.tibble(KraansvlakTrack4)
+#InterpolatedTrackSf <- st_as_sf(KraansvlakTrack4, coords = c("mu.x", "mu.y"))
+#InterpolatedTrackSf$X <- st_coordinates(InterpolatedTrackSf)[,1]
+#InterpolatedTrackSf$Y <- st_coordinates(InterpolatedTrackSf)[,2]
+#plot(st_geometry(TransformPolygon(KraansvlakStudyArea)))
+#plot(st_geometry(InterpolatedTrackSf), add=T)
+#hist(log(InterpolatedTrackSf$speed_in))
 
 
 

@@ -18,7 +18,7 @@ temp_fun(15000)
 
 # Tryout
 KraansvlakTrack1 <- InterpolatedTrackList$KraansvlakTrack1 %>% 
-  as.tibble() %>% 
+  as_tibble() %>% 
   drop_na(TimeNum) %>% 
   arrange(time_coded)
 
@@ -31,7 +31,7 @@ interpolated_temp_timestemp <- as.numeric(InterpolatedTrackList$KraansvlakTrack1
 temp_fun(as.numeric(InterpolatedTrackList$KraansvlakTrack1$time[219]))
 
 KraansvlakTrack1 <- InterpolatedTrackList$KraansvlakTrack1 %>%
-  as.tibble() %>% 
+  as_tibble() %>% 
   mutate(temp = ifelse(is.na(temp), temp_fun(as.numeric(time)), temp))
 
 tseq <- seq(from=min(x$t), to=max(x$t), length.out=100)

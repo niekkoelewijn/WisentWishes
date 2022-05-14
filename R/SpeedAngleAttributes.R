@@ -83,7 +83,7 @@ AddAttributes <- function(GPSfile){
     # Add attribute for time interval
     mutate(time_interval = time_coded - lag(time_coded)) %>% 
     
-    # Add attribute for time length
+    # Add attribute for step length
     mutate(step_length = distance(X, lag(X), Y, lag(Y)))
   
   return(as_tibble(ExpandedGPSfile))

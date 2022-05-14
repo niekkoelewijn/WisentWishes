@@ -396,6 +396,27 @@ Step6Tracks$MaashorstTrack4 <- ReplacePoint(Step6Tracks$MaashorstTrack4,
                                             new_x = 172328.79,
                                             new_y = 410970.10)
 
+# Replace the 3 interpolated trackpoints outside the study area of MaashorstTrack5
+Step6Tracks$MaashorstTrack5 <- ReplacePoint(Step6Tracks$MaashorstTrack5, 
+                                            time = "2017-04-17 16:00:00",
+                                            new_x = 171808.07,
+                                            new_y = 412712.08)
+
+Step6Tracks$MaashorstTrack5 <- ReplacePoint(Step6Tracks$MaashorstTrack5, 
+                                            time = "2017-04-20 09:00:00",
+                                            new_x = 172489.698,
+                                            new_y = 411117.317)
+
+Step6Tracks$MaashorstTrack5 <- ReplacePoint(Step6Tracks$MaashorstTrack5, 
+                                            time = "2017-05-21 22:00:00",
+                                            new_x = 172507.638,
+                                            new_y = 411519.505)
+
+Step6Tracks$MaashorstTrack5 <- ReplacePoint(Step6Tracks$MaashorstTrack5, 
+                                            time = "2017-05-26 11:00:00",
+                                            new_x = 172712.10,
+                                            new_y = 411300.53)
+
 # Replace the 8 interpolated trackpoints outside the study area of MaashorstTrack6
 Step6Tracks$MaashorstTrack6 <- ReplacePoint(Step6Tracks$MaashorstTrack6, 
                                             time = "2018-04-20 20:00:00",
@@ -872,9 +893,17 @@ Step6Tracks$VeluweTrack13 <- ReplacePoint(Step6Tracks$VeluweTrack13,
                                           new_y = 463966.04)
 
 Step6Tracks$VeluweTrack13 <- ReplacePoint(Step6Tracks$VeluweTrack13, 
+                                          time = "2020-08-23 13:00:00",
+                                          new_x = 185351.11,
+                                          new_y = 464191.64)
+
+Step6Tracks$VeluweTrack13 <- ReplacePoint(Step6Tracks$VeluweTrack13, 
                                           time = "2020-08-24 07:00:00",
                                           new_x = 184644.96,
                                           new_y = 464051.03)
+
+
+
 
 # Replace the 38 interpolated trackpoints outside the study area of VeluweTrack14
 Step6Tracks$VeluweTrack14 <- ReplacePoint(Step6Tracks$VeluweTrack14, 
@@ -1107,6 +1136,55 @@ Step6Tracks$VeluweTrack15 <- ReplacePoint(Step6Tracks$VeluweTrack15,
                                           time = "2022-03-22 06:34:05",
                                           new_x = 185336.4,
                                           new_y = 464130.5)
+
+
+## Veluwe Supplementary Feeding Habituate Track
+
+# Replace the 9 interpolated trackpoints outside the study area of VeluweSuppFedHabTrack1
+Step6Tracks$VeluweSuppFedHabTrack1 <- ReplacePoint(Step6Tracks$VeluweSuppFedHabTrack1, 
+                                                time = "2018-12-01 15:00:00",
+                                                new_x = 184150.32,
+                                                new_y = 464052.96)
+
+Step6Tracks$VeluweSuppFedHabTrack1 <- ReplacePoint(Step6Tracks$VeluweSuppFedHabTrack1, 
+                                                   time = "2018-12-09 21:00:00",
+                                                   new_x = 184161.363,
+                                                   new_y = 464067.674)
+
+Step6Tracks$VeluweSuppFedHabTrack1 <- ReplacePoint(Step6Tracks$VeluweSuppFedHabTrack1, 
+                                                   time = "2018-12-21 09:00:00",
+                                                   new_x = 184379.39,
+                                                   new_y = 463845.93)
+
+Step6Tracks$VeluweSuppFedHabTrack1 <- ReplacePoint(Step6Tracks$VeluweSuppFedHabTrack1, 
+                                                   time = "2018-12-22 02:00:00",
+                                                   new_x = 184136.96,
+                                                   new_y = 464048.07)
+
+Step6Tracks$VeluweSuppFedHabTrack1 <- ReplacePoint(Step6Tracks$VeluweSuppFedHabTrack1, 
+                                                   time = "2018-12-22 03:00:00",
+                                                   new_x = 184150.27,
+                                                   new_y = 464052.15)
+
+Step6Tracks$VeluweSuppFedHabTrack1 <- ReplacePoint(Step6Tracks$VeluweSuppFedHabTrack1, 
+                                                   time = "2018-12-24 19:00:00",
+                                                   new_x = 184478.176,
+                                                   new_y = 463971.005)
+
+Step6Tracks$VeluweSuppFedHabTrack1 <- ReplacePoint(Step6Tracks$VeluweSuppFedHabTrack1, 
+                                                   time = "2018-12-24 20:00:00",
+                                                   new_x = 184478.997,
+                                                   new_y = 463965.630)
+
+Step6Tracks$VeluweSuppFedHabTrack1 <- ReplacePoint(Step6Tracks$VeluweSuppFedHabTrack1, 
+                                                   time = "2018-12-25 19:00:00",
+                                                   new_x = 184497.04,
+                                                   new_y = 463919.82)
+
+Step6Tracks$VeluweSuppFedHabTrack1 <- ReplacePoint(Step6Tracks$VeluweSuppFedHabTrack1, 
+                                                   time = "2018-12-26 19:00:00",
+                                                   new_x = 184493.370,
+                                                   new_y = 463944.534)
 
 
 ## Veluwe Supplementary Feeding Tracks

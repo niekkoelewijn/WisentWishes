@@ -31,7 +31,7 @@ for(i in seq_along(GPSStep7Vec)){
 # Create list of files from step 7 directory
 Step7Tracks <- lst()
 for(i in seq_along(GPSStep7Vec)){
-  Step7Tracks[[i]] <- read_csv(file = paste0(GPSStep6Path, GPSStep7Vec[i]))
+  Step7Tracks[[i]] <- read_csv(file = paste0(GPSStep7Path, GPSStep7Vec[i]))
 }
 
 # Add names to list to understand what tibbles are from which tracks
@@ -80,14 +80,26 @@ TrackCleaning <- function(GPSTrackList, NameVec){
     
     # Remove "o" rows
     CleanedTrackList[[i]] <- CleanedTrackList[[i]] %>%
+      
+      # Get only the points on a 1 hour interval
       filter(locType == "p") %>% 
+      
+      # Sort on time
       arrange(time) %>% 
+      
+      # Get unique ID number to row
       rowid_to_column("PointID") %>%
+      
+      # Select subset of columns
       select(PointID, time, time_coded, mu.x, mu.y, temp, hdop, ID) %>% 
+      
+      # Rename columns
       rename(ID = PointID, TrackID = ID, X = mu.x, Y = mu.y) %>% 
+      
+      # recalculate time_coded
       mutate(time_coded = as.numeric(time))
     
-    # Edit GPS files in piped structure
+    # Add speed, angle, time interval and step length
     CleanedTrackList[[i]] <- CleanedTrackList[[i]] %>% 
       
       # Add attribute for speed in
@@ -105,7 +117,7 @@ TrackCleaning <- function(GPSTrackList, NameVec){
       # Add attribute for time interval
       mutate(time_interval = time_coded - lag(time_coded)) %>% 
       
-      # Add attribute for time length
+      # Add attribute for step length
       mutate(step_length = distance(X, lag(X), Y, lag(Y)))
   }
   
@@ -116,5 +128,19 @@ TrackCleaning <- function(GPSTrackList, NameVec){
 CleanedTrackList <- TrackCleaning(Step7Tracks, NameVec)
 
 
+## Write the elements of the lists to files
+
+# Create path to directory
+path <- "~/WisentWishes/MScThesisData/GPS location data/Step8Preprocess/"
+
+# Create directory
+if(!dir.exists(path)){
+  dir.create(path)
+}
+
+# Write elements of Interpolated Track list to file
+for(i in seq_along(names(CleanedTrackList))){
+  write_csv(CleanedTrackList[[i]], file = paste0(path, names(CleanedTrackList)[i], ".csv"))
+} 
 
 

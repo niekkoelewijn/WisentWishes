@@ -67,6 +67,7 @@ InterpolateTracks <- function(GPSTrackList, NameVec){
 
 InterpolatedTrackList <- InterpolateTracks(Step5Tracks, NameVec)
 
+
 ## Write the elements of the lists to files
 
 # Create path to directory
@@ -83,15 +84,15 @@ for(i in seq_along(names(InterpolatedTrackList))){
 } 
 
 # Script to visualize an interpolation
-#KraansvlakTrack4 <- InterpolatedTrackList$KraansvlakTrack4
-#KraansvlakTrack4 <- as.tibble(KraansvlakTrack4)
-#InterpolatedTrackSf <- st_as_sf(KraansvlakTrack4, coords = c("mu.x", "mu.y"))
+#VeluweSuppFedHabTrack1 <- CleanedTrackList$VeluweSuppFedHabTrack1
+#VeluweSuppFedHabTrack1 <- as.tibble(VeluweSuppFedHabTrack1)
+#InterpolatedTrackSf <- st_as_sf(VeluweSuppFedHabTrack1, coords = c("X", "Y"))
 #InterpolatedTrackSf$X <- st_coordinates(InterpolatedTrackSf)[,1]
 #InterpolatedTrackSf$Y <- st_coordinates(InterpolatedTrackSf)[,2]
-#plot(st_geometry(TransformPolygon(KraansvlakStudyArea)))
+#plot(st_geometry(TransformPolygon(VeluweHabituateArea)))
 #plot(st_geometry(InterpolatedTrackSf), add=T)
 #hist(log(InterpolatedTrackSf$speed_in))
-
+#summary(VeluweSuppFedHabTrack1)
 
 
 

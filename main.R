@@ -47,3 +47,6 @@ source("~/WisentWishes/R/Interpolating.R")
 # Step 7: Replace interpolated points that fall outside the study area
 source("~/WisentWishes/R/ReplacePoints.R")
 
+# Step 8: Finalize track preprocessing
+source("~/WisentWishes/R/TrackCleaning.R")
+

@@ -110,12 +110,58 @@ VeluweLandUse <- LandUseTIF %>%
   raster::crop(VeluweExtent) %>% 
   projectRaster(crs = crs(RDnewProj))
 
-# Remove the enormeous LandUseTIF from the global environment
+# Remove the enormous LandUseTIF from the global environment 
 remove(LandUseTIF)
 
 # Script to visualize result
 #plot(MaashorstLandUse)
 #plot(st_geometry(TransformPolygon(MaashorstStudyArea2016)), add = T)
+
+## Replace maize, potato and beets land use codes with the code of nature grass. 
+MaashorstLandUse[MaashorstLandUse %in% 2:4] <- 45
+
+
+## Mask of the rasters with the study areas and create frequency tables per landuse class
+
+# Kraansvlak
+KraansvlakStudyAreaSpRDnew <- spTransform(KraansvlakStudyArea, CRSobj = crs(KraansvlakLandUse))
+KraansvlakLandUseMask <- raster::mask(x = KraansvlakLandUse, mask = KraansvlakStudyAreaSpRDnew)
+KraansvlakLandUseFrequency <- freq(KraansvlakLandUseMask)
+
+# Maashorst 2016
+Maashorst2016StudyAreaSpRDnew <- spTransform(MaashorstStudyArea2016, CRSobj = crs(MaashorstLandUse))
+Maashorst2016LandUseMask <- raster::mask(x = MaashorstLandUse, mask = Maashorst2016StudyAreaSpRDnew)
+Maashorst2016LandUseFrequency <- freq(Maashorst2016LandUseMask)
+
+# Maashorst 2017-2021
+Maashorst20172021StudyAreaSpRDnew <- spTransform(MaashorstStudyArea20172021, CRSobj = crs(MaashorstLandUse))
+Maashorst20172021LandUseMask <- raster::mask(x = MaashorstLandUse, mask = Maashorst20172021StudyAreaSpRDnew)
+Maashorst20172021LandUseFrequency <- freq(Maashorst20172021LandUseMask)
+
+# Maashorst 2022
+Maashorst2022StudyAreaSpRDnew <- spTransform(MaashorstStudyArea2022, CRSobj = crs(MaashorstLandUse))
+Maashorst2022LandUseMask <- raster::mask(x = MaashorstLandUse, mask = Maashorst2022StudyAreaSpRDnew)
+Maashorst2022LandUseFrequency <- freq(Maashorst2022LandUseMask)
+
+# Slikken vd Heen habituate area
+SlikkenvdHeenHabituateAreaSpRDnew <- spTransform(SlikkenvdHeenHabituateArea, CRSobj = crs(SlikkenvdHeenLandUse))
+SlikkenvdHeenHabituateLandUseMask <- raster::mask(x = SlikkenvdHeenLandUse, mask = SlikkenvdHeenHabituateAreaSpRDnew)
+SlikkenvdHeenHabituateLandUseFrequency <- freq(SlikkenvdHeenHabituateLandUseMask)
+
+# Slikken vd Heen
+SlikkenvdHeenStudyAreaSpRDnew <- spTransform(SlikkenvdHeenStudyArea, CRSobj = crs(SlikkenvdHeenLandUse))
+SlikkenvdHeenLandUseMask <- raster::mask(x = SlikkenvdHeenLandUse, mask = SlikkenvdHeenStudyAreaSpRDnew)
+SlikkenvdHeenLandUseFrequency <- freq(SlikkenvdHeenLandUseMask)
+
+# Veluwe habituate area
+VeluweHabituateAreaSpRDnew <- spTransform(VeluweHabituateArea, CRSobj = crs(VeluweLandUse))
+VeluweHabituateLandUseMask <- raster::mask(x = VeluweLandUse, mask = VeluweHabituateAreaSpRDnew)
+VeluweHabituateLandUseFrequency <- freq(VeluweHabituateLandUseMask)
+
+# Veluwe
+VeluweStudyAreaSpRDnew <- spTransform(VeluweStudyArea, CRSobj = crs(VeluweLandUse))
+VeluweLandUseMask <- raster::mask(x = VeluweLandUse, mask = VeluweStudyAreaSpRDnew)
+VeluweLandUseFrequency <- freq(VeluweLandUseMask)
 
 
 ## Create a look up table that shows the meaning of the LGN2020 raster values
@@ -143,8 +189,7 @@ LUTLNG <- as_tibble(LUTLNG)
 names(LUTLNG) <- c("landuse_code", "Dutch_landuse_name")
 
 
-## Replace maize, potato and beets land use codes with the code of nature grass. 
-MaashorstLandUse[MaashorstLandUse %in% 2:4] <- 45
+
 
   
 ## Determine the class of each landuse code

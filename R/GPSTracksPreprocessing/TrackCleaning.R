@@ -94,7 +94,7 @@ TrackCleaning <- function(GPSTrackList, NameVec){
       select(PointID, time, time_coded, mu.x, mu.y, temp, hdop, ID) %>% 
       
       # Rename columns
-      rename(ID = PointID, TrackID = ID, X = mu.x, Y = mu.y) %>% 
+      rename(ID = PointID, track_ID = ID, X = mu.x, Y = mu.y) %>% 
       
       # recalculate time_coded
       mutate(time_coded = as.numeric(time))

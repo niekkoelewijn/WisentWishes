@@ -7,6 +7,7 @@
 
 # Install required packages
 if(!"rgdal" %in% rownames(installed.packages())){install.packages("rgdal")}
+if(!"rgeos" %in% rownames(installed.packages())){install.packages("rgeos")}
 if(!"sf" %in% rownames(installed.packages())){install.packages("sf")}
 if(!"raster" %in% rownames(installed.packages())){install.packages("raster")}
 if(!"atlastools" %in% rownames(installed.packages())){install.packages("atlastools")}
@@ -17,6 +18,7 @@ if(!"tools" %in% rownames(installed.packages())){install.packages("tools")}
 
 # Load required packages
 library(rgdal)
+library(rgeos)
 library(sf)
 library(raster)
 library(atlastools)

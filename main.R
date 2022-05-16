@@ -16,37 +16,48 @@
 ### PREPROSSESSING ###
 
 # Step 1: Cleaning input data
-source("~/WisentWishes/R/CleanInputdata.R")
+source("~/WisentWishes/R/GPSTracksPreprocessing/CleanInputdata.R")
 
 # Step 2: Spatial filtering of input data
-source("~/WisentWishes/R/SpatialFiltering.R")
+source("~/WisentWishes/R/GPSTracksPreprocessing/SpatialFiltering.R")
 
 # Step 3: Add speed / angle attributes
-source("~/WisentWishes/R/SpeedAngleAttributes.R")
+source("~/WisentWishes/R/GPSTracksPreprocessing/SpeedAngleAttributes.R")
 
 # Step 4: Temporal splitting
-source("~/WisentWishes/R/TemporalSplitting.R")
+source("~/WisentWishes/R/GPSTracksPreprocessing/TemporalSplitting.R")
 
 # Step 5a: Adapt Kraansvlak tracks based on logbook with interventions
-source("~/WisentWishes/R/KraansvlakSplitting.R")
+source("~/WisentWishes/R/GPSTracksPreprocessing/KraansvlakSplitting.R")
 
 # Step 5b: Adapt Veluwe tracks on logbook with interventions
-source("~/WisentWishes/R/VeluweSplitting.R")
+source("~/WisentWishes/R/GPSTracksPreprocessing/VeluweSplitting.R")
 
 # Step 5c: Adapt Maashorst tracks on logbook with interventions
-source("~/WisentWishes/R/MaashorstSplitting.R")
+source("~/WisentWishes/R/GPSTracksPreprocessing/MaashorstSplitting.R")
 
 # Step 5d: Adapt Slikken vd Heen tracks on logbook with interventions
-source("~/WisentWishes/R/SlikkenvdHeenSplitting.R")
+source("~/WisentWishes/R/GPSTracksPreprocessing/SlikkenvdHeenSplitting.R")
 
 # Step 6: Interpolation of tracks to get equal step sizes
 # Fear not when this step returns an error, it mostly works 
 # after 3-4 tries.
-source("~/WisentWishes/R/Interpolating.R")
+source("~/WisentWishes/R/GPSTracksPreprocessing/Interpolating.R")
 
 # Step 7: Replace interpolated points that fall outside the study area
-source("~/WisentWishes/R/ReplacePoints.R")
+source("~/WisentWishes/R/GPSTracksPreprocessing/ReplacePoints.R")
 
 # Step 8: Finalize track preprocessing
-source("~/WisentWishes/R/TrackCleaning.R")
+source("~/WisentWishes/R/GPSTracksPreprocessing/TrackCleaning.R")
 
+
+### ENVIRONMENTAL VARIABLES ###
+
+# Step 1: Land use map preprocessing
+source("~/WisentWishes/R/EnvironmentalVariables/LandusePreprocessing.R")
+
+# Step 2: Adding land use class to points of GPS tracks
+source("~/WisentWishes/R/EnvironmentalVariables/AddLanduseToPoint.R")
+
+# Step 3: Adding distance attributes to points of GPS tracks
+source("~/WisentWishes/R/EnvironmentalVariables/AddDistanceToPoint.R")

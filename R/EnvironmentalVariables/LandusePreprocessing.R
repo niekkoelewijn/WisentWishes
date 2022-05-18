@@ -137,71 +137,74 @@ DutchLandUseClass <- c("agrarisch gras", "maïs", "aardappelen", "bieten", "gran
                       "struikvegetatie in hoogveengebied (laag)", "struikvegetatie in moerasgebied (laag)",
                       "overige struikvegetatie (laag)", "struikvegetatie in hoogveengebied (hoog)", 
                       "struikvegetatie in moerasgebied (hoog)", "overige struikvegetatie (hoog)")
-LUTLNG <- data.frame(value, DutchLandUseClass)
-LUTLNG <- as_tibble(LUTLNG)
-names(LUTLNG) <- c("landuse_code", "Dutch_landuse_name")
+LUTLGN <- data.frame(value, DutchLandUseClass)
+LUTLGN <- as_tibble(LUTLGN)
+names(LUTLGN) <- c("landuse_code", "Dutch_landuse_name")
 
   
 ## Determine the class of each landuse code
 
 # Create landuse classes
-LUTLNG <- LUTLNG %>% 
+LUTLGN <- LUTLGN %>% 
   
-  # Create new landuse class column and add it to LUTLNG
+  # Create new landuse class column and add it to LUTLGN
   mutate(landuse_class = NA)
 
 # Grassland
 grasscodes <- c(1, 28, 32, 45, 46, 47)
-LUTLNG[LUTLNG$landuse_code %in% grasscodes, ]$landuse_class = "grassland"
+LUTLGN[LUTLGN$landuse_code %in% grasscodes, ]$landuse_class = "grassland"
 
 # Arable land
 arablelandcodes <- c(2, 3, 4, 5, 6, 8, 9, 10, 61, 62)
-LUTLNG[LUTLNG$landuse_code %in% arablelandcodes, ]$landuse_class = "arable land"
+LUTLGN[LUTLGN$landuse_code %in% arablelandcodes, ]$landuse_class = "arable land"
 
 # Broad-leaved forest
 broad_leaved_codes <- c(11)
-LUTLNG[LUTLNG$landuse_code %in% broad_leaved_codes, ]$landuse_class = "broad-leaved forest"
+LUTLGN[LUTLGN$landuse_code %in% broad_leaved_codes, ]$landuse_class = "broad-leaved forest"
 
 # Coniferous forest
 coniferous_codes <- c(12)
-LUTLNG[LUTLNG$landuse_code %in% coniferous_codes, ]$landuse_class = "coniferous forest"
+LUTLGN[LUTLGN$landuse_code %in% coniferous_codes, ]$landuse_class = "coniferous forest"
 
 # Fresh water
 fresh_water_codes <- c(16)
-LUTLNG[LUTLNG$landuse_code %in% fresh_water_codes, ]$landuse_class = "fresh water"
+LUTLGN[LUTLGN$landuse_code %in% fresh_water_codes, ]$landuse_class = "fresh water"
 
 # Salt water
 salt_water_codes <- c(17)
-LUTLNG[LUTLNG$landuse_code %in% salt_water_codes, ]$landuse_class = "salt water"
+LUTLGN[LUTLGN$landuse_code %in% salt_water_codes, ]$landuse_class = "salt water"
 
 # Build-up area
 build_up_codes <- c(18, 19, 20, 22, 23, 24, 26)
-LUTLNG[LUTLNG$landuse_code %in% build_up_codes, ]$landuse_class = "build-up area"
+LUTLGN[LUTLGN$landuse_code %in% build_up_codes, ]$landuse_class = "build-up area"
 
 # Roads
 road_codes <- c(25)
-LUTLNG[LUTLNG$landuse_code %in% road_codes, ]$landuse_class = "road"
+LUTLGN[LUTLGN$landuse_code %in% road_codes, ]$landuse_class = "road"
 
 # Swamp
 swamp_codes <- c(30, 39, 40, 41, 42, 43, 321, 322, 331, 332)
-LUTLNG[LUTLNG$landuse_code %in% swamp_codes, ]$landuse_class = "swamp"
+LUTLGN[LUTLGN$landuse_code %in% swamp_codes, ]$landuse_class = "swamp"
 
 # Bare soil
 bare_soil_codes <- c(27, 31, 35)
-LUTLNG[LUTLNG$landuse_code %in% bare_soil_codes, ]$landuse_class = "bare soil"
+LUTLGN[LUTLGN$landuse_code %in% bare_soil_codes, ]$landuse_class = "bare soil"
 
 # Heather
 heather_codes <- c(34, 36)
-LUTLNG[LUTLNG$landuse_code %in% heather_codes, ]$landuse_class = "heathland"
+LUTLGN[LUTLGN$landuse_code %in% heather_codes, ]$landuse_class = "heathland"
 
 # Grassy heather
 grassy_heather_codes <- c(37, 38)
-LUTLNG[LUTLNG$landuse_code %in% grassy_heather_codes, ]$landuse_class = "grassy heathland"
+LUTLGN[LUTLGN$landuse_code %in% grassy_heather_codes, ]$landuse_class = "grassy heathland"
 
 # Shrubland
 shrubland_codes <- c(33, 323, 333)
-LUTLNG[LUTLNG$landuse_code %in% shrubland_codes, ]$landuse_class = "shrubland"
+LUTLGN[LUTLGN$landuse_code %in% shrubland_codes, ]$landuse_class = "shrubland"
 
+# Add landuse class integer code to LUTLGN
+LUTLGN <- LUTLGN %>%
+  mutate(landuse_class_code = as.numeric(factor(LUTLGN$landuse_class, levels=unique(LUTLGN$landuse_class))))
 
 ## Adapt landuse code of tifs to the user defined landuse classes
 
@@ -227,7 +230,7 @@ UpdateClasses <- function(LandUseList, LookUpTable){
 }
 
 # Call UpdateClasses
-LandUseList <- UpdateClasses(LandUseList, LUTLNG)
+LandUseList <- UpdateClasses(LandUseList, LUTLGN)
 
 # Replace arable land use codes with the code of nature grass for the Maashorst
 LandUseList$MaashorstLandUse[LandUseList$MaashorstLandUse == 2] <- 1

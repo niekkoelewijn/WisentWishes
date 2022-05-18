@@ -30,55 +30,162 @@ for(i in seq_along(GPSPreprocessedVec)){
 # Add names to list to understand what tibbles are from which tracks
 names(PreprocessedTracks) <- NameVec
 
+# Adapt LUT to current land use maps
+LUTLanduseClasses <- LUTLGN %>% 
+  select(landuse_class, landuse_class_code) %>% 
+  rename(landuse_code = landuse_class_code) %>% 
+  distinct()
 
 ## Create function to add landuse attribute to tracks
-AddLandUse <- function(GPSTrackList, LanduseMapList){
-  
-  # Make result list
-  LandUseTrackList <- list()
+AddLanduse <- function(GPSTrackList, LanduseMapList){
   
   # Loop over elements of GPSTrackList
   for(i in seq_along(GPSTrackList)){
     
     # The first 4 tracks are the Kraansvlak tracks
-    if(i >= 1 & i <= 4){
+    if(i %in% 1:4){
        
       # Make the tibble a Spatial point class
       coordinates(GPSTrackList[[i]]) <- c("X", "Y")
       
       # Extract values from Kraansvlak landuse map
-      LandUsePerRow <- raster::extract(LandUseMaskList$Kraansvlak, GPSTrackList[[i]])
+      LandUsePerRow <- raster::extract(MaskedList$Kraansvlak, GPSTrackList[[i]])
       
       # Add the landuse class as an attribute to the point dataset
       GPSTrackList[[i]] <- GPSTrackList[[i]] %>%
         as_tibble() %>% 
-        mutate(landuse_class = LandUsePerRow) %>% 
-        mutate(ifelse(landuse_class == 46, 1, landuse_class)) %>% 
-        mutate(ifelse(landuse_class == 47, 1, landuse_class)) %>% 
-        mutate(ifelse(landuse_class == 332, 10, landuse_class))
-        
+        mutate(landuse_code = LandUsePerRow) %>% 
+        inner_join(LUTLanduseClasses, by = "landuse_code")
+      
+    }
+    # Track 5 and 8 are Maashorst 2016 tracks
+    else if(i %in% c(5,8)){
+      
+      # Make the tibble a Spatial point class
+      coordinates(GPSTrackList[[i]]) <- c("X", "Y")
+      
+      # Extract values from Maashorst 2016 landuse map
+      LandUsePerRow <- raster::extract(MaskedList$Maashorst2016, GPSTrackList[[i]])
+      
+      # Add the landuse class as an attribute to the point dataset
+      GPSTrackList[[i]] <- GPSTrackList[[i]] %>%
+        as_tibble() %>% 
+        mutate(landuse_code = LandUsePerRow) %>% 
+        inner_join(LUTLanduseClasses, by = "landuse_code")
+    }
+    # Track 6 is a Maashorst 2022 track
+    else if(i %in% c(6)){
+      
+      # Make the tibble a Spatial point class
+      coordinates(GPSTrackList[[i]]) <- c("X", "Y")
+      
+      # Extract values from Maashorst 2016 landuse map
+      LandUsePerRow <- raster::extract(MaskedList$Maashorst2022, GPSTrackList[[i]])
+      
+      # Add the landuse class as an attribute to the point dataset
+      GPSTrackList[[i]] <- GPSTrackList[[i]] %>%
+        as_tibble() %>% 
+        mutate(landuse_code = LandUsePerRow) %>% 
+        inner_join(LUTLanduseClasses, by = "landuse_code")
+    }
+    # Track 7 and 9:15 are Maashorst 2017 - 2021 tracks
+    else if(i %in% c(7, 9:15)){
+      
+      # Make the tibble a Spatial point class
+      coordinates(GPSTrackList[[i]]) <- c("X", "Y")
+      
+      # Extract values from Maashorst 2016 landuse map
+      LandUsePerRow <- raster::extract(MaskedList$Maashorst20172021, GPSTrackList[[i]])
+      
+      # Add the landuse class as an attribute to the point dataset
+      GPSTrackList[[i]] <- GPSTrackList[[i]] %>%
+        as_tibble() %>% 
+        mutate(landuse_code = LandUsePerRow) %>% 
+        inner_join(LUTLanduseClasses, by = "landuse_code")
+    }
+    # Track 16 - 19 are Slikken vd Heen habituate tracks
+    else if(i %in% c(16:19)){
+      
+      # Make the tibble a Spatial point class
+      coordinates(GPSTrackList[[i]]) <- c("X", "Y")
+      
+      # Extract values from Maashorst 2016 landuse map
+      LandUsePerRow <- raster::extract(MaskedList$SlikkenvdHeenHabituate, GPSTrackList[[i]])
+      
+      # Add the landuse class as an attribute to the point dataset
+      GPSTrackList[[i]] <- GPSTrackList[[i]] %>%
+        as_tibble() %>% 
+        mutate(landuse_code = LandUsePerRow) %>% 
+        inner_join(LUTLanduseClasses, by = "landuse_code")
+    }
+    # Track 20 - 22 are Slikken vd Heen tracks
+    else if(i %in% c(20:22)){
+      
+      # Make the tibble a Spatial point class
+      coordinates(GPSTrackList[[i]]) <- c("X", "Y")
+      
+      # Extract values from Maashorst 2016 landuse map
+      LandUsePerRow <- raster::extract(MaskedList$SlikkenvdHeen, GPSTrackList[[i]])
+      
+      # Add the landuse class as an attribute to the point dataset
+      GPSTrackList[[i]] <- GPSTrackList[[i]] %>%
+        as_tibble() %>% 
+        mutate(landuse_code = LandUsePerRow) %>% 
+        inner_join(LUTLanduseClasses, by = "landuse_code")
+    }
+    # Track 23 - 27 are Veluwe habituate tracks
+    else if(i %in% c(23:27)){
+      
+      # Make the tibble a Spatial point class
+      coordinates(GPSTrackList[[i]]) <- c("X", "Y")
+      
+      # Extract values from Maashorst 2016 landuse map
+      LandUsePerRow <- raster::extract(MaskedList$VeluweHabituate, GPSTrackList[[i]])
+      
+      # Add the landuse class as an attribute to the point dataset
+      GPSTrackList[[i]] <- GPSTrackList[[i]] %>%
+        as_tibble() %>% 
+        mutate(landuse_code = LandUsePerRow) %>% 
+        inner_join(LUTLanduseClasses, by = "landuse_code")
+    }
+    # Track 28 - 47 are Veluwe tracks
+    else if(i %in% c(28:47)){
+      
+      # Make the tibble a Spatial point class
+      coordinates(GPSTrackList[[i]]) <- c("X", "Y")
+      
+      # Extract values from Maashorst 2016 landuse map
+      LandUsePerRow <- raster::extract(MaskedList$VeluweHabituate, GPSTrackList[[i]])
+      
+      # Add the landuse class as an attribute to the point dataset
+      GPSTrackList[[i]] <- GPSTrackList[[i]] %>%
+        as_tibble() %>% 
+        mutate(landuse_code = LandUsePerRow) %>% 
+        inner_join(LUTLanduseClasses, by = "landuse_code")
     }
   }
+  
+  # Return track list
+  return(GPSTrackList)
 }
+
+# Call AddLanduse
+LanduseTracks <- AddLanduse(PreprocessedTracks, MaskedList)
+
+coordinates(PreprocessedTracks[[9]]) <- c("X", "Y")
+plot(PreprocessedTracks[[7]])
+plot(Maashorst2022StudyAreaSpRDnew, add = T)
 
 TryOut <- PreprocessedTracks$KraansvlakTrack1
   
 coordinates(TryOut) <- c("X", "Y")
-
-test <- raster::extract(LandUseMaskList$Kraansvlak, TryOut)
-
-EndTry <- TryOut %>%
-  as_tibble() %>% 
-  mutate(landuse_class = test) %>% 
-  if(landuse_class == 46){mutate(landuse_class = 1)} %>% 
-  if(landuse_class == 47){mutate(landuse_class = 1)} %>% 
-  if(landuse_class == 332){mutate(landuse_class = 10)}
-
-EndTry$landuse_class
+class(TryOut)
+test <- raster::extract(MaskedList$Kraansvlak, TryOut)
 
 EndTry <- TryOut %>%
   as_tibble() %>% 
-  mutate(landuse_class = test) 
+  mutate(landuse_code = test) %>% 
+  inner_join(LUTLanduseClasses, by = "landuse_code")
 
 
 

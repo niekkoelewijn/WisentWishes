@@ -14,8 +14,8 @@
 # Paths to Veluwe tracks
 setwd("~/WisentWishes")
 GPSStep4bPath <- "~/WisentWishes/MScThesisData/GPS location data/Step4Preprocess/"
-GPSStep4bVec <- list.files(path = GPSStep4Path, pattern = regex("^Veluwe"))
-GPSStep4SharaVec <- list.files(path = GPSStep4Path, pattern = regex("^Shara"))
+GPSStep4bVec <- list.files(path = GPSStep4bPath, pattern = regex("^Veluwe"))
+GPSStep4SharaVec <- list.files(path = GPSStep4bPath, pattern = regex("^Shara"))
 
 # Load GPS tracks of the Veluwe as tibbles
 Track1 <- read_csv(paste0(GPSStep4bPath, GPSStep4bVec[1]))

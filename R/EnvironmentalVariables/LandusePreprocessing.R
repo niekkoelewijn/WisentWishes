@@ -113,59 +113,12 @@ VeluweLandUse <- LandUseTIF %>%
 # Remove the enormous LandUseTIF from the global environment 
 remove(LandUseTIF)
 
-# Script to visualize result
-#plot(MaashorstLandUse)
-#plot(st_geometry(TransformPolygon(MaashorstStudyArea2016)), add = T)
-
-## Replace maize, potato and beets land use codes with the code of nature grass. 
-MaashorstLandUse[MaashorstLandUse %in% 2:4] <- 45
-
-
-## Mask of the rasters with the study areas and create frequency tables per landuse class
-
-# Kraansvlak
-KraansvlakStudyAreaSpRDnew <- spTransform(KraansvlakStudyArea, CRSobj = crs(KraansvlakLandUse))
-KraansvlakLandUseMask <- raster::mask(x = KraansvlakLandUse, mask = KraansvlakStudyAreaSpRDnew)
-KraansvlakLandUseFrequency <- freq(KraansvlakLandUseMask)
-
-# Maashorst 2016
-Maashorst2016StudyAreaSpRDnew <- spTransform(MaashorstStudyArea2016, CRSobj = crs(MaashorstLandUse))
-Maashorst2016LandUseMask <- raster::mask(x = MaashorstLandUse, mask = Maashorst2016StudyAreaSpRDnew)
-Maashorst2016LandUseFrequency <- freq(Maashorst2016LandUseMask)
-
-# Maashorst 2017-2021
-Maashorst20172021StudyAreaSpRDnew <- spTransform(MaashorstStudyArea20172021, CRSobj = crs(MaashorstLandUse))
-Maashorst20172021LandUseMask <- raster::mask(x = MaashorstLandUse, mask = Maashorst20172021StudyAreaSpRDnew)
-Maashorst20172021LandUseFrequency <- freq(Maashorst20172021LandUseMask)
-
-# Maashorst 2022
-Maashorst2022StudyAreaSpRDnew <- spTransform(MaashorstStudyArea2022, CRSobj = crs(MaashorstLandUse))
-Maashorst2022LandUseMask <- raster::mask(x = MaashorstLandUse, mask = Maashorst2022StudyAreaSpRDnew)
-Maashorst2022LandUseFrequency <- freq(Maashorst2022LandUseMask)
-
-# Slikken vd Heen habituate area
-SlikkenvdHeenHabituateAreaSpRDnew <- spTransform(SlikkenvdHeenHabituateArea, CRSobj = crs(SlikkenvdHeenLandUse))
-SlikkenvdHeenHabituateLandUseMask <- raster::mask(x = SlikkenvdHeenLandUse, mask = SlikkenvdHeenHabituateAreaSpRDnew)
-SlikkenvdHeenHabituateLandUseFrequency <- freq(SlikkenvdHeenHabituateLandUseMask)
-
-# Slikken vd Heen
-SlikkenvdHeenStudyAreaSpRDnew <- spTransform(SlikkenvdHeenStudyArea, CRSobj = crs(SlikkenvdHeenLandUse))
-SlikkenvdHeenLandUseMask <- raster::mask(x = SlikkenvdHeenLandUse, mask = SlikkenvdHeenStudyAreaSpRDnew)
-SlikkenvdHeenLandUseFrequency <- freq(SlikkenvdHeenLandUseMask)
-
-# Veluwe habituate area
-VeluweHabituateAreaSpRDnew <- spTransform(VeluweHabituateArea, CRSobj = crs(VeluweLandUse))
-VeluweHabituateLandUseMask <- raster::mask(x = VeluweLandUse, mask = VeluweHabituateAreaSpRDnew)
-VeluweHabituateLandUseFrequency <- freq(VeluweHabituateLandUseMask)
-
-# Veluwe
-VeluweStudyAreaSpRDnew <- spTransform(VeluweStudyArea, CRSobj = crs(VeluweLandUse))
-VeluweLandUseMask <- raster::mask(x = VeluweLandUse, mask = VeluweStudyAreaSpRDnew)
-VeluweLandUseFrequency <- freq(VeluweLandUseMask)
+# List the land use maps of the study areas
+LandUseList = list(KraansvlakLandUse, MaashorstLandUse, SlikkenvdHeenLandUse, VeluweLandUse)
+names(LandUseList) <- c("KraansvlakLandUse", "MaashorstLandUse", "SlikkenvdHeenLandUse", "VeluweLandUse")
 
 
 ## Create a look up table that shows the meaning of the LGN2020 raster values
-
 value <- c(1:6, 8:12, 16:20, 22:28, 30:43, 45:47, 61, 62, 321:323, 331:333)
 DutchLandUseClass <- c("agrarisch gras", "maïs", "aardappelen", "bieten", "granen",
                       "overige landbouwgewassen", "glastuinbouw", "boomgaarden",
@@ -187,9 +140,6 @@ DutchLandUseClass <- c("agrarisch gras", "maïs", "aardappelen", "bieten", "gran
 LUTLNG <- data.frame(value, DutchLandUseClass)
 LUTLNG <- as_tibble(LUTLNG)
 names(LUTLNG) <- c("landuse_code", "Dutch_landuse_name")
-
-
-
 
   
 ## Determine the class of each landuse code
@@ -253,7 +203,87 @@ shrubland_codes <- c(33, 323, 333)
 LUTLNG[LUTLNG$landuse_code %in% shrubland_codes, ]$landuse_class = "shrubland"
 
 
+## Adapt landuse code of tifs to the user defined landuse classes
+
+# Create general function for the adaptations
+UpdateClasses <- function(LandUseList, LookUpTable){
+  
+  # Loop over elements of land use list
+  for(i in seq_along(LandUseList)){
+    
+    # Create numeric representation of the factor categories in the look up table
+    NewClasses <- factor(LookUpTable$landuse_class, levels=unique(LookUpTable$landuse_class)) %>% 
+                    as.integer()
+    
+    # Get values of the land use class and translate them to factors
+    LandUseList[[i]][] <- as.integer(factor(LandUseList[[i]][], levels=unique(LookUpTable$landuse_code)))
+    
+    # Reclassify the values of the land use raster
+    LandUseList[[i]][] <- NewClasses[LandUseList[[i]][]]
+  }
+  
+  # Return the adapted land use raster
+  return(LandUseList)
+}
+
+# Call UpdateClasses
+LandUseList <- UpdateClasses(LandUseList, LUTLNG)
+
+# Replace arable land use codes with the code of nature grass for the Maashorst
+LandUseList$MaashorstLandUse[LandUseList$MaashorstLandUse == 2] <- 1
 
 
+## Mask of the rasters with the study areas and create frequency tables per landuse class
+
+# Create general function
+MaskLandUse <- function(LandUseList, StudyAreaList){
+  
+  # Create masked landuse list
+  MaskedList <- list()
+  
+  # Loop over elements in study area vector
+  for(i in seq_along(StudyAreaList)){
+    
+    # Get Spatial Polygon feature in RDnew of study area
+    StudyAreaList[[i]] <- spTransform(StudyAreaList[[i]], CRSobj = crs(LandUseList$KraansvlakLandUse))
+    
+    # Mask the landuse maps to the study areas 
+    if(i == 1){
+      MaskedList[[i]] <- raster::mask(x = LandUseList$KraansvlakLandUse, mask = StudyAreaList[[i]])
+    }else if(i %in% 2:4){
+      MaskedList[[i]] <- raster::mask(x = LandUseList$MaashorstLandUse, mask = StudyAreaList[[i]])
+    }else if(i %in% 5:6){
+      MaskedList[[i]] <- raster::mask(x = LandUseList$SlikkenvdHeenLandUse, mask = StudyAreaList[[i]])
+    }else{
+      MaskedList[[i]] <- raster::mask(x = LandUseList$VeluweLandUse, mask = StudyAreaList[[i]])
+    }
+  }
+  
+  # Return the list with masked land use maps
+  return(MaskedList)
+}
+
+# Create study area vector
+StudyAreaList <-  c(KraansvlakStudyArea, MaashorstStudyArea2016, MaashorstStudyArea20172021,
+                   MaashorstStudyArea2022, SlikkenvdHeenHabituateArea,
+                   SlikkenvdHeenStudyArea, VeluweHabituateArea, VeluweStudyArea)
+
+# Call MaskLandUse function
+MaskedList <- MaskLandUse(LandUseList, StudyAreaList)
+
+# Name MaskedLandUse list elements
+names(MaskedList) <- c("Kraansvlak", "Maashorst2016", "Maashorst20172021",
+                           "Maashorst2022", "SlikkenvdHeenHabituate",
+                           "SlikkenvdHeen", "VeluweHabituate", "Veluwe")
 
 
+## Write elements of MaskedList to files
+
+# Create path
+path <- "~/WisentWishes/MScThesisData/EnvironmentalVariables/LGN2020/"
+
+# Loop to write files
+for(i in seq_along(MaskedList)){
+  writeRaster(MaskedList[[i]], filename = paste0(path, names(MaskedList)[i],".tfw"), 
+              options = c("TFW=YES"), overwrite = T)
+}

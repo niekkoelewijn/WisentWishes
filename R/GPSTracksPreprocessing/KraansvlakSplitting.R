@@ -13,7 +13,7 @@
 # Paths to Kraansvlak tracks
 setwd("~/WisentWishes")
 GPSStep4aPath <- "~/WisentWishes/MScThesisData/GPS location data/Step4Preprocess/"
-GPSStep4aVec <- list.files(path = GPSStep4Path, pattern = regex("^Kraansvlak."))
+GPSStep4aVec <- list.files(path = GPSStep4aPath, pattern = regex("^Kraansvlak."))
 
 # Load GPS tracks of the Kraansvlak as tibbles
 Track1 <- read_csv(paste0(GPSStep4aPath, GPSStep4aVec[1]))

@@ -155,7 +155,7 @@ AddLanduse <- function(GPSTrackList, LanduseMapList){
       coordinates(GPSTrackList[[i]]) <- c("X", "Y")
       
       # Extract values from Maashorst 2016 landuse map
-      LandUsePerRow <- raster::extract(MaskedList$VeluweHabituate, GPSTrackList[[i]])
+      LandUsePerRow <- raster::extract(MaskedList$Veluwe, GPSTrackList[[i]])
       
       # Add the landuse class as an attribute to the point dataset
       GPSTrackList[[i]] <- GPSTrackList[[i]] %>%
@@ -172,23 +172,24 @@ AddLanduse <- function(GPSTrackList, LanduseMapList){
 # Call AddLanduse
 LanduseTracks <- AddLanduse(PreprocessedTracks, MaskedList)
 
-coordinates(PreprocessedTracks[[9]]) <- c("X", "Y")
-plot(PreprocessedTracks[[7]])
-plot(Maashorst2022StudyAreaSpRDnew, add = T)
 
-TryOut <- PreprocessedTracks$KraansvlakTrack1
-  
-coordinates(TryOut) <- c("X", "Y")
-class(TryOut)
-test <- raster::extract(MaskedList$Kraansvlak, TryOut)
+## Write output to file
 
-EndTry <- TryOut %>%
-  as_tibble() %>% 
-  mutate(landuse_code = test) %>% 
-  inner_join(LUTLanduseClasses, by = "landuse_code")
+# Create path
+path <- "~/WisentWishes/MScThesisData/GPS location data/Step1EV/"
 
+# Create directory
+if(!dir.exists(path)){
+  dir.create(path)
+}
 
-
+# Write elements of Landuse Tracks list to file
+for(i in seq_along(names(LanduseTracks))){
+  write_csv(LanduseTracks[[i]], file = paste0(path, names(LanduseTracks)[i], ".csv"))
+} 
 
 
+
+coordinates(PreprocessedTracks$VeluweTrack13) <- c("X", "Y")
+plot(PreprocessedTracks$VeluweTrack11)
 

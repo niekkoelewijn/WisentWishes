@@ -138,7 +138,7 @@ if(!dir.exists(path)){
   dir.create(path)
 }
 
-# Write elements of Interpolated Track list to file
+# Write elements of Cleaned Track List to file
 for(i in seq_along(names(CleanedTrackList))){
   write_csv(CleanedTrackList[[i]], file = paste0(path, names(CleanedTrackList)[i], ".csv"))
 } 

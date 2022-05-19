@@ -158,9 +158,9 @@ LUTLGN[LUTLGN$landuse_code %in% grasscodes, ]$landuse_class = "grassland"
 arablelandcodes <- c(2, 3, 4, 5, 6, 8, 9, 10, 61, 62)
 LUTLGN[LUTLGN$landuse_code %in% arablelandcodes, ]$landuse_class = "arable land"
 
-# Broad-leaved forest
-broad_leaved_codes <- c(11)
-LUTLGN[LUTLGN$landuse_code %in% broad_leaved_codes, ]$landuse_class = "broad-leaved forest"
+# Deciduous forest 
+deciduous_codes <- c(11)
+LUTLGN[LUTLGN$landuse_code %in% deciduous_codes, ]$landuse_class = "deciduous forest"
 
 # Coniferous forest
 coniferous_codes <- c(12)

@@ -7,3 +7,60 @@
 
 ### Script to calculate Jacob's index for habitat preference under different
 ### conditions
+
+### The formula to calculate the index is D = (r - p)/(r + p – 2rp) in which 
+### D is a value between -1 and 1 indicating the habitat preference, r is the 
+### proportion of habitat used and p is the proportion of habitat available.
+
+
+## Determining p for the different habitat types
+
+# Create general funcion to determine p per habitat type per study area
+getP <- function(StudyAreaList){
+  
+  # Create result table
+  StudyAreas <- names(StudyAreaList)
+  LanduseClasses <- LUTLanduseClasses$landuse_class
+  ResultPdf <- data.frame(matrix(NA, nrow = length(StudyAreas), ncol = length(LanduseClasses)+1))
+  names(ResultPdf) <- c("Study area", LanduseClasses)
+  ResultP <- as_tibble(ResultPdf)
+  ResultP[,1] <- StudyAreas
+  
+  # Iterate over elements of study area list
+  for(i in seq_along(StudyAreaList)){
+    
+    ## Determine total number of cells in the study area
+    
+    # Frequency table per class
+    FreqPerClass <- freq(StudyAreaList[[i]])
+    
+    # Sum of the count per class, without the NA values 
+    TotalCells <- sum(FreqPerClass[,2]) - FreqPerClass[,2][nrow(FreqPerClass)]
+    
+    # Vector with the landuse class codes
+    classes <- LUTLanduseClasses$landuse_code
+    
+    # Create vector of proportion per landuse class for this for study area i
+    ProportionPerClass <- c()
+    
+    # Fill vector with proportions per landuse class with data
+    for(j in seq_along(classes)){
+      if(j %in% FreqPerClass[,1]){
+        ProportionPerClass[j] <- FreqPerClass[,2][which(FreqPerClass[,1] == j)] / TotalCells
+      }else{
+      ProportionPerClass[j] <- 0
+      }
+    }
+    
+    # Fill in the proportion per habitat class in the result table
+    for(k in 2:14){
+      ResultP[i,][k] <- ProportionPerClass[k-1]
+    }
+  }
+  return(ResultP)
+}
+
+# Call getP
+ProportionPerClass <- getP(MaskedList)
+
+

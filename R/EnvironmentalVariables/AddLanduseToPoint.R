@@ -185,11 +185,10 @@ if(!dir.exists(path)){
 
 # Write elements of Landuse Tracks list to file
 for(i in seq_along(names(LanduseTracks))){
-  write_csv(LanduseTracks[[i]], file = paste0(path, names(LanduseTracks)[i], ".csv"))
+  write_csv(LanduseTracks[[i]], file = paste0(path, names(PreprocessedTracks)[i], ".csv"))
 } 
 
 
 
-coordinates(PreprocessedTracks$VeluweTrack13) <- c("X", "Y")
-plot(PreprocessedTracks$VeluweTrack11)
+
 

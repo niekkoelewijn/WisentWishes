@@ -6,16 +6,6 @@
 # Year: 2022
 
 ### Script to add additional date variables and weather statistics to the tracks
-date <- as.Date(LanduseTracks$VeluweTrack9$time_of_fix_decoded, "%d/%m/%Y")
-weekday <-  weekdays(LanduseTracks$VeluweTrack9$time, abbreviate = F)
-
-
-
-my_seasons <- time2season(LanduseTracks$VeluweTrack9$time,                # Convert dates to seasons
-                          out.fmt = "seasons")
-my_seasons                                         # Print seasons
-# [1] "autumm" "spring" "winter" "winter" "summer" "autumm"
-
 
 ## Load GPS tracks from previous step
 
@@ -114,7 +104,8 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
   # Iterate over elements of WeatherDataList
   for(i in seq_along(WeatherDataList)){
     
-    # Add date attribute to elements of WeatherDataList
+    # Add date attribute to elements of WeatherDataList, and carry out some 
+    # additional data preprocessing
     WeatherDataList[[i]] <- WeatherDataList[[i]] %>% 
       
       # Reclassify YYYYMMDD to a character
@@ -191,39 +182,63 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
     }
   }
   
+  # Name WeatherDataList
+  names(WeatherDataList) <- c("Deelen", "deKooy", "Volkel", "Wilhelminadorp")
   
-  ## Add time and weather attributes to GPSTrackList
+  ## Add time attributes to GPSTrackList
   
   # Iterate over elements of GPSTrackList
   for(i in seq_along(GPSTrackList)){
+    
+    # Add time attributes to elements of GPSTrackList
+    GPSTrackList[[i]] <- GPSTrackList[[i]] %>% 
+      
+      # Add date
+      mutate(date = make_date(year = substr(time, 1, 4),
+                               month = substr(time, 6, 7),
+                               day = substr(time, 9, 10))) %>% 
+      
+      # Add weekday
+      mutate(weekday = weekdays(time, abbreviate = F)) %>% 
+      
+      # Add season
+      mutate(season = time2season(time, out.fmt = "seasons"))
+    
+    
+    ## Add weather attributes to GPSTrackList
+    
     # The first 4 tracks are the Kraansvlak tracks
     if(i %in% 1:4){
-      
-      
+      GPSTrackList[[i]] <- GPSTrackList[[i]] %>% 
+        inner_join(WeatherDataList$deKooy, by = "date")
       
     }
     # Track 5 to 15 are Maashorst tracks
     else if(i %in% c(5:15)){
-      
+      GPSTrackList[[i]] <- GPSTrackList[[i]] %>% 
+        inner_join(WeatherDataList$Volkel, by = "date")
     }
     # Track 16 - 19 are Slikken vd Heen tracks
     else if(i %in% c(16:22)){
-      
-      
-      
+      GPSTrackList[[i]] <- GPSTrackList[[i]] %>% 
+        inner_join(WeatherDataList$Wilhelminadorp, by = "date")
     }
     # Track 23 - 27 are Veluwe tracks
     else if(i %in% c(23:47)){
-      
-      
-      
+      GPSTrackList[[i]] <- GPSTrackList[[i]] %>% 
+        inner_join(WeatherDataList$Deelen, by = "date")
     }
-  }  
+  }
   
-    
+  # Name elements from list
+  names(GPSTrackList) <- NameVec
+  
+  # Return GPSTrackList
+  return(GPSTrackList)
 }
 
-## Filter out dates from weather datasets that are out of the range of dates that 
+# Call AddTimeWeather
+WeatherTracks <- AddTimeWeather(DistanceTracks, WeatherDataList, NameVec)
 
 
 

@@ -64,3 +64,8 @@ getP <- function(StudyAreaList){
 ProportionPerClass <- getP(MaskedList)
 
 
+## Determining r for the different habitat types
+FreqPerClass <- table(LanduseTracks$VeluweTrack9$landuse_class)
+TotalPoints <- nrow(LanduseTracks$VeluweTrack9)
+TotalPoints <- sum(FreqPerClass)
+

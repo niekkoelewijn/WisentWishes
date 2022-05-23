@@ -15,6 +15,7 @@ if(!"tidyverse" %in% rownames(installed.packages())){install.packages("tidyverse
 if(!"lubridate" %in% rownames(installed.packages())){install.packages("lubridate")}
 if(!"momentuHMM" %in% rownames(installed.packages())){install.packages("momentuHMM")}
 if(!"tools" %in% rownames(installed.packages())){install.packages("tools")}
+if(!"hydroTSM" %in% rownames(installed.packages())){install.packages("hydroTSM")}
 
 # Load required packages
 library(rgdal)
@@ -26,6 +27,7 @@ library(tidyverse)
 library(lubridate)
 library(momentuHMM)
 library(tools)
+library(hydroTSM)
 
 
 ### Clean GPS-input data

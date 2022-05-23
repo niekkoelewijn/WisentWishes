@@ -29,7 +29,7 @@ for(i in seq_along(EVStep1Vec)){
 }
 
 # Create function to add distance attributes to GPS tracks
-AddDistance <- function(GPSTrackList){
+AddDistance <- function(GPSTrackList, NameVec){
   
   ### Create rasters of roads, forest and water land use types for each study area
   
@@ -231,7 +231,7 @@ AddDistance <- function(GPSTrackList){
                distance_to_forest = DistanceToForest,
                distance_to_road = DistanceToRoad)
       
-      paste0(i, "/47")
+      print(paste0(i, "/47"))
       
     }
     # Track 6 is a Maashorst 2022 track
@@ -252,7 +252,7 @@ AddDistance <- function(GPSTrackList){
                distance_to_forest = DistanceToForest,
                distance_to_road = DistanceToRoad)
       
-      paste0(i, "/47")
+      print(paste0(i, "/47"))
       
     }
     # Track 7 and 9:15 are Maashorst 2017 - 2021 tracks
@@ -273,7 +273,7 @@ AddDistance <- function(GPSTrackList){
                distance_to_forest = DistanceToForest,
                distance_to_road = DistanceToRoad)
       
-      paste0(i, "/47")
+      print(paste0(i, "/47"))
       
     }
     # Track 16 - 19 are Slikken vd Heen habituate tracks
@@ -294,7 +294,7 @@ AddDistance <- function(GPSTrackList){
                distance_to_forest = DistanceToForest,
                distance_to_road = DistanceToRoad)
       
-      paste0(i, "/47")
+      print(paste0(i, "/47"))
       
     }
     # Track 20 - 22 are Slikken vd Heen tracks
@@ -315,7 +315,7 @@ AddDistance <- function(GPSTrackList){
                distance_to_forest = DistanceToForest,
                distance_to_road = DistanceToRoad)
       
-      paste0(i, "/47")
+      print(paste0(i, "/47"))
       
     }
     # Track 23 - 27 are Veluwe habituate tracks
@@ -336,7 +336,7 @@ AddDistance <- function(GPSTrackList){
                distance_to_forest = DistanceToForest,
                distance_to_road = DistanceToRoad)
       
-      paste0(i, "/47")
+      print(paste0(i, "/47"))
       
     }
     # Track 28 - 47 are Veluwe tracks
@@ -357,10 +357,13 @@ AddDistance <- function(GPSTrackList){
                distance_to_forest = DistanceToForest,
                distance_to_road = DistanceToRoad)
       
-      paste0(i, "/47")
+      print(paste0(i, "/47"))
       
     }
   }
+  
+  # Name elements from list
+  names(GPSTrackList) <- NameVec
   
   # Return track list
   return(GPSTrackList)
@@ -368,7 +371,7 @@ AddDistance <- function(GPSTrackList){
 }
 
 # Call AddDistance
-DistanceTracks <- AddDistance(LanduseTracks)
+DistanceTracks <- AddDistance(LanduseTracks, NameVec)
 
 
 ## Write output to file
@@ -383,7 +386,7 @@ if(!dir.exists(path)){
 
 # Write elements of Landuse Tracks list to file
 for(i in seq_along(names(DistanceTracks))){
-  write_csv(DistanceTracks[[i]], file = paste0(path, names(PreprocessedTracks)[i], ".csv"))
+  write_csv(DistanceTracks[[i]], file = paste0(path, names(DistanceTracks)[i], ".csv"))
 } 
 
 

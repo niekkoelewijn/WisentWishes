@@ -37,7 +37,7 @@ LUTLanduseClasses <- LUTLGN %>%
   distinct()
 
 ## Create function to add landuse attribute to tracks
-AddLanduse <- function(GPSTrackList, LanduseMapList){
+AddLanduse <- function(GPSTrackList, LanduseMapList, NameVec){
   
   # Loop over elements of GPSTrackList
   for(i in seq_along(GPSTrackList)){
@@ -165,12 +165,15 @@ AddLanduse <- function(GPSTrackList, LanduseMapList){
     }
   }
   
+  # Name elements from list
+  names(GPSTrackList) <- NameVec
+  
   # Return track list
   return(GPSTrackList)
 }
 
 # Call AddLanduse
-LanduseTracks <- AddLanduse(PreprocessedTracks, MaskedList)
+LanduseTracks <- AddLanduse(PreprocessedTracks, MaskedList, NameVec)
 
 
 ## Write output to file
@@ -185,7 +188,7 @@ if(!dir.exists(path)){
 
 # Write elements of Landuse Tracks list to file
 for(i in seq_along(names(LanduseTracks))){
-  write_csv(LanduseTracks[[i]], file = paste0(path, names(PreprocessedTracks)[i], ".csv"))
+  write_csv(LanduseTracks[[i]], file = paste0(path, names(LanduseTracks)[i], ".csv"))
 } 
 
 

@@ -135,8 +135,32 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
       mutate(day = as.numeric(day)) %>% 
       
       # Create date column
-      mutate(date = make_date(year = year, month = month, day = day))
-    
+      mutate(date = make_date(year = year, month = month, day = day)) %>% 
+      
+      # Select columns of interest
+      select(date, FG, TG, SQ, DR, RH) %>% 
+      
+      # Convert values of columns
+      mutate(FG = FG / 10 * 3.6, # converted from 0.1 m/s to 1 km/h
+             TG = TG / 10,       # converted from 0.1 C to 1 C
+             SQ = SQ / 10,       # converted from 0.1 hour to 1 hour
+             DR = DR / 10,       # converted from 0.1 hour to 1 hour
+             RH = RH / 10)%>%    # converted from 0.1 mm to 1 mm
+      
+      # Replace values total_precipitation_day
+      # if RH < 0.05 mm, a value of -1 was given by the KNMI, I will replace
+      # that with a 0, as -1 mm precipition does not make sense
+      mutate(RH = replace(RH, RH == -0.1, 0)) %>% 
+      
+      # Rename columns
+      rename(average_windspeed_day = FG,
+             average_temperature_day = TG,
+             sunshine_duration_day = SQ,
+             precipitation_duration_day = DR,
+             total_precipitation_day = RH)
+      
+      
+      
     if(i == 1){
       WeatherDataList[[i]] <- WeatherDataList[[i]] %>% 
         

@@ -48,10 +48,10 @@ WeatherPath <- "~/WisentWishes/MScThesisData/EnvironmentalVariables/WeatherVaria
 WeatherVec <- list.files(path = GPSInputPath, pattern = ".csv")
 
 # Load weather data as tibbles
-Deelen <- read_csv(paste0(WeatherPath, WeatherVec[1]))
-deKooy <- read_csv(paste0(WeatherPath, WeatherVec[2]))
-Volkel <- read_csv(paste0(WeatherPath, WeatherVec[3]))
-Wilhelminadorp <- read_csv(paste0(WeatherPath, WeatherVec[4]))
+Deelen <- as_tibble(read.csv(paste0(WeatherPath, WeatherVec[1])))
+deKooy <- as_tibble(read.csv(paste0(WeatherPath, WeatherVec[2])))
+Volkel <- as_tibble(read.csv(paste0(WeatherPath, WeatherVec[3])))
+Wilhelminadorp <- as_tibble(read.csv(paste0(WeatherPath, WeatherVec[4])))
 
 WeatherDataList <- list(Deelen, deKooy, Volkel, Wilhelminadorp)
 names(WeatherDataList) <- c("Deelen", "deKooy", "Volkel", "Wilhelminadorp")

@@ -185,6 +185,7 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
   # Name WeatherDataList
   names(WeatherDataList) <- c("Deelen", "deKooy", "Volkel", "Wilhelminadorp")
   
+  
   ## Add time attributes to GPSTrackList
   
   # Iterate over elements of GPSTrackList
@@ -204,6 +205,41 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
       # Add season
       mutate(season = time2season(time, out.fmt = "seasons"))
     
+    # For sunrise / sunset calculations, I need coordinates in lat / lon
+    LatLonTable <- GPSTrackList[[i]] %>% 
+      
+      # Transform to class sf
+      st_as_sf(coords = c("X", "Y"), crs = st_crs(28992)) %>% 
+      
+      # Transfrom WGS84 to RD new
+      st_transform(crs = st_crs(4326))
+    
+    # Get x and y column
+    Lon <- st_coordinates(LatLonTable)[,1]
+    Lat <- st_coordinates(LatLonTable)[,2]
+    
+    # Calculate time of sunrise and sunset
+    sunrise_set <- suncalc::getSunlightTimes(data = data.frame(date = GPSTrackList[[i]]$date, lat = Lat,
+                                                               lon = Lon),
+                                             keep = c("sunrise", "sunset"),
+                                             tz = Sys.timezone())
+    
+    # Determine for each time poinnt of the element of GPSTrackList wheater it is at day or night
+    day_night_tibble <- ifelse(GPSTrackList[[i]]$time >= sunrise_set$sunrise & 
+                        GPSTrackList[[i]]$time <= sunrise_set$sunset,
+                        "day", "night")
+    
+    # Create tibble with same ID values as the points of GPSTrackList element
+    day_night_tibble <-day_night_tibble %>% 
+      as_tibble() %>% 
+      rowid_to_column("ID") %>% 
+      rename(day_night = value)
+    
+    # Add time attributes to elements of GPSTrackList
+    GPSTrackList[[i]] <- GPSTrackList[[i]] %>% 
+      
+      # Add day / night
+      inner_join(day_night_tibble, by = "ID")
     
     ## Add weather attributes to GPSTrackList
     
@@ -239,6 +275,24 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
 
 # Call AddTimeWeather
 WeatherTracks <- AddTimeWeather(DistanceTracks, WeatherDataList, NameVec)
+
+## Write output to file
+
+# Create path
+path <- "~/WisentWishes/MScThesisData/GPS location data/Step3EV/"
+
+# Create directory
+if(!dir.exists(path)){
+  dir.create(path)
+}
+
+# Write elements of Landuse Tracks list to file
+for(i in seq_along(names(WeatherTracks))){
+  write_csv(WeatherTracks[[i]], file = paste0(path, names(WeatherTracks)[i], ".csv"))
+} 
+
+
+
 
 
 

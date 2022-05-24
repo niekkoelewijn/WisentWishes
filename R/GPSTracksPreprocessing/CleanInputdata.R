@@ -16,6 +16,8 @@ if(!"lubridate" %in% rownames(installed.packages())){install.packages("lubridate
 if(!"momentuHMM" %in% rownames(installed.packages())){install.packages("momentuHMM")}
 if(!"tools" %in% rownames(installed.packages())){install.packages("tools")}
 if(!"hydroTSM" %in% rownames(installed.packages())){install.packages("hydroTSM")}
+if(!"photobiology" %in% rownames(installed.packages())){install.packages("photobiology")}
+if(!"suncalc" %in% rownames(installed.packages())){install.packages("suncalc")}
 
 # Load required packages
 library(rgdal)
@@ -28,6 +30,8 @@ library(lubridate)
 library(momentuHMM)
 library(tools)
 library(hydroTSM)
+library(photobiology)
+library(suncalc)
 
 
 ### Clean GPS-input data

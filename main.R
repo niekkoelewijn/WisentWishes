@@ -74,8 +74,11 @@ source("~/WisentWishes/R/Results/JacobsIndex/HabitatProportion.R")
 # Step 2: Put tracks in correct format for jacobs index calculations
 source("~/WisentWishes/R/Results/JacobsIndex/ClusterTracks.R")
 
-# Step 3: Calculate overall Jacob's index
+# Step 3: Calculate Jacob's index per landuse class per study area
+source("~/WisentWishes/R/Results/JacobsIndex/JI_per_studyarea.R")
+
+# Step 4: Calculate overall Jacob's index
 source("~/WisentWishes/R/Results/JacobsIndex/JI_overall.R")
 
-
-
+# Step 5: Clarify relation Jacob's index and proportion availability of a landuse class
+source("~/WisentWishes/R/Results/JacobsIndex/RelationProportionAvailableAndJI.R")

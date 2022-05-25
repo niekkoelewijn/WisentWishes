@@ -5,82 +5,114 @@
 # Supervisor: dr. ir. H.J. de Knegt
 # Year: 2022
 
-### Script calculate the Jacobs index per land use class, per study area
+### Script calculate the Jacobs index per land use class for all points. This
+### is a exploratory step to see the general patterns. It is not completely
+### accurate, as the habitat available difference per year in the Maashorst, 
+### but this difference in availability cannot be accounted for in this study.
 
-## Determining the used habitat r
 
-# Create general funcion to determine r per habitat type per study area
-getR <- function(StudyAreaList, PointsList){
-  
-  # Create result table
-  StudyAreas <- names(StudyAreaList)
-  LanduseClasses <- LUTLanduseClasses$landuse_class
-  ResultRdf <- data.frame(matrix(NA, nrow = length(StudyAreas), ncol = length(LanduseClasses)+1))
-  names(ResultRdf) <- c("Study area", LanduseClasses)
-  ResultR <- as_tibble(ResultRdf)
-  ResultR[,1] <- StudyAreas
-  
-  # Iterate over elements of point list
-  for(i in seq_along(PointsList)){
-    
-    # Get frequency of points per calss
-    FreqPerClass <- table(PointsList[[i]]$landuse_code)
-    
-    # Total number of points 
-    TotalNumberPoints <- sum(table(PointsList[[i]]$landuse_code))
-    
-    # Vector with the landuse class codes
-    classes <- LUTLanduseClasses$landuse_code
-    
-    # Create vector of proportion per landuse class for this for study area i
-    ProportionHabitatUsed <- c()
-    
-    # Fill vector with proportions per landuse class with data
-    for(j in seq_along(classes)){
-      if(j %in% as.numeric(names(FreqPerClass))){
-        ProportionHabitatUsed[j] <- FreqPerClass[which(as.numeric(names(FreqPerClass)) == j)] / TotalNumberPoints
-      }else{
-        ProportionHabitatUsed[j] <- 0
-      }
-    }
-    
-    # Fill in the proportion per habitat class in the result table
-    for(k in 2:14){
-      ResultR[i,][k] <- ProportionHabitatUsed[k-1]
-    }
+## Cluster all tracks into 1 tibble
+
+# Create an empty tibble with 28 columns, the number of attributes that each
+# point has
+TrackPoints <- as_tibble(data.frame(matrix(NA, nrow = 1, ncol = 28)))
+
+# Get column names from the track list of previous step
+colnames(TrackPoints) <- colnames(WeatherTracks$KraansvlakTrack1)
+
+# Iterate over elements of TrackFiles to read them and add them to TrackPoints
+for(i in seq_along(TrackVec)){
+  if(i %in% c(27:32)){
+    next
+  }else{
+    TrackPoints <- TrackPoints %>% 
+      add_row(read_csv(file = paste0(TrackPath, TrackVec[i]))) %>% 
+      filter(!is.na(ID))
   }
   
-  return(ResultR)
 }
 
-# Call getR
-ProportionUsedPerClass <- getR(MaskedList, PointsList)
+# Get column names from the track list of previous step
+colnames(TrackPoints) <- colnames(WeatherTracks$KraansvlakTrack1)
 
-# Create Jacobs Index function
-JacobsIndex <- function(r, p){
-  D <-  (r - p)/(r + p - 2*r*p)
-  return(D)
-}
+# Assign unique code to each row in the dataset
+AllTrackPoints <- TrackPoints %>% 
+  rename(track_row_ID = ID) %>% 
+  rowid_to_column("ID")
 
-# Create general funcion to determine D per habitat type per study area
-getD <- function(StudyAreaList, R, P){
-  
-  # Create result table
-  StudyAreas <- names(StudyAreaList)
-  LanduseClasses <- LUTLanduseClasses$landuse_class
-  ResultDdf <- data.frame(matrix(NA, nrow = length(StudyAreas), ncol = length(LanduseClasses)+1))
-  names(ResultDdf) <- c("Study area", LanduseClasses)
-  ResultD <- as_tibble(ResultDdf)
-  ResultD[,1] <- StudyAreas
-  
-  for(i in 1:nrow(ResultD)){
-    for(j in 2:14){
-      ResultD[i,j] <- JacobsIndex(r = R[i,j], p= P[i,j])
-    }
+
+## Sum of landuse code values of all study areas 
+
+# Get frequency tables of 4 study areas
+FreqKraansvlak <- table(MaskedList$Kraansvlak[])
+FreqVeluwe <- table(MaskedList$Veluwe[])
+FreqSlikkenvdHeen <- table(MaskedList$SlikkenvdHeen[])
+FreqMaashorst <- table(MaskedList$Maashorst20172021[])
+
+# Create table with total frequencies
+TotalFreq <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
+colnames(TotalFreq) <- as.character(LUTLanduseClasses$landuse_code)
+
+# Create table with proportion available
+PropAvail <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
+colnames(PropAvail) <- as.character(LUTLanduseClasses$landuse_code)
+
+# Fill in total frequency table with proportion habitat available
+for(i in seq_along(TotalFreq)){
+  if(is.na(FreqKraansvlak[as.character(i)])){
+    FreqKraansvlak[as.character(i)] <- 0
   }
-  
-  return(ResultD)
+  if(is.na(FreqVeluwe[as.character(i)])){
+    FreqVeluwe[as.character(i)] <- 0
+  }
+  if(is.na(FreqSlikkenvdHeen[as.character(i)])){
+    FreqSlikkenvdHeen[as.character(i)] <- 0
+  }
+  if(is.na(FreqMaashorst[as.character(i)])){
+    FreqMaashorst[as.character(i)] <- 0
+  }
+  TotalFreq[i] <- FreqKraansvlak[as.character(i)] + FreqVeluwe[as.character(i)] + FreqSlikkenvdHeen[as.character(i)] + FreqMaashorst[as.character(i)]
 }
 
-# Call get D
-JacobsIndexPerStudyArea <- getD(MaskedList, ProportionUsedPerClass, ProportionAvailablePerClass)
+# Calculate the proportion used from the total frequency of a class and the total of all classes
+for(i in seq_along(PropAvail)){
+  Prop <- as.numeric(TotalFreq[i]) / sum(TotalFreq)
+  PropAvail[i] <- as.numeric(Prop)
+}
+colnames(PropAvail) <- as.character(LUTLanduseClasses$landuse_class)
+
+## Calculate proportions of habitat used
+OverallHabitatUsed <- table(AllTrackPoints$landuse_code)
+NumberOfPoints <- length(AllTrackPoints$landuse_code)
+
+# Create table with total frequencies
+PropUsed <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
+colnames(PropUsed) <- as.character(LUTLanduseClasses$landuse_class)
+
+# Fill empty table PropUsed with proportion used per landuse class
+for(i in seq_along(PropUsed)){
+  if(is.na(OverallHabitatUsed[as.character(i)])){
+    OverallHabitatUsed[as.character(i)] <- 0
+  }
+  PropUsed[1,i] <- OverallHabitatUsed[as.character(i)] / NumberOfPoints
+}
+
+
+## Calculate overall Jacobs index
+
+# Create empty table to store result
+JIOverall <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
+colnames(JIOverall) <- LUTLanduseClasses$landuse_class
+
+# Iterate over elements of JIOverall
+for(i in seq_along(JIOverall)){
+  JIOverall[i] <- JacobsIndex(as.numeric(PropUsed[i]), as.numeric(PropAvail[i]))
+}
+
+
+
+
+
+
+
+

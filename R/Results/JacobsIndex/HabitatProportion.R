@@ -57,11 +57,13 @@ getP <- function(StudyAreaList){
       ResultP[i,][k] <- ProportionPerClass[k-1]
     }
   }
+  
+  # Return result table with p, the proportion of habitat available 
   return(ResultP)
 }
 
 # Call getP
-ProportionPerClass <- getP(MaskedList)
+ProportionAvailablePerClass <- getP(MaskedList)
 
 
 ## Determining r for the different habitat types

@@ -65,7 +65,17 @@ source("~/WisentWishes/R/EnvironmentalVariables/AddDistanceToPoint.R")
 # Step 4: Add date and weather variables to the sctipt
 source("~/WisentWishes/R/EnvironmentalVariables/AddDateAndWeather.R")
 
-# Step 5: Calculate Jacob's index 
-source("~/WisentWihes/R/EnvironmentalVariables/JacobsIndex.R")
+
+### RESULTS ###
+
+# Step 1: Calculate proportion habitat available per study area
+source("~/WisentWishes/R/Results/JacobsIndex/HabitatProportion.R")
+
+# Step 2: Put tracks in correct format for jacobs index calculations
+source("~/WisentWishes/R/Results/JacobsIndex/ClusterTracks.R")
+
+# Step 3: Calculate overall Jacob's index
+source("~/WisentWishes/R/Results/JacobsIndex/JI_overall.R")
+
 
 

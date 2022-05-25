@@ -202,6 +202,9 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
       # Add weekday
       mutate(weekday = weekdays(time, abbreviate = F)) %>% 
       
+      # Add weekend / business day
+      mutate(day_type = ifelse(weekday %in% c("Sunday", "Saturday"), "weekend", "business day")) %>% 
+      
       # Add season
       mutate(season = time2season(time, out.fmt = "seasons"))
     

@@ -60,7 +60,6 @@ source("~/WisentWishes/R/EnvironmentalVariables/LandusePreprocessing.R")
 source("~/WisentWishes/R/EnvironmentalVariables/AddLanduseToPoint.R")
 
 # Step 3: Adding distance attributes to points of GPS tracks
-# Warning: long run time, 55 minutes, see progress in the console
 source("~/WisentWishes/R/EnvironmentalVariables/AddDistanceToPoint.R")
 
 # Step 4: Add date and weather variables to the sctipt

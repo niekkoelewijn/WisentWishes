@@ -260,9 +260,9 @@ VeluweVis
 
 # Grass
 GrassJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA grass`, y = `JI grass`)) +
-  geom_point(stat = "identity", shape = 16,
+  geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -280,9 +280,9 @@ GrassJIAvail
 
 # Deciduous forest
 deciduous_forestJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA deciduous forest`, y = `JI deciduous forest`)) +
-  geom_point(stat = "identity", shape = 16,
+  geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -300,9 +300,9 @@ deciduous_forestJIAvail
 
 # Coniferous forest
 coniferous_forestJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA coniferous forest`, y = `JI coniferous forest`)) +
-  geom_point(stat = "identity", shape = 16,
+  geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -320,9 +320,9 @@ coniferous_forestJIAvail
 
 # Fresh water
 fresh_waterJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA fresh water`, y = `JI fresh water`)) +
-  geom_point(stat = "identity", shape = 16,
+  geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -340,9 +340,9 @@ fresh_waterJIAvail
 
 # Road
 roadJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA road`, y = `JI road`)) +
-  geom_point(stat = "identity", shape = 16,
+  geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -360,9 +360,9 @@ roadJIAvail
 
 # Bare soil
 bare_soilJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA bare soil`, y = `JI bare soil`)) +
-  geom_point(stat = "identity", shape = 16,
+  geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -380,9 +380,9 @@ bare_soilJIAvail
 
 # Swamp
 swampJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA swamp`, y = `JI swamp`)) +
-  geom_point(stat = "identity", shape = 16,
+  geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -400,9 +400,9 @@ swampJIAvail
 
 # Shrubland
 shrublandJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA shrubland`, y = `JI shrubland`)) +
-  geom_point(stat = "identity", shape = 16,
+  geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -420,9 +420,9 @@ shrublandJIAvail
 
 # Heathland
 heathlandJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA heathland`, y = `JI heathland`)) +
-  geom_point(stat = "identity", shape = 16,
+  geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -440,9 +440,9 @@ heathlandJIAvail
 
 # Grassy heathland
 grassy_heathlandJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA grassy heathland`, y = `JI grassy heathland`)) +
-  geom_point(stat = "identity", shape = 16,
+  geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +

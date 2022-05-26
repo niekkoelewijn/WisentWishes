@@ -86,6 +86,10 @@ source("~/WisentWishes/R/Results/JacobsIndex/RelationProportionAvailableAndJI.R"
 # Step 6: Visualizations in ggplot of JI overall, per study area and relation with availability
 source("~/WisentWishes/R/Results/JacobsIndex/VisualizationsJI.R")
 
+# Step 7: Exploratory Jacob's indexes to see influence of variables
+source("~/WisentWishes/R/Results/JacobsIndex/VariableInfluenceJI.R")
+
+
 
 
 

@@ -120,7 +120,7 @@ NevayaRaw <- NevayaRaw %>%
 # Shara
 SharaRaw <- SharaRaw %>% 
   
-  # Shara has no temp attribute. I will assignthe average temperature of the 
+  # Shara has no temp attribute. I will assign the average temperature of the 
   # Veluwe area to the gps fixes for convenience
   mutate(temp = 10.1) %>%
   

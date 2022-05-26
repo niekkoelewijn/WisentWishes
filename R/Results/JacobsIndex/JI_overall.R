@@ -81,20 +81,20 @@ for(i in seq_along(PropAvail)){
 }
 colnames(PropAvail) <- as.character(LUTLanduseClasses$landuse_class)
 
-## Calculate proportions of habitat used
-OverallHabitatUsed <- table(AllTrackPoints$landuse_code)
+## Calculate proportions of landuse class used
+OverallClassUsed <- table(AllTrackPoints$landuse_code)
 NumberOfPoints <- length(AllTrackPoints$landuse_code)
 
-# Create table with total frequencies
+# Create table with proportion used per of landuse class
 PropUsed <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
 colnames(PropUsed) <- as.character(LUTLanduseClasses$landuse_class)
 
 # Fill empty table PropUsed with proportion used per landuse class
 for(i in seq_along(PropUsed)){
-  if(is.na(OverallHabitatUsed[as.character(i)])){
-    OverallHabitatUsed[as.character(i)] <- 0
+  if(is.na(OverallClassUsed[as.character(i)])){
+    OverallClassUsed[as.character(i)] <- 0
   }
-  PropUsed[1,i] <- OverallHabitatUsed[as.character(i)] / NumberOfPoints
+  PropUsed[1,i] <- OverallClassUsed[as.character(i)] / NumberOfPoints
 }
 
 

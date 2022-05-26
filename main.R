@@ -82,3 +82,11 @@ source("~/WisentWishes/R/Results/JacobsIndex/JI_overall.R")
 
 # Step 5: Clarify relation Jacob's index and proportion availability of a landuse class
 source("~/WisentWishes/R/Results/JacobsIndex/RelationProportionAvailableAndJI.R")
+
+# Step 6: Visualizations in ggplot of JI overall, per study area and relation with availability
+source("~/WisentWishes/R/Results/JacobsIndex/VisualizationsJI.R")
+
+
+
+
+

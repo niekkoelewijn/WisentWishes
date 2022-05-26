@@ -5,8 +5,8 @@
 # Supervisor: dr. ir. H.J. de Knegt
 # Year: 2022
 
-### Script determine the relationship between the JI of a landuse class and the 
-### proportion of its availability.
+### Script to determine the relationship between the JI of a landuse class and 
+### the proportion of its availability.
 
 # Create table with 9 rows, and 11 columns
 JI_PropAvail <- as_tibble(data.frame(matrix(data = NA, nrow = 9, ncol = 20)))

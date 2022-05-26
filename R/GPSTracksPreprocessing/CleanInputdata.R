@@ -18,6 +18,7 @@ if(!"tools" %in% rownames(installed.packages())){install.packages("tools")}
 if(!"hydroTSM" %in% rownames(installed.packages())){install.packages("hydroTSM")}
 if(!"photobiology" %in% rownames(installed.packages())){install.packages("photobiology")}
 if(!"suncalc" %in% rownames(installed.packages())){install.packages("suncalc")}
+if(!"ggplot2" %in% rownames(installed.packages())){install.packages("ggplot2")}
 
 # Load required packages
 library(rgdal)
@@ -32,6 +33,7 @@ library(tools)
 library(hydroTSM)
 library(photobiology)
 library(suncalc)
+library(ggplot2)
 
 
 ### Clean GPS-input data

@@ -255,9 +255,209 @@ VeluweVis <- ggplot(data = VeluweVisTibble, aes(x = Class, y = VeluweData,
   geom_text(vjust = -0.2, size = 2)
 VeluweVis
 
-## Plot relations
+
+## Plot relationship Jacobs index and the proportional availability of a landuse class
 
 # Grass
+GrassJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA grass`, y = `JI grass`)) +
+  geom_point(stat = "identity", shape = 16,
+             aes(color = factor(rownames(JI_PropAvail)))) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
+              color = "black", size = 0.5) +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Proportional availability grassland") +
+  ggtitle("Relation Jacobs index and availability of grassland") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        legend.position = "none")
+GrassJIAvail
+
+# Deciduous forest
+deciduous_forestJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA deciduous forest`, y = `JI deciduous forest`)) +
+  geom_point(stat = "identity", shape = 16,
+             aes(color = factor(rownames(JI_PropAvail)))) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
+              color = "black", size = 0.5) +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Proportional availability deciduous forest") +
+  ggtitle("Relation Jacobs index and availability of deciduous forest") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        legend.position = "none")
+deciduous_forestJIAvail
+
+# Coniferous forest
+coniferous_forestJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA coniferous forest`, y = `JI coniferous forest`)) +
+  geom_point(stat = "identity", shape = 16,
+             aes(color = factor(rownames(JI_PropAvail)))) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
+              color = "black", size = 0.5) +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Proportional availability coniferous forest") +
+  ggtitle("Relation Jacobs index and availability of coniferous forest") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        legend.position = "none")
+coniferous_forestJIAvail
+
+# Fresh water
+fresh_waterJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA fresh water`, y = `JI fresh water`)) +
+  geom_point(stat = "identity", shape = 16,
+             aes(color = factor(rownames(JI_PropAvail)))) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
+              color = "black", size = 0.5) +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Proportional availability fresh water") +
+  ggtitle("Relation Jacobs index and availability of fresh water") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        legend.position = "none")
+fresh_waterJIAvail
+
+# Road
+roadJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA road`, y = `JI road`)) +
+  geom_point(stat = "identity", shape = 16,
+             aes(color = factor(rownames(JI_PropAvail)))) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
+              color = "black", size = 0.5) +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Proportional availability road") +
+  ggtitle("Relation Jacobs index and availability of road") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        legend.position = "none")
+roadJIAvail
+
+# Bare soil
+bare_soilJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA bare soil`, y = `JI bare soil`)) +
+  geom_point(stat = "identity", shape = 16,
+             aes(color = factor(rownames(JI_PropAvail)))) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
+              color = "black", size = 0.5) +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Proportional availability bare soil") +
+  ggtitle("Relation Jacobs index and availability of bare soil") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        legend.position = "none")
+bare_soilJIAvail
+
+# Swamp
+swampJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA swamp`, y = `JI swamp`)) +
+  geom_point(stat = "identity", shape = 16,
+             aes(color = factor(rownames(JI_PropAvail)))) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
+              color = "black", size = 0.5) +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Proportional availability swamp") +
+  ggtitle("Relation Jacobs index and availability of swamp") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        legend.position = "none")
+swampJIAvail
+
+# Shrubland
+shrublandJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA shrubland`, y = `JI shrubland`)) +
+  geom_point(stat = "identity", shape = 16,
+             aes(color = factor(rownames(JI_PropAvail)))) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
+              color = "black", size = 0.5) +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Proportional availability shrubland") +
+  ggtitle("Relation Jacobs index and availability of shrubland") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        legend.position = "none")
+shrublandJIAvail
+
+# Heathland
+heathlandJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA heathland`, y = `JI heathland`)) +
+  geom_point(stat = "identity", shape = 16,
+             aes(color = factor(rownames(JI_PropAvail)))) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
+              color = "black", size = 0.5) +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Proportional availability heathland") +
+  ggtitle("Relation Jacobs index and availability of heathland") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        legend.position = "none")
+heathlandJIAvail
+
+# Grassy heathland
+grassy_heathlandJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA grassy heathland`, y = `JI grassy heathland`)) +
+  geom_point(stat = "identity", shape = 16,
+             aes(color = factor(rownames(JI_PropAvail)))) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 2) +
+  geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
+              color = "black", size = 0.5) +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Proportional availability grassy heathland") +
+  ggtitle("Relation Jacobs index and availability of grassy heathland") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        legend.position = "none")
+grassy_heathlandJIAvail
+
 plot(x = JI_PropAvail$`PA grass`, y = JI_PropAvail$`JI grass`,
      xlab = "Proportion available", ylab = "Jacobs index", 
      ylim = c(-1, 1),

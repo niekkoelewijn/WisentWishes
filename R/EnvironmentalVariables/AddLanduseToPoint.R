@@ -33,7 +33,7 @@ names(PreprocessedTracks) <- NameVec
 # Adapt LUT to current land use maps
 LUTLanduseClasses <- LUTLGN %>% 
   select(landuse_class, landuse_class_code) %>% 
-  rename(landuse_code = landuse_class_code) %>% 
+  dplyr::rename(landuse_code = landuse_class_code) %>% 
   distinct()
 
 ## Create function to add landuse attribute to tracks

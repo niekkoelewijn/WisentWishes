@@ -34,6 +34,15 @@ getP <- function(StudyAreaList){
     # Frequency table per class
     FreqPerClass <- freq(StudyAreaList[[i]])
     
+    # If freq per class <= 10, remove that class from analysis
+    for(j in 1:nrow(FreqPerClass)){
+      if(!is.na(FreqPerClass[,2][j])){
+        if(FreqPerClass[,2][j] <= 10){
+          FreqPerClass <- FreqPerClass[-j,]
+        }
+      }
+    }
+    
     # Sum of the count per class, without the NA values 
     TotalCells <- sum(FreqPerClass[,2]) - FreqPerClass[,2][nrow(FreqPerClass)]
     

@@ -319,7 +319,7 @@ coniferous_forestJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA coniferous f
 coniferous_forestJIAvail
 
 # Fresh water
-fresh_waterJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA fresh water`, y = `JI fresh water`)) +
+fresh_waterJIAvail <- ggplot(data = JI_PropAvail, aes(x = car::logit(`PA fresh water`), y = `JI fresh water`)) +
   geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(rownames(JI_PropAvail)))) +
   geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
@@ -328,7 +328,7 @@ fresh_waterJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA fresh water`, y = 
   theme_bw() +
   ylim(c(-1,1)) +
   ylab("Jacobs index") +
-  xlab("Proportional availability fresh water") +
+  xlab("Proportional availability fresh water (logit)") +
   ggtitle("Relation Jacobs index and availability of fresh water") +
   theme(plot.title = element_text(size = 12, face = "bold",
                                   margin = margin(10,0,10,0),

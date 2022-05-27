@@ -19,6 +19,7 @@ if(!"hydroTSM" %in% rownames(installed.packages())){install.packages("hydroTSM")
 if(!"photobiology" %in% rownames(installed.packages())){install.packages("photobiology")}
 if(!"suncalc" %in% rownames(installed.packages())){install.packages("suncalc")}
 if(!"ggplot2" %in% rownames(installed.packages())){install.packages("ggplot2")}
+if(!"reshape" %in% rownames(installed.packages())){install.packages("reshape")}
 
 # Load required packages
 library(rgdal)
@@ -34,7 +35,7 @@ library(hydroTSM)
 library(photobiology)
 library(suncalc)
 library(ggplot2)
-
+library(reshape)
 
 ### Clean GPS-input data
 
@@ -102,9 +103,9 @@ KraansvlakRaw <- KraansvlakRaw %>%
   select(timestamp, latitude, longitude, temp, hdop) %>%
   
   # Rename columns
-  rename(lat = latitude) %>% 
-  rename(lng = longitude) %>% 
-  rename(time = timestamp)
+  dplyr::rename(lat = latitude) %>% 
+  dplyr::rename(lng = longitude) %>% 
+  dplyr::rename(time = timestamp)
 
 
 # Nevaya
@@ -155,10 +156,10 @@ VeluweRaw <- VeluweRaw %>%
   mutate(time = make_datetime(year, month, day, hour, minute, second)) %>%  
   
   # Rename columns
-  rename(hdop = H.DOP) %>% 
-  rename(temp = Temp.C.) %>% 
-  rename(lat = Latitude) %>% 
-  rename(lng = Longitude) %>%
+  dplyr::rename(hdop = H.DOP) %>% 
+  dplyr::rename(temp = Temp.C.) %>% 
+  dplyr::rename(lat = Latitude) %>% 
+  dplyr::rename(lng = Longitude) %>%
   
   # Select columns of interest
   select(time, lat, lng, temp, hdop)

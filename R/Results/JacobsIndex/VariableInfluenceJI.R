@@ -1106,5 +1106,132 @@ JIHighest10PrecVis <- ggplot(data = JIHighest10tibble, aes(x = Class, y = JI_val
 JIHighest10PrecVis
 
 
+## Determine influence of wind
+
+# get the lowest and highest 10% precipitation hours of the AllTracksPoints dataset
+lowest10 <- as.numeric(quantile(AllTrackPoints$average_windspeed_day, probs = seq(0, 1, 0.1))["10%"])
+highest10 <- as.numeric(quantile(AllTrackPoints$average_windspeed_day, probs = seq(0, 1, 0.1))["90%"])
+
+# Filter AllTrackPoints to get only the points with the lowest 10% precipitation hours
+Lowest10 <- AllTrackPoints %>% 
+  filter(average_windspeed_day <= lowest10)
+
+# Filter AllTrackPoints to get only the points with the highest 10% precipitation hours
+Highest10 <- AllTrackPoints %>% 
+  filter(average_windspeed_day > highest10)
+
+
+## Calculate Jacob's index for lowest 10% average daily windspeed 
+
+# Determine landuse class used 
+Lowest10ClassUsed <- table(Lowest10$landuse_code)
+NumberOfPoints <- length(Lowest10$landuse_code)
+
+# Create table with proportion used per of landuse class
+PropUsedLowest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
+colnames(PropUsedLowest10) <- as.character(LUTLanduseClasses$landuse_class)
+
+# Fill empty table PropUsedLowest10 with proportion used per landuse class
+for(i in seq_along(PropUsedLowest10)){
+  if(is.na(Lowest10ClassUsed[as.character(i)])){
+    Lowest10ClassUsed[as.character(i)] <- 0
+  }
+  PropUsedLowest10[1,i] <- Lowest10ClassUsed[as.character(i)] / NumberOfPoints
+}
+
+# Create empty table to store result
+JILowest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
+colnames(JILowest10) <- LUTLanduseClasses$landuse_class
+
+# Iterate over elements of JILowest10
+for(i in seq_along(JILowest10)){
+  JILowest10[i] <- JacobsIndex(as.numeric(PropUsedLowest10[i]), as.numeric(PropAvail[i]))
+}
+
+## Calculate Jacob's index for highest 10% average daily windspeed
+
+# Determine landuse class used 
+Highest10ClassUsed <- table(Highest10$landuse_code)
+NumberOfPoints <- length(Highest10$landuse_code)
+
+# Create table with proportion used per of landuse class
+PropUsedHighest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
+colnames(PropUsedHighest10) <- as.character(LUTLanduseClasses$landuse_class)
+
+# Fill empty table PropUsedHighest10 with proportion used per landuse class
+for(i in seq_along(PropUsedHighest10)){
+  if(is.na(Highest10ClassUsed[as.character(i)])){
+    Highest10ClassUsed[as.character(i)] <- 0
+  }
+  PropUsedHighest10[1,i] <- Highest10ClassUsed[as.character(i)] / NumberOfPoints
+}
+
+# Create empty table to store result
+JIHighest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
+colnames(JIHighest10) <- LUTLanduseClasses$landuse_class
+
+# Iterate over elements of JIHighest10
+for(i in seq_along(JIHighest10)){
+  JIHighest10[i] <- JacobsIndex(as.numeric(PropUsedHighest10[i]), as.numeric(PropAvail[i]))
+}
+
+
+## Create bar plots to compare lowest and highest 10% average daily windspeed
+
+# Make the data suitable for the visualization
+Class <- colnames(JILowest10)
+JI_value <- as.numeric(JILowest10)
+JILowest10tibble <- tibble(Class, JI_value) %>% 
+  drop_na()
+
+# Plot the data via ggplot2
+JILowest10WindVis <- ggplot(data = JILowest10tibble, aes(x = Class, y = JI_value, 
+                                                         fill = Class, 
+                                                         label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
+  geom_bar(stat = "identity") +
+  scale_fill_brewer(palette = "Set3") +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Landuse class") +
+  ggtitle("Jacobs index per landuse class lowest 10% windspeed") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
+        legend.position = "none") +
+  geom_text(vjust = -0.2, size = 2)
+JILowest10WindVis
+
+# Make the data suitable for the visualization
+Class <- colnames(JIHighest10)
+JI_value <- as.numeric(JIHighest10)
+JIHighest10tibble <- tibble(Class, JI_value) %>% 
+  drop_na()
+
+# Plot the data via ggplot2
+JIHighest10WindVis <- ggplot(data = JIHighest10tibble, aes(x = Class, y = JI_value, 
+                                                           fill = Class, 
+                                                           label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
+  geom_bar(stat = "identity") +
+  scale_fill_brewer(palette = "Set3") +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Landuse class") +
+  ggtitle("Jacobs index per landuse class highest 10% windspeed") +
+  theme(plot.title = element_text(size = 12, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
+        legend.position = "none") +
+  geom_text(vjust = -0.2, size = 2)
+JIHighest10WindVis
+
+
 
 

@@ -87,7 +87,7 @@ ClusterTracks <- function(StudyArea, year = NULL){
   
   # Assign unique code to each row in the dataset
   TrackPoints <- TrackPoints %>% 
-    rename(track_row_ID = ID) %>% 
+    dplyr::rename(track_row_ID = ID) %>% 
     rowid_to_column("ID")
   
   # Return TrackPoints

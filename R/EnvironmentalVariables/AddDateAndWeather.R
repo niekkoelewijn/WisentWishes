@@ -144,7 +144,7 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
       mutate(RH = replace(RH, RH == -0.1, 0)) %>% 
       
       # Rename columns
-      rename(average_windspeed_day = FG,
+      dplyr::rename(average_windspeed_day = FG,
              average_temperature_day = TG,
              sunshine_duration_day = SQ,
              precipitation_duration_day = DR,
@@ -236,7 +236,7 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
     day_night_tibble <-day_night_tibble %>% 
       as_tibble() %>% 
       rowid_to_column("ID") %>% 
-      rename(day_night = value)
+      dplyr::rename(day_night = value)
     
     # Add time attributes to elements of GPSTrackList
     GPSTrackList[[i]] <- GPSTrackList[[i]] %>% 

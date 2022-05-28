@@ -45,14 +45,67 @@ JIPerSAVis <- JacobsIndexPerStudyArea %>%
   select(`Study area`, grassland, `deciduous forest`,
          `coniferous forest`, `fresh water`, road,
          `bare soil`, shrubland, heathland,
-         `grassy heathland`)
+         `grassy heathland`, swamp)
+
+rownames(JIPerSAVis) = JIPerSAVis$`Study area`
+
+# remove Study Area from JIPerSAVis
+JIPerSAV <- JIPerSAVis %>% 
+  select(-`Study area`) 
+
+# Add rownames to JIPerSAV
+rownames(JIPerSAV) <- JIPerSAVis$`Study area`
+
+# Adapt data to Study Areas ready for ggplot
+StudyAreaData <- t(JIPerSAV)
+StudyAreaDataMelt <- melt(StudyAreaData, id = "Class")
+names(StudyAreaDataMelt) <- c("Class", "StudyArea", "JI")
+
+# Visualization of all study areas JI in 1 plot
+StudyAreasJI <- ggplot(data = StudyAreaDataMelt, aes(x = Class, y = JI,
+                                                     fill = StudyArea)) +
+  geom_point(stat = "identity", shape = 16, size = 2,
+             aes(color = StudyArea)) +
+  scale_fill_brewer(palette = "Set3") +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Landuse class") +
+  ggtitle("Jacobs index per landuse class per study area") +
+  theme(plot.title = element_text(size = 10, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.title = element_text(size = 8))
+StudyAreasJI
+
+# Visualization of all study areas JI in 1 plot
+StudyAreasJIBox <- ggplot(data = StudyAreaDataMelt, aes(x = Class, y = JI,
+                                                     fill = Class)) +
+  geom_boxplot(stat = "boxplot") +
+  scale_fill_brewer(palette = "Set3") +
+  theme_bw() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Landuse class") +
+  ggtitle("Jacobs index per landuse class per study area") +
+  theme(plot.title = element_text(size = 10, face = "bold",
+                                  margin = margin(10,0,10,0),
+                                  hjust = 0.5),
+        axis.title.x = element_text(vjust = -0.35, face = "plain"),
+        axis.title.y = element_text(vjust = 0.35, face = "plain"),
+        axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "none")
+StudyAreasJIBox
 
 # Adapt data to Kraansvlak
 KraansvlakData <- as.numeric(JIPerSAVis[1,2:ncol(JIPerSAVis)])
 Class <- colnames(JIPerSAVis)[2:ncol(JIPerSAVis)]
 KraansvlakVisTibble <- tibble(KraansvlakData, Class)
 
-# Kraansvlak visualisation
+# Kraansvlak visualization
 KraansvlakVis <- ggplot(data = KraansvlakVisTibble, aes(x = Class, y = KraansvlakData, 
                                           fill = Class, 
                                           label=sprintf("%0.2f", round(KraansvlakData, digits = 2)))) +

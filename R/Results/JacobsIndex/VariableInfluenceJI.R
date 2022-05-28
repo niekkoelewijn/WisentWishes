@@ -287,6 +287,275 @@ Autumn <- AllTrackPoints %>%
 Winter <- AllTrackPoints %>% 
   filter(season == "winter")
 
+
+## Split spring datasets in time classes
+
+# Select 00:00:00 - 02:00:00
+Spring0002 <- Spring %>% 
+  filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+
+# Select 02:00:00 - 04:00:00
+Spring0204 <- Spring %>% 
+  filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+
+# Select 04:00:00 - 06:00:00
+Spring0406 <- Spring %>% 
+  filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+
+# Select 06:00:00 - 08:00:00
+Spring0608 <- Spring %>% 
+  filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+
+# Select 08:00:00 - 10:00:00
+Spring0810 <- Spring %>% 
+  filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+
+# Select 10:00:00 - 12:00:00
+Spring1012 <- Spring %>% 
+  filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+
+# Select 12:00:00 - 14:00:00
+Spring1214 <- Spring %>% 
+  filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+
+# Select 14:00:00 - 16:00:00
+Spring1416 <- Spring %>% 
+  filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+
+# Select 16:00:00 - 18:00:00
+Spring1618 <- Spring %>% 
+  filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+
+# Select 18:00:00 - 20:00:00
+Spring1820 <- Spring %>% 
+  filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+
+# Select 20:00:00 - 22:00:00
+Spring2022 <- Spring %>% 
+  filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+
+# Select 22:00:00 - 00:00:00
+Spring2200 <- Spring %>% 
+  filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+
+## Split summer datasets in time classes
+
+# Select 00:00:00 - 02:00:00
+Summer0002 <- Summer %>% 
+  filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+
+# Select 02:00:00 - 04:00:00
+Summer0204 <- Summer %>% 
+  filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+
+# Select 04:00:00 - 06:00:00
+Summer0406 <- Summer %>% 
+  filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+
+# Select 06:00:00 - 08:00:00
+Summer0608 <- Summer %>% 
+  filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+
+# Select 08:00:00 - 10:00:00
+Summer0810 <- Summer %>% 
+  filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+
+# Select 10:00:00 - 12:00:00
+Summer1012 <- Summer %>% 
+  filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+
+# Select 12:00:00 - 14:00:00
+Summer1214 <- Summer %>% 
+  filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+
+# Select 14:00:00 - 16:00:00
+Summer1416 <- Summer %>% 
+  filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+
+# Select 16:00:00 - 18:00:00
+Summer1618 <- Summer %>% 
+  filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+
+# Select 18:00:00 - 20:00:00
+Summer1820 <- Summer %>% 
+  filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+
+# Select 20:00:00 - 22:00:00
+Summer2022 <- Summer %>% 
+  filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+
+# Select 22:00:00 - 00:00:00
+Summer2200 <- Summer %>% 
+  filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+
+## Split autumn datasets in time classes
+
+# Select 00:00:00 - 02:00:00
+Autumn0002 <- Autumn %>% 
+  filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+
+# Select 02:00:00 - 04:00:00
+Autumn0204 <- Autumn %>% 
+  filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+
+# Select 04:00:00 - 06:00:00
+Autumn0406 <- Autumn %>% 
+  filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+
+# Select 06:00:00 - 08:00:00
+Autumn0608 <- Autumn %>% 
+  filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+
+# Select 08:00:00 - 10:00:00
+Autumn0810 <- Autumn %>% 
+  filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+
+# Select 10:00:00 - 12:00:00
+Autumn1012 <- Autumn %>% 
+  filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+
+# Select 12:00:00 - 14:00:00
+Autumn1214 <- Autumn %>% 
+  filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+
+# Select 14:00:00 - 16:00:00
+Autumn1416 <- Autumn %>% 
+  filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+
+# Select 16:00:00 - 18:00:00
+Autumn1618 <- Autumn %>% 
+  filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+
+# Select 18:00:00 - 20:00:00
+Autumn1820 <- Autumn %>% 
+  filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+
+# Select 20:00:00 - 22:00:00
+Autumn2022 <- Autumn %>% 
+  filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+
+# Select 22:00:00 - 00:00:00
+Autumn2200 <- Autumn %>% 
+  filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+
+## Split winter datasets in time classes
+
+# Select 00:00:00 - 02:00:00
+Winter0002 <- Winter %>% 
+  filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+
+# Select 02:00:00 - 04:00:00
+Winter0204 <- Winter %>% 
+  filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+
+# Select 04:00:00 - 06:00:00
+Winter0406 <- Winter %>% 
+  filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+
+# Select 06:00:00 - 08:00:00
+Winter0608 <- Winter %>% 
+  filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+
+# Select 08:00:00 - 10:00:00
+Winter0810 <- Winter %>% 
+  filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+
+# Select 10:00:00 - 12:00:00
+Winter1012 <- Winter %>% 
+  filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+
+# Select 12:00:00 - 14:00:00
+Winter1214 <- Winter %>% 
+  filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+
+# Select 14:00:00 - 16:00:00
+Winter1416 <- Winter %>% 
+  filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+
+# Select 16:00:00 - 18:00:00
+Winter1618 <- Winter %>% 
+  filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+
+# Select 18:00:00 - 20:00:00
+Winter1820 <- Winter %>% 
+  filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+
+# Select 20:00:00 - 22:00:00
+Winter2022 <- Winter %>% 
+  filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+
+# Select 22:00:00 - 00:00:00
+Winter2200 <- Winter %>% 
+  filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+
+
+## Create lists of timeframes per season
+
+# Spring
+SpringTimeframeList <- list(Spring0002, Spring0204, Spring0406, Spring0608,
+                            Spring0810, Spring1012, Spring1214, Spring1416,
+                            Spring1618, Spring1820, Spring2022, Spring2200)
+
+# Summer
+SummerTimeframeList <- list(Summer0002, Summer0204, Summer0406, Summer0608,
+                            Summer0810, Summer1012, Summer1214, Summer1416,
+                            Summer1618, Summer1820, Summer2022, Summer2200)
+
+# Autumn
+AutumnTimeframeList <- list(Autumn0002, Autumn0204, Autumn0406, Autumn0608,
+                            Autumn0810, Autumn1012, Autumn1214, Autumn1416,
+                            Autumn1618, Autumn1820, Autumn2022, Autumn2200)
+
+# Winter
+WinterTimeframeList <- list(Winter0002, Winter0204, Winter0406, Winter0608,
+                            Winter0810, Winter1012, Winter1214, Winter1416,
+                            Winter1618, Winter1820, Winter2022, Winter2200)
+
+# Create function to efficiently calculate JI per time frame
+JIperTimeframe <- function(SeasonTimeList){
+  
+  # Create empty result table
+  Result <- data.frame(matrix(data = NA, nrow = 12, ncol = 10))
+  
+  # Name rows and columns
+  rownames(Result) <- c("00:00:00 - 02:00:00", "02:00:00 - 04:00:00",
+                        "04:00:00 - 06:00:00", "06:00:00 - 08:00:00",
+                        "08:00:00 - 10:00:00", "10:00:00 - 12:00:00",
+                        "12:00:00 - 14:00:00", "14:00:00 - 16:00:00",
+                        "16:00:00 - 18:00:00", "18:00:00 - 20:00:00",
+                        "20:00:00 - 22:00:00", "22:00:00 - 00:00:00")
+  colnames(Result) <- c("grassland", "deciduous forest", "coniferous forest",
+                        "fresh water", "bare soil", "heathland", "road",
+                        "grassy heathland", "swamp", "shrubland")
+  
+  # Calculate JI per landuse class per time frame
+  for(i in colnames(Result)){
+    
+    # Get availability of landuse class from the PropAvail table
+    Available <- as.numeric(PropAvail[i])
+    
+    # Calculate JI per row
+    for(j in 1:nrow(Result)){
+      PointsList <- SeasonTimeList[[j]]
+      FreqLanduseClass <- nrow(PointsList[which(PointsList$landuse_class == i),])
+      TotalPoints <- nrow(PointsList)
+      Used <- FreqLanduseClass / TotalPoints
+      Result[j,i] <- JacobsIndex(Used, Available)
+    }
+  }
+  
+  # Return result table
+  return(Result)
+}
+
+# Call JIperTimeframe for each season
+SpringTimeframeJITable <- JIperTimeframe(SpringTimeframeList)
+SummerTimeframeJITable <- JIperTimeframe(SummerTimeframeList)
+AutumnTimeframeJITable <- JIperTimeframe(AutumnTimeframeList)
+WinterTimeframeJITable <- JIperTimeframe(WinterTimeframeList)
+
+## Visualize development JI per landuse class over the day per season
+
 ## JI spring
 
 # Determine landuse class used 

@@ -199,6 +199,9 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
                                month = substr(time, 6, 7),
                                day = substr(time, 9, 10))) %>% 
       
+      # Add time
+      mutate(hms = format(time, "%H:%M:%S")) %>% 
+      
       # Add weekday
       mutate(weekday = weekdays(time, abbreviate = F)) %>% 
       

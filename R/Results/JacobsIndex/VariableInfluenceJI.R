@@ -518,12 +518,9 @@ JIperTimeframe <- function(SeasonTimeList){
   Result <- data.frame(matrix(data = NA, nrow = 12, ncol = 10))
   
   # Name rows and columns
-  rownames(Result) <- c("00:00:00 - 02:00:00", "02:00:00 - 04:00:00",
-                        "04:00:00 - 06:00:00", "06:00:00 - 08:00:00",
-                        "08:00:00 - 10:00:00", "10:00:00 - 12:00:00",
-                        "12:00:00 - 14:00:00", "14:00:00 - 16:00:00",
-                        "16:00:00 - 18:00:00", "18:00:00 - 20:00:00",
-                        "20:00:00 - 22:00:00", "22:00:00 - 00:00:00")
+  rownames(Result) <- c("01:00:00", "03:00:00", "05:00:00", "07:00:00",
+                        "09:00:00", "11:00:00", "13:00:00", "15:00:00",
+                        "17:00:00", "19:00:00", "21:00:00", "23:00:00")
   colnames(Result) <- c("grassland", "deciduous forest", "coniferous forest",
                         "fresh water", "bare soil", "heathland", "road",
                         "grassy heathland", "swamp", "shrubland")
@@ -554,7 +551,288 @@ SummerTimeframeJITable <- JIperTimeframe(SummerTimeframeList)
 AutumnTimeframeJITable <- JIperTimeframe(AutumnTimeframeList)
 WinterTimeframeJITable <- JIperTimeframe(WinterTimeframeList)
 
+# Melt the tables for visualization purposes
+SpringTimeframeJITable$timeframe <- rownames(SpringTimeframeJITable)
+SpringTimeframeJIMelt <- melt(SpringTimeframeJITable, id = "timeframe") %>% 
+  mutate(season = "Spring")
+colnames(SpringTimeframeJIMelt) <- c("timeframe", "class", "JI", "Season")
+
+SummerTimeframeJITable$timeframe <- rownames(SummerTimeframeJITable)
+SummerTimeframeJIMelt <- melt(SummerTimeframeJITable, id = "timeframe") %>% 
+  mutate(season = "Summer")
+colnames(SummerTimeframeJIMelt) <- c("timeframe", "class", "JI", "Season")
+
+AutumnTimeframeJITable$timeframe <- rownames(AutumnTimeframeJITable)
+AutumnTimeframeJIMelt <- melt(AutumnTimeframeJITable, id = "timeframe") %>% 
+  mutate(season = "Autumn")
+colnames(AutumnTimeframeJIMelt) <- c("timeframe", "class", "JI", "Season")
+
+WinterTimeframeJITable$timeframe <- rownames(WinterTimeframeJITable)
+WinterTimeframeJIMelt <- melt(WinterTimeframeJITable, id = "timeframe") %>% 
+  mutate(season = "Winter")
+colnames(WinterTimeframeJIMelt) <- c("timeframe", "class", "JI", "Season")
+
+
 ## Visualize development JI per landuse class over the day per season
+
+# Spring
+SpringTimeframeJIVis <- ggplot(data = SpringTimeframeJIMelt, aes(x = timeframe,
+                                                                  y = JI,
+                                                                  group = class,
+                                                                  colour = class)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Spring)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+SpringTimeframeJIVis
+
+# Summer
+SummerTimeframeJIVis <- ggplot(data = SummerTimeframeJIMelt, aes(x = timeframe,
+                                                                 y = JI,
+                                                                 group = class,
+                                                                 colour = class)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Summer)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+SummerTimeframeJIVis
+
+# Summer
+SummerTimeframeJIVis <- ggplot(data = SummerTimeframeJIMelt, aes(x = timeframe,
+                                                                 y = JI,
+                                                                 group = class,
+                                                                 colour = class)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Summer)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+SummerTimeframeJIVis
+
+# Autumn
+AutumnTimeframeJIVis <- ggplot(data = AutumnTimeframeJIMelt, aes(x = timeframe,
+                                                                 y = JI,
+                                                                 group = class,
+                                                                 colour = class)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Autumn)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+AutumnTimeframeJIVis
+
+# Winter
+WinterTimeframeJIVis <- ggplot(data = WinterTimeframeJIMelt, aes(x = timeframe,
+                                                                 y = JI,
+                                                                 group = class,
+                                                                 colour = class)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Winter)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+WinterTimeframeJIVis
+
+
+## Compare development JI for specific landuse class over day per season
+
+# Create merged JI per time of day table
+TimeframeJI <- rbind(SpringTimeframeJIMelt, SummerTimeframeJIMelt,
+                     AutumnTimeframeJIMelt, WinterTimeframeJIMelt)
+
+# Grassland
+GrasslandTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "grassland"),],
+                                  aes(x = timeframe, y = JI, group = Season, colour = Season)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Grassland)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+GrasslandTimeframeJIVis
+
+# Deciduous forest
+DecForestTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "deciduous forest"),],
+                                  aes(x = timeframe, y = JI, group = Season, colour = Season)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Deciduous forest)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+DecForestTimeframeJIVis
+
+# Coniferous forest
+ConForestTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "coniferous forest"),],
+                                  aes(x = timeframe, y = JI, group = Season, colour = Season)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Coniferous forest)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+ConForestTimeframeJIVis
+
+# Fresh water
+FreshWaterTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "fresh water"),],
+                                   aes(x = timeframe, y = JI, group = Season, colour = Season)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Fresh water)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+FreshWaterTimeframeJIVis
+
+# Bare soil
+BareSoilTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "bare soil"),],
+                                  aes(x = timeframe, y = JI, group = Season, colour = Season)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Bare soil)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+BareSoilTimeframeJIVis
+
+# Heathland
+HeathTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "heathland"),],
+                                 aes(x = timeframe, y = JI, group = Season, colour = Season)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Heathland)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+HeathTimeframeJIVis
+
+# Grassy heathland
+GrasHeathTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "grassy heathland"),],
+                              aes(x = timeframe, y = JI, group = Season, colour = Season)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Grassy heathland)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+GrasHeathTimeframeJIVis
+
+# Swamp
+SwampTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "swamp"),],
+                                  aes(x = timeframe, y = JI, group = Season, colour = Season)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Swamp)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+SwampTimeframeJIVis
+
+# Road
+RoadTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "road"),],
+                              aes(x = timeframe, y = JI, group = Season, colour = Season)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Road)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+RoadTimeframeJIVis
+
+# Shrubland
+ShrublandTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "shrubland"),],
+                             aes(x = timeframe, y = JI, group = Season, colour = Season)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Shrubland)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+ShrublandTimeframeJIVis
+
+
 
 ## JI spring
 

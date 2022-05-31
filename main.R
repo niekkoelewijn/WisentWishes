@@ -89,7 +89,17 @@ source("~/WisentWishes/R/Results/JacobsIndex/VisualizationsJI.R")
 # Step 7: Exploratory Jacob's indexes to see influence of variables
 source("~/WisentWishes/R/Results/JacobsIndex/VariableInfluenceJI.R")
 
+# Step 8: Observe influence of temperature on Jacob's indexes per season
+source("~/WisentWishes/R/Results/JacobsIndex/TempSeasonJI.R")
 
+# Step 9: Observe influence of sunshine on Jacob's indexes per season
+source("~/WisentWishes/R/Results/JacobsIndex/SunSeasonJI.R")
+
+# Step 10: Observe influence of precipitation on Jacob's indexes per season
+source("~/WisentWishes/R/Results/JacobsIndex/PrecSeasonJI.R")
+
+# Step 11: Observe influence of precipitation on Jacob's indexes per season
+source("~/WisentWishes/R/Results/JacobsIndex/WindSeasonJI.R")
 
 
 

@@ -20,6 +20,7 @@ if(!"photobiology" %in% rownames(installed.packages())){install.packages("photob
 if(!"suncalc" %in% rownames(installed.packages())){install.packages("suncalc")}
 if(!"ggplot2" %in% rownames(installed.packages())){install.packages("ggplot2")}
 if(!"reshape" %in% rownames(installed.packages())){install.packages("reshape")}
+if(!"gridExtra" %in% rownames(installed.packages())){install.packages("gridExtra")}
 
 # Load required packages
 library(rgdal)
@@ -36,6 +37,7 @@ library(photobiology)
 library(suncalc)
 library(ggplot2)
 library(reshape)
+library(gridExtra)
 
 ### Clean GPS-input data
 

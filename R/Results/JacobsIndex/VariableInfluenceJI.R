@@ -338,6 +338,7 @@ Spring2022 <- Spring %>%
 Spring2200 <- Spring %>% 
   filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
 
+
 ## Split summer datasets in time classes
 
 # Select 00:00:00 - 02:00:00
@@ -388,6 +389,7 @@ Summer2022 <- Summer %>%
 Summer2200 <- Summer %>% 
   filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
 
+
 ## Split autumn datasets in time classes
 
 # Select 00:00:00 - 02:00:00
@@ -437,6 +439,7 @@ Autumn2022 <- Autumn %>%
 # Select 22:00:00 - 00:00:00
 Autumn2200 <- Autumn %>% 
   filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+
 
 ## Split winter datasets in time classes
 
@@ -831,6 +834,8 @@ ShrublandTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == 
         legend.position = "right") +
   scale_color_discrete(name = "Landuse class")
 ShrublandTimeframeJIVis
+
+
 
 
 

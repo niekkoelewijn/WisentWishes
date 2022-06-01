@@ -73,7 +73,7 @@ ClusterTracks <- function(StudyArea, year = NULL){
   
   # Create an empty tibble with 28 columns, the number of attributes that each
   # point has
-  TrackPoints <- as_tibble(data.frame(matrix(NA, nrow = 1, ncol = 29)))
+  TrackPoints <- as_tibble(data.frame(matrix(NA, nrow = 1, ncol = 32)))
   
   # Get column names from the track list of previous step
   colnames(TrackPoints) <- colnames(WeatherTracks$KraansvlakTrack1)

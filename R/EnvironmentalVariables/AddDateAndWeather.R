@@ -48,7 +48,34 @@ names(WeatherDataList) <- c("Deelen", "deKooy", "Volkel", "Wilhelminadorp")
 
 ## Create general function to add time and weather variables to the tracks
 
-# Create funcion
+# Create function to calculate comprehensive climate index (CCI)
+CCI <- function(Ta, RH, WS, RAD){
+  
+  ### Function to calculate the CCI, which is a relative indicator of the
+  ### environmental conditions surrounding an animal. The CCI is the adjusted
+  ### temperature (ºC) taken into account Ta (ambient temperature in C), 
+  ### RH (relative humidity in %), WS (wind speed in m/s) and RAD (solar 
+  ### radiation in W/m^2)
+  
+  ## CCI is calculated as Ta + Eq. 1 + Eq. 2 + Eq. 3
+  
+  # Eq. 1: RH correction factor
+  Eq1 <- exp(0.00182 * RH + 1.8 * 10^-5 * Ta * RH) * (0.000054 * Ta^2 + 0.00192 * Ta - 0.0246) * (RH - 30)
+  
+  # Eq. 2: WS correction factor
+  Eq2 <- (-6.56 / (exp(1 / (2.26 * WS + 0.23)^(0.45 * (2.9 + 1.14 * 10^-6 * WS^2.5 - log(2.26 * WS + 0.33, base = 0.3)^-2))))) - 0.00566 * WS^2 + 3.33
+  
+  # Eq. 3: RAD correction factor
+  Eq3 <- 0.0076 * RAD - 0.00002 * RAD * Ta + 0.00005 * Ta^2 * sqrt(RAD) + 0.1 * Ta - 2
+  
+  # Calculate CCI
+  CCI <- Ta + Eq1 + Eq2 + Eq3
+  
+  # Return CCI
+  return(CCI)
+}
+
+# Create funcion to add time and weather variables
 AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
   
   ## Get first and last time element of each study area
@@ -129,14 +156,16 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
       mutate(date = make_date(year = year, month = month, day = day)) %>% 
       
       # Select columns of interest
-      select(date, FG, TG, SQ, DR, RH) %>% 
+      select(date, FG, TG, SQ, Q, UG, DR, RH) %>% 
       
       # Convert values of columns
-      mutate(FG = FG / 10 * 3.6, # converted from 0.1 m/s to 1 km/h
-             TG = TG / 10,       # converted from 0.1 C to 1 C
-             SQ = SQ / 10,       # converted from 0.1 hour to 1 hour
-             DR = DR / 10,       # converted from 0.1 hour to 1 hour
-             RH = RH / 10)%>%    # converted from 0.1 mm to 1 mm
+      mutate(FG = FG / 10 ,         # converted from 0.1 m/s to 1 m/s
+             TG = TG / 10,          # converted from 0.1 C to 1 C
+             SQ = SQ / 10,          # converted from 0.1 hour to 1 hour
+             Q = Q * 10000 / 86400, # converted from J/cm2 to W/m2
+                                    # UG is in percent, that how I want it
+             DR = DR / 10,          # converted from 0.1 hour to 1 hour
+             RH = RH / 10)%>%       # converted from 0.1 mm to 1 mm 
       
       # Replace values total_precipitation_day
       # if RH < 0.05 mm, a value of -1 was given by the KNMI, I will replace
@@ -147,6 +176,8 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
       dplyr::rename(average_windspeed_day = FG,
              average_temperature_day = TG,
              sunshine_duration_day = SQ,
+             solar_radiation = Q,
+             average_relative_humidity = UG,
              precipitation_duration_day = DR,
              total_precipitation_day = RH)
       
@@ -157,28 +188,45 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
         
         # Get only the rows corresponding to dates in the range of dates I
         # have GPS track points from 
-        filter(date >= startdateVeluwe & date <= enddateVeluwe)
+        filter(date >= startdateVeluwe & date <= enddateVeluwe) %>% 
+        
+        # Create CCI column in the WeatherDataList
+        mutate(CCI = CCI(average_temperature_day, average_relative_humidity, 
+                          average_windspeed_day, solar_radiation))
     }
     else if(i == 2){
       WeatherDataList[[i]] <- WeatherDataList[[i]] %>% 
         
         # Get only the rows corresponding to dates in the range of dates I
         # have GPS track points from 
-        filter(date >= startdateKraansvlak & date <= enddateKraansvlak)
+        filter(date >= startdateKraansvlak & date <= enddateKraansvlak) %>% 
+        
+        # Create CCI column in the WeatherDataList
+        mutate(CCI = CCI(average_temperature_day, average_relative_humidity, 
+                          average_windspeed_day, solar_radiation))
+      
     }
     else if(i == 3){
       WeatherDataList[[i]] <- WeatherDataList[[i]] %>% 
         
         # Get only the rows corresponding to dates in the range of dates I
         # have GPS track points from 
-        filter(date >= startdateMaashorst & date <= enddateMaashorst)
+        filter(date >= startdateMaashorst & date <= enddateMaashorst) %>% 
+        
+        # Create CCI column in the WeatherDataList
+        mutate(CCI = CCI(average_temperature_day, average_relative_humidity, 
+                          average_windspeed_day, solar_radiation))
     }
     else if(i == 4){
       WeatherDataList[[i]] <- WeatherDataList[[i]] %>% 
         
         # Get only the rows corresponding to dates in the range of dates I
         # have GPS track points from 
-        filter(date >= startdateSlikkenvdHeen & date <= enddateSlikkenvdHeen)
+        filter(date >= startdateSlikkenvdHeen & date <= enddateSlikkenvdHeen) %>% 
+        
+        # Create CCI column in the WeatherDataList
+        mutate(CCI = CCI(average_temperature_day, average_relative_humidity, 
+                          average_windspeed_day, solar_radiation))
     }
   }
   

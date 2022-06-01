@@ -101,6 +101,8 @@ source("~/WisentWishes/R/Results/JacobsIndex/PrecSeasonJI.R")
 # Step 11: Observe influence of precipitation on Jacob's indexes per season
 source("~/WisentWishes/R/Results/JacobsIndex/WindSeasonJI.R")
 
-
+# Step 12: Observe influence of CCI (combined effect of temperature, relative humidity,
+# solar radiation and windspeed) on Jacob's indexes per season
+source("~/WisentWishes/R/Results/JacobsIndex/CCISeasonJI.R")
 
 

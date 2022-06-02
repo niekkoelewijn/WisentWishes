@@ -14,12 +14,12 @@
 
 # Observations
 KraansvlakObs <- make_track(KraansvlakPoints, .x = "X", .y = "Y", .t = "time",
-                            x = KraansvlakPoints$X, y = KraansvlakPoints$Y, 
                             crs = 28992, all_cols = T)
 
 # Pseudo-absences
 KraansvlakAbs <- KraansvlakObs %>% 
-  random_points()
-  )
+  random_points() %>% 
+  extract_covariates(MaskedList$Kraansvlak) %>% 
+  drop_na(LGN2020_5m)
 
 

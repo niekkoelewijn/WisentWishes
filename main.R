@@ -105,4 +105,5 @@ source("~/WisentWishes/R/Results/JacobsIndex/WindSeasonJI.R")
 # solar radiation and windspeed) on Jacob's indexes per season
 source("~/WisentWishes/R/Results/JacobsIndex/CCISeasonJI.R")
 
+load("./_data/fmch.habitat.rda")
 

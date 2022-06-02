@@ -32,7 +32,7 @@ elevation <- amt_fisher_covar$elevation
 popden <- amt_fisher_covar$popden
 
 # Filter for individual Lupe and sort the locations using the timestamps of the observations
-dat <- fisher %>% 
+Lupe <- fisher %>% 
   filter(name == "Lupe") %>% 
   arrange(t_)
 
@@ -47,18 +47,18 @@ reclass_landuse <- function(x) {
 ### HSA ###
 
 # Location data time intervals
-summarize_sampling_rate(dat)
+summarize_sampling_rate(Lupe)
 
 # Plot Lupe location data on elevation map
 plot(elevation)
-points(dat$x_, dat$y_, add = T)
+points(Lupe$x_, Lupe$y_, add = T)
 
 # Generate Available Points
 n.frac <- c(1, 5, 10, 50, 100)
 n.pts <- ceiling(nrow(dat) * n.frac)
 n.rep <- 20
 
-rsf_dat <- dat %>% 
+rsf_Lupe <- Lupe %>% 
   random_points() %>% 
   extract_covariates(landuse) %>% 
   extract_covariates(elevation) %>% 
@@ -70,10 +70,49 @@ rsf_dat <- dat %>%
          weight = ifelse(case_, 1, 1e3)
   )
 
+print(Lupe.dat, n = 3, width = Inf)
 
+# Explore sensitivity of HSF coefficients to the number of available points
+n.frac <- c(1, 5, 10, 50, 100)
+n.pts <- ceiling(nrow(Lupe) * n.frac)
+n.rep <- 20
+
+res1 <- tibble(
+  n.pts = rep(n.pts, n.rep), 
+  frac = rep(n.frac, n.rep), 
+  res = map(
+    n.pts, ~
+      Lupe %>% random_points() %>% 
+      extract_covariates(landuse) %>% 
+      extract_covariates(elevation) %>% 
+      extract_covariates(popden) %>% 
+      mutate(landuseC = reclass_landuse(landuse), 
+             elevation = scale(elevation), 
+             popden = scale(popden),
+             w = ifelse(case_, 1, 5000)) %>% 
+      glm(case_ ~ elevation + popden + landuseC, 
+          weight = w, data = ., family = binomial()) %>% 
+      tidy()))
+
+res1 <- tibble(
+  n.pts = rep(n.pts, n.rep), 
+  frac = rep(n.frac, n.rep), 
+  res = map(
+    n.pts, ~
+      rsf_Lupe %>% random_points(n = 10*nrow(rsf_Lupe)) %>% 
+      extract_covariates(landuse) %>% 
+      extract_covariates(elevation) %>% 
+      extract_covariates(popden) %>% 
+      mutate(landuseC = reclass_landuse(landuse), 
+             elevation = scale(elevation), 
+             popden = scale(popden),
+             w = ifelse(case_, 1, 5000)) %>% 
+      glm(case_ ~ elevation + popden + landuseC, 
+          weight = w, data = Lupe, family = binomial()) %>% 
+      tidy()))
 
 #' Use the largest sample size here for the rest of the paper
-Lupe.dat <- dat %>% 
+Lupe.dat <- Lupe %>% 
   random_points(n = max(n.pts)) %>% 
   extract_covariates(landuse) %>% 
   extract_covariates(elevation) %>% 
@@ -121,6 +160,12 @@ HSF.Lupe3 <- glm(
   weight=w,
   family = binomial)
 summary(HSF.Lupe3)
+
+# Availability of forest and wet within Lupe's MCP
+a.forest <- with(Lupe.dat[Lupe.dat$case_ == 0, ], sum(landuseC == "forest")) 
+a.wet <- with(Lupe.dat[Lupe.dat$case_ == 0, ], sum(landuseC == "wet"))
+# Multiply by the ratio of availabilities
+exp(coef(HSF.Lupe1)["landuseCwet"])*a.wet/a.forest
 
 
 ### iSSA ###

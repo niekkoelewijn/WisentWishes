@@ -21,6 +21,8 @@ if(!"suncalc" %in% rownames(installed.packages())){install.packages("suncalc")}
 if(!"ggplot2" %in% rownames(installed.packages())){install.packages("ggplot2")}
 if(!"reshape" %in% rownames(installed.packages())){install.packages("reshape")}
 if(!"gridExtra" %in% rownames(installed.packages())){install.packages("gridExtra")}
+if(!"amt" %in% rownames(installed.packages())){install.packages("amt")}
+if(!"sjPlot" %in% rownames(installed.packages())){install.packages("sjPlot")}
 
 # Load required packages
 library(rgdal)
@@ -38,6 +40,8 @@ library(suncalc)
 library(ggplot2)
 library(reshape)
 library(gridExtra)
+library(amt)
+library(sjPlot)
 
 ### Clean GPS-input data
 

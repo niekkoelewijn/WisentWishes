@@ -133,7 +133,7 @@ PointsList[[2]] <- Maashorst2016Points
 PointsList[[3]] <- Maashorst20172021Points
 PointsList[[4]] <- Maashorst2022Points
 PointsList[[5]] <- SlikkenvdHeenHabPoints
-PointsList[[6]] <- SlikkenvdHeen
+PointsList[[6]] <- SlikkenvdHeenPoints
 PointsList[[7]] <- VeluweHabPoints
 PointsList[[8]] <- VeluwePoints
 

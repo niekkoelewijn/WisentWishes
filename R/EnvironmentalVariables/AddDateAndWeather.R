@@ -35,7 +35,7 @@ names(DistanceTracks) <- NameVec
 # Path to weather data
 setwd("~/WisentWishes")
 WeatherPath <- "~/WisentWishes/MScThesisData/EnvironmentalVariables/WeatherVariables/"
-WeatherVec <- list.files(path = GPSInputPath, pattern = ".csv")
+WeatherVec <- list.files(path = WeatherPath, pattern = ".csv")
 
 # Load weather data as tibbles
 Deelen <- as_tibble(read.csv(paste0(WeatherPath, WeatherVec[1])))

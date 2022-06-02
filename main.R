@@ -66,7 +66,7 @@ source("~/WisentWishes/R/EnvironmentalVariables/AddDistanceToPoint.R")
 source("~/WisentWishes/R/EnvironmentalVariables/AddDateAndWeather.R")
 
 
-### RESULTS ###
+### JACOBS INDEX ###
 
 # Step 1: Calculate proportion habitat available per study area
 source("~/WisentWishes/R/Results/JacobsIndex/HabitatProportion.R")
@@ -83,27 +83,40 @@ source("~/WisentWishes/R/Results/JacobsIndex/JI_overall.R")
 # Step 5: Clarify relation Jacob's index and proportion availability of a landuse class
 source("~/WisentWishes/R/Results/JacobsIndex/RelationProportionAvailableAndJI.R")
 
-# Step 6: Visualizations in ggplot of JI overall, per study area and relation with availability
+
+### JACOBS INDEX VISUALISATIONS ###
+
+# Step 1: Visualizations in ggplot of JI overall, per study area and relation with availability
 source("~/WisentWishes/R/Results/JacobsIndex/VisualizationsJI.R")
 
-# Step 7: Exploratory Jacob's indexes to see influence of variables
+# Step 2: Exploratory Jacob's indexes to see influence of variables
 source("~/WisentWishes/R/Results/JacobsIndex/VariableInfluenceJI.R")
 
-# Step 8: Observe influence of temperature on Jacob's indexes per season
+# Step 3: Observe influence of temperature on Jacob's indexes per season
 source("~/WisentWishes/R/Results/JacobsIndex/TempSeasonJI.R")
 
-# Step 9: Observe influence of sunshine on Jacob's indexes per season
+# Step 4: Observe influence of sunshine on Jacob's indexes per season
 source("~/WisentWishes/R/Results/JacobsIndex/SunSeasonJI.R")
 
-# Step 10: Observe influence of precipitation on Jacob's indexes per season
+# Step 5: Observe influence of precipitation on Jacob's indexes per season
 source("~/WisentWishes/R/Results/JacobsIndex/PrecSeasonJI.R")
 
-# Step 11: Observe influence of precipitation on Jacob's indexes per season
+# Step 6: Observe influence of precipitation on Jacob's indexes per season
 source("~/WisentWishes/R/Results/JacobsIndex/WindSeasonJI.R")
 
-# Step 12: Observe influence of CCI (combined effect of temperature, relative humidity,
+# Step 7: Observe influence of CCI (combined effect of temperature, relative humidity,
 # solar radiation and windspeed) on Jacob's indexes per season
 source("~/WisentWishes/R/Results/JacobsIndex/CCISeasonJI.R")
 
-load("./_data/fmch.habitat.rda")
+
+### RESOURCE SELECTION FUNCTION ###
+
+# Step 1: Create simple RSF for morning (between 12:00 and 16:00 )
+source("~/WisentWishes/R/Results/RSF/SimpleRSF.R")
+
+
+
+
+
+
 

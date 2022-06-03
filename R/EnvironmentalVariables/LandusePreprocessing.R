@@ -38,6 +38,8 @@ KraansvlakBbox <- KraansvlakStudyArea %>%
   st_bbox() %>% 
   unname()
 
+KraansvlakStudyAreaRDNew <- TransformPolygon(KraansvlakStudyArea)
+
 KraansvlakXmin <- KraansvlakBbox[1] - 100
 KraansvlakXmax <- KraansvlakBbox[3] + 100
 KraansvlakYmin <- KraansvlakBbox[2] - 100
@@ -50,6 +52,10 @@ MaashorstBbox <- MaashorstStudyArea2016 %>%
   TransformPolygon() %>% 
   st_bbox() %>% 
   unname()
+
+MaashorstStudyAreaRDNew2016 <- TransformPolygon(MaashorstStudyArea2016)
+MaashorstStudyAreaRDNew20172021 <- TransformPolygon(MaashorstStudyArea20172021)
+MaashorstStudyAreaRDNew2022 <- TransformPolygon(MaashorstStudyArea2022)
 
 MaashorstXmin <- MaashorstBbox[1] - 100
 MaashorstXmax <- MaashorstBbox[3] + 100
@@ -64,6 +70,9 @@ SlikkenvdHeenBbox <- SlikkenvdHeenStudyArea %>%
   st_bbox() %>% 
   unname()
 
+SlikkenvdHeenStudyAreaRDNew <- TransformPolygon(SlikkenvdHeenStudyArea)
+SlikkenvdHeenHabRDNew <- TransformPolygon(SlikkenvdHeenHabituateArea)
+
 SlikkenvdHeenXmin <- SlikkenvdHeenBbox[1] - 100
 SlikkenvdHeenXmax <- SlikkenvdHeenBbox[3] + 100
 SlikkenvdHeenYmin <- SlikkenvdHeenBbox[2] - 100
@@ -76,6 +85,9 @@ VeluweBbox <- VeluweStudyArea %>%
   TransformPolygon() %>% 
   st_bbox() %>% 
   unname()
+
+VeluweStudyAreaRDNew <- TransformPolygon(VeluweStudyArea)
+VeluweHabRDNew <- TransformPolygon(VeluweHabituateArea)
 
 VeluweXmin <- VeluweBbox[1] - 100
 VeluweXmax <- VeluweBbox[3] + 100

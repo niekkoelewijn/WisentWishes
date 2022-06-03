@@ -49,6 +49,11 @@ reclass_landuse <- function(x) {
 # Location data time intervals
 summarize_sampling_rate(Lupe)
 
+ssf_Lupe <- Lupe %>% 
+  track_resample(rate = minutes(2), tolerance = seconds(20)) %>% 
+  steps_by_burst() %>% 
+  random_steps()
+
 # Plot Lupe location data on elevation map
 plot(elevation)
 points(Lupe$x_, Lupe$y_, add = T)

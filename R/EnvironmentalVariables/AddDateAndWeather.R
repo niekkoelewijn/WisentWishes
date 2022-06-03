@@ -300,7 +300,7 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
     # The first 4 tracks are the Kraansvlak tracks
     if(i %in% 1:4){
       GPSTrackList[[i]] <- GPSTrackList[[i]] %>% 
-        inner_join(WeatherDataList$deKooy, by = "date")
+        inner_join(WeatherDataList$deKooy, by = "date") 
       
     }
     # Track 5 to 15 are Maashorst tracks
@@ -313,7 +313,7 @@ AddTimeWeather <- function(GPSTrackList, WeatherDataList, NameVec){
       GPSTrackList[[i]] <- GPSTrackList[[i]] %>% 
         inner_join(WeatherDataList$Wilhelminadorp, by = "date")
     }
-    # Track 23 - 27 are Veluwe tracks
+    # Track 23 - 47 are Veluwe tracks
     else if(i %in% c(23:47)){
       GPSTrackList[[i]] <- GPSTrackList[[i]] %>% 
         inner_join(WeatherDataList$Deelen, by = "date")

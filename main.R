@@ -111,8 +111,11 @@ source("~/WisentWishes/R/Results/JacobsIndex/CCISeasonJI.R")
 
 ### RESOURCE SELECTION FUNCTION ###
 
-# Step 1: Create simple RSF for morning (between 12:00 and 16:00 )
+# Step 1: Create simple RSF for afternoon (between 12:00 and 16:00 )
 source("~/WisentWishes/R/Results/RSF/SimpleRSF.R")
+
+# Step 2: Create SSF for all data points
+source("~/WisentWishes/R/Results/RSF/SSFAll.R")
 
 
 

@@ -58,8 +58,8 @@ KraansvlakSummerAfternoonData %>%
 # Create RSF
 KraansvlakSummerAfternoonData$w <- ifelse(KraansvlakSummerAfternoonData$case_, 1, 5000)
 KraansvlakSummerAfternoonRSF <- glm(case_ ~ landuse_class, 
-                 data = KraansvlakSummerAfternoonData, weight = w,
-                 family = binomial(link = "logit"))
+                 data = KraansvlakSummerAfternoonData,
+                 family = "binomial")
 
 # Interpret RSF
 summary(KraansvlakSummerAfternoonRSF)
@@ -118,8 +118,8 @@ VeluweSummerAfternoonData %>%
 # Create RSF
 VeluweSummerAfternoonData$w <- ifelse(VeluweSummerAfternoonData$case_, 1, 5000)
 VeluweSummerAfternoonRSF <- glm(case_ ~ landuse_class, 
-                                    data = VeluweSummerAfternoonData, weight = w,
-                                    family = binomial(link = "logit"))
+                                    data = VeluweSummerAfternoonData,
+                                    family = "binomial")
 
 # Interpret RSF
 summary(VeluweSummerAfternoonRSF)
@@ -177,8 +177,8 @@ VeluweHabSummerAfternoonData %>%
 # Create RSF
 VeluweHabSummerAfternoonData$w <- ifelse(VeluweHabSummerAfternoonData$case_, 1, 5000)
 VeluweHabSummerAfternoonRSF <- glm(case_ ~ landuse_class, 
-                                   data = VeluweHabSummerAfternoonData, weight = w,
-                                   family = binomial(link = "logit"))
+                                   data = VeluweHabSummerAfternoonData,
+                                   family = "binomial")
 
 # Interpret RSF
 summary(VeluweHabSummerAfternoonRSF)
@@ -237,8 +237,8 @@ Maashorst20172021SummerAfternoonData %>%
 # Create RSF
 Maashorst20172021SummerAfternoonData$w <- ifelse(Maashorst20172021SummerAfternoonData$case_, 1, 5000)
 Maashorst20172021SummerAfternoonRSF <- glm(case_ ~ landuse_class, 
-                                           data = Maashorst20172021SummerAfternoonData, weight = w,
-                                           family = binomial(link = "logit"))
+                                           data = Maashorst20172021SummerAfternoonData,
+                                           family = "binomial")
 
 # Interpret RSF
 summary(Maashorst20172021SummerAfternoonRSF)
@@ -296,8 +296,8 @@ SlikkenvdHeenHabSummerAfternoonData %>%
 # Create RSF
 SlikkenvdHeenHabSummerAfternoonData$w <- ifelse(SlikkenvdHeenHabSummerAfternoonData$case_, 1, 5000)
 SlikkenvdHeenHabSummerAfternoonRSF <- glm(case_ ~ landuse_class, 
-                                          data = SlikkenvdHeenHabSummerAfternoonData, weight = w,
-                                          family = binomial(link = "logit"))
+                                          data = SlikkenvdHeenHabSummerAfternoonData, 
+                                          family = "binomial")
 
 # Interpret RSF
 summary(SlikkenvdHeenHabSummerAfternoonRSF)
@@ -355,8 +355,8 @@ SlikkenvdHeenSummerAfternoonData %>%
 # Create RSF
 SlikkenvdHeenSummerAfternoonData$w <- ifelse(SlikkenvdHeenSummerAfternoonData$case_, 1, 5000)
 SlikkenvdHeenSummerAfternoonRSF <- glm(case_ ~ landuse_class, 
-                                       data = SlikkenvdHeenSummerAfternoonData, weight = w,
-                                       family = binomial(link = "logit"))
+                                       data = SlikkenvdHeenSummerAfternoonData,
+                                       family = "binomial")
 
 # Interpret RSF
 summary(SlikkenvdHeenSummerAfternoonRSF)
@@ -374,7 +374,7 @@ AllPointsSummerAfternoonRSFdata <- rbind(KraansvlakSummerAfternoonData, VeluweSu
 
 # Create RSF
 AllPointsSummerAfternoonRSF <- glm(case_ ~ landuse_class, 
-                                       data = AllPointsSummerAfternoonRSFdata, weight = w,
+                                       data = AllPointsSummerAfternoonRSFdata, 
                                        family = "binomial")
 
 # Interpret RSF

@@ -115,7 +115,7 @@ source("~/WisentWishes/R/Results/JacobsIndex/CCISeasonJI.R")
 source("~/WisentWishes/R/Results/RSF/SimpleRSF.R")
 
 # Step 2: Create SSF for all data points
-source("~/WisentWishes/R/Results/RSF/SSFAll.R")
+source("~/WisentWishes/R/Results/RSF/SimpleSSF.R")
 
 
 

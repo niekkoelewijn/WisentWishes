@@ -368,14 +368,14 @@ plot_model(SlikkenvdHeenSummerAfternoonRSF)
 ## Create overall RSF dataset
 
 # Bind study areas
-AllPointsSummerAfternoonRSF <- rbind(KraansvlakSummerAfternoonData, VeluweSummerAfternoonData,
+AllPointsSummerAfternoonRSFdata <- rbind(KraansvlakSummerAfternoonData, VeluweSummerAfternoonData,
                                      VeluweHabSummerAfternoonData, SlikkenvdHeenHabSummerAfternoonData,
                                      SlikkenvdHeenSummerAfternoonData, Maashorst20172021SummerAfternoonData)
 
 # Create RSF
 AllPointsSummerAfternoonRSF <- glm(case_ ~ landuse_class, 
-                                       data = AllPointsSummerAfternoonRSF, weight = w,
-                                       family = binomial(link = "logit"))
+                                       data = AllPointsSummerAfternoonRSFdata, weight = w,
+                                       family = "binomial")
 
 # Interpret RSF
 summary(AllPointsSummerAfternoonRSF)

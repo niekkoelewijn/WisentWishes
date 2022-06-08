@@ -10,7 +10,8 @@ if(!"rgdal" %in% rownames(installed.packages())){install.packages("rgdal")}
 if(!"rgeos" %in% rownames(installed.packages())){install.packages("rgeos")}
 if(!"sf" %in% rownames(installed.packages())){install.packages("sf")}
 if(!"raster" %in% rownames(installed.packages())){install.packages("raster")}
-if(!"atlastools" %in% rownames(installed.packages())){install.packages("atlastools")}
+if(!"devtools" %in% rownames(installed.packages())){install.packages("devtools")}
+if(!"atlastools" %in% rownames(installed.packages())){devtools::install_github("pratikunterwegs/atlastools")}
 if(!"tidyverse" %in% rownames(installed.packages())){install.packages("tidyverse")}
 if(!"lubridate" %in% rownames(installed.packages())){install.packages("lubridate")}
 if(!"momentuHMM" %in% rownames(installed.packages())){install.packages("momentuHMM")}
@@ -29,6 +30,7 @@ library(rgdal)
 library(rgeos)
 library(sf)
 library(raster)
+library(devtools)
 library(atlastools)
 library(tidyverse)
 library(lubridate)

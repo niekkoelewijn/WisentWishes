@@ -28,24 +28,24 @@ getRandomPointsStudyArea <- function(TrackDataset, StudyAreasf, StudyAreaCharact
   # Create 10 random points (pseudo-absences) for each observation point
   RandomPoints <- st_sample(StudyAreasf, 10*nrow(ObservedPoints), type = "random")
   
+  # Create tibble with from Random Points
+  RandomPointsTibble <- tibble(.rows = length(RandomPoints))
+  
   # Get X and Y from RandomPoints
-  RSFData <- RandomPoints %>% 
-    
-    # Transform dataset to tibble
-    as_tibble() %>% 
+  RSFData <- RandomPointsTibble %>% 
     
     # Add attributes to the random points. Time attributes with rep, distance
     # and landuse with extract
-    mutate(X = st_coordinates(RandomPoints$geometry)[,1],
-           Y = st_coordinates(RandomPoints$geometry)[,2],
+    mutate(X = st_coordinates(RandomPoints)[,1],
+           Y = st_coordinates(RandomPoints)[,2],
            case = 0,
            time = rep(ObservedPoints$time, each = 10),
            temp = rep(ObservedPoints$temp, each = 10),
            hdop = rep(ObservedPoints$hdop, each = 10),
-           landuse_code = raster::extract(MaskedList[[StudyAreaCharacter]]),
-           WaterDistance = raster::extract(WaterDistanceList[[StudyAreaCharacter]]),
-           ForestDistance = raster::extract(ForestDistanceList[[StudyAreaCharacter]]),
-           RoadDistance = raster::extract(RoadDistanceList[[StudyAreaCharacter]]),
+           landuse_code = raster::extract(x = MaskedList[[StudyAreaCharacter]], y = st_sf(RandomPoints)),
+           WaterDistance = raster::extract(x = WaterDistanceList[[StudyAreaCharacter]], y = st_sf(RandomPoints)),
+           ForestDistance = raster::extract(x = ForestDistanceList[[StudyAreaCharacter]], y = st_sf(RandomPoints)),
+           RoadDistance = raster::extract(x = RoadDistanceList[[StudyAreaCharacter]], y = st_sf(RandomPoints)),
            date = rep(ObservedPoints$date, each = 10),
            hms = rep(ObservedPoints$hms, each = 10),
            weekday = rep(ObservedPoints$weekday, each = 10),
@@ -80,3 +80,14 @@ RSFDataSlikkenvdHeenHab <- getRandomPointsStudyArea(SlikkenvdHeenHabPoints, Slik
 RSFDataSlikkenvdHeen <- getRandomPointsStudyArea(SlikkenvdHeenPoints, SlikkenvdHeenStudyAreaRDNew, "SlikkenvdHeen")
 RSFDataVeluweHab <- getRandomPointsStudyArea(VeluweHabPoints, VeluweHabRDNew, "VeluweHabituate")
 RSFDataVeluwe <- getRandomPointsStudyArea(VeluwePoints, VeluweStudyAreaRDNew, "Veluwe")
+
+# Bind the different study areas to get 1 RSF dataset
+RSFTotal <- bind_rows(RSFDataKraansvlak, RSFDataMaashorst2016, 
+                      RSFDataMaashorst20172021, RSFDataMaashorst2022, 
+                      RSFDataSlikkenvdHeenHab, RSFDataSlikkenvdHeen,
+                      RSFDataVeluweHab, RSFDataVeluwe)
+
+
+
+
+

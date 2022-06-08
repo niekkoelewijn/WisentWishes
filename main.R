@@ -117,6 +117,9 @@ source("~/WisentWishes/R/Results/RSF/SimpleRSF.R")
 # Step 2: Create SSF for all data points
 source("~/WisentWishes/R/Results/RSF/SimpleSSF.R")
 
+# Step 3: Create definitive RSF
+source("~/WisentWishes/R/Results/RSF/definitiveRSF.R")
+
 
 
 

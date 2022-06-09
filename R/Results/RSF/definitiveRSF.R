@@ -10,7 +10,7 @@
 ## Create random points for each study area
 
 # Create function to prepare data for RSF
-getRandomPointsStudyArea <- function(TrackDataset, StudyAreasf, StudyAreaCharacter){
+getRandomPointsStudyArea <- function(TrackDataset, StudyAreasf, StudyRegion, StudyArea){
   
   # Get copy of input track dataset
   ObservedPoints <- TrackDataset
@@ -42,10 +42,10 @@ getRandomPointsStudyArea <- function(TrackDataset, StudyAreasf, StudyAreaCharact
            time = rep(ObservedPoints$time, each = 10),
            temp = rep(ObservedPoints$temp, each = 10),
            hdop = rep(ObservedPoints$hdop, each = 10),
-           landuse_code = raster::extract(x = MaskedList[[StudyAreaCharacter]], y = st_sf(RandomPoints)),
-           WaterDistance = raster::extract(x = WaterDistanceList[[StudyAreaCharacter]], y = st_sf(RandomPoints)),
-           ForestDistance = raster::extract(x = ForestDistanceList[[StudyAreaCharacter]], y = st_sf(RandomPoints)),
-           RoadDistance = raster::extract(x = RoadDistanceList[[StudyAreaCharacter]], y = st_sf(RandomPoints)),
+           landuse_code = raster::extract(x = LandUseList[[StudyRegion]], y = st_sf(RandomPoints)),
+           WaterDistance = raster::extract(x = WaterDistanceList[[StudyArea]], y = st_sf(RandomPoints)),
+           ForestDistance = raster::extract(x = ForestDistanceList[[StudyArea]], y = st_sf(RandomPoints)),
+           RoadDistance = raster::extract(x = RoadDistanceList[[StudyArea]], y = st_sf(RandomPoints)),
            date = rep(ObservedPoints$date, each = 10),
            hms = rep(ObservedPoints$hms, each = 10),
            weekday = rep(ObservedPoints$weekday, each = 10),
@@ -72,14 +72,14 @@ getRandomPointsStudyArea <- function(TrackDataset, StudyAreasf, StudyAreaCharact
 }
 
 # Call getRandomPointsStudyArea per study area
-RSFDataKraansvlak <- getRandomPointsStudyArea(KraansvlakPoints, KraansvlakStudyAreaRDNew, "Kraansvlak")
-RSFDataMaashorst2016 <- getRandomPointsStudyArea(Maashorst2016Points, MaashorstStudyAreaRDNew2016, "Maashorst2016")
-RSFDataMaashorst20172021 <- getRandomPointsStudyArea(Maashorst20172021Points, MaashorstStudyAreaRDNew20172021, "Maashorst20172021")
-RSFDataMaashorst2022 <- getRandomPointsStudyArea(Maashorst2022Points, MaashorstStudyAreaRDNew2022, "Maashorst2022")
-RSFDataSlikkenvdHeenHab <- getRandomPointsStudyArea(SlikkenvdHeenHabPoints, SlikkenvdHeenHabRDNew, "SlikkenvdHeenHabituate")
-RSFDataSlikkenvdHeen <- getRandomPointsStudyArea(SlikkenvdHeenPoints, SlikkenvdHeenStudyAreaRDNew, "SlikkenvdHeen")
-RSFDataVeluweHab <- getRandomPointsStudyArea(VeluweHabPoints, VeluweHabRDNew, "VeluweHabituate")
-RSFDataVeluwe <- getRandomPointsStudyArea(VeluwePoints, VeluweStudyAreaRDNew, "Veluwe")
+RSFDataKraansvlak <- getRandomPointsStudyArea(KraansvlakPoints, KraansvlakStudyAreaRDNew, "KraansvlakLandUse","Kraansvlak")
+RSFDataMaashorst2016 <- getRandomPointsStudyArea(Maashorst2016Points, MaashorstStudyAreaRDNew2016, "MaashorstLandUse", "Maashorst2016")
+RSFDataMaashorst20172021 <- getRandomPointsStudyArea(Maashorst20172021Points, MaashorstStudyAreaRDNew20172021,"MaashorstLandUse", "Maashorst20172021")
+RSFDataMaashorst2022 <- getRandomPointsStudyArea(Maashorst2022Points, MaashorstStudyAreaRDNew2022, "MaashorstLandUse", "Maashorst2022")
+RSFDataSlikkenvdHeenHab <- getRandomPointsStudyArea(SlikkenvdHeenHabPoints, SlikkenvdHeenHabRDNew, "SlikkenvdHeenLandUse", "SlikkenvdHeenHabituate")
+RSFDataSlikkenvdHeen <- getRandomPointsStudyArea(SlikkenvdHeenPoints, SlikkenvdHeenStudyAreaRDNew, "SlikkenvdHeenLandUse", "SlikkenvdHeen")
+RSFDataVeluweHab <- getRandomPointsStudyArea(VeluweHabPoints, VeluweHabRDNew, "VeluweLandUse", "VeluweHabituate")
+RSFDataVeluwe <- getRandomPointsStudyArea(VeluwePoints, VeluweStudyAreaRDNew, "VeluweLandUse", "Veluwe")
 
 # Bind the different study areas to get 1 RSF dataset
 RSFTotal <- bind_rows(RSFDataKraansvlak, RSFDataMaashorst2016, 

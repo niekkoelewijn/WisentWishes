@@ -59,6 +59,16 @@ for(i in seq_along(MaskedList)){
   
 }
 
+# Name distance lists
+names(WaterDistanceList) <- c("Kraansvlak", "Maashorst2016", "Maashorst20172021",
+                       "Maashorst2022", "SlikkenvdHeenHabituate",
+                       "SlikkenvdHeen", "VeluweHabituate", "Veluwe")
+names(ForestDistanceList) <- c("Kraansvlak", "Maashorst2016", "Maashorst20172021",
+                       "Maashorst2022", "SlikkenvdHeenHabituate",
+                       "SlikkenvdHeen", "VeluweHabituate", "Veluwe")
+names(RoadDistanceList) <- c("Kraansvlak", "Maashorst2016", "Maashorst20172021",
+                       "Maashorst2022", "SlikkenvdHeenHabituate",
+                       "SlikkenvdHeen", "VeluweHabituate", "Veluwe")
 
 ## Create SSF with multiple animals
 

@@ -19,11 +19,11 @@ getRandomPointsStudyArea <- function(TrackDataset, StudyAreasf, StudyRegion, Stu
   ObservedPoints <- ObservedPoints %>% 
     
     # Create case attribute
-    mutate(case = 1) %>% 
+    mutate(case = T) %>% 
     
     # Remove speed, angle, turning angle and step length attribute
     select(-c(ID, track_row_ID, speed_in, speed_out, angle, track_ID,
-              time_interval, step_length))
+              time_interval, step_length, time_coded))
   
   # Create 10 random points (pseudo-absences) for each observation point
   RandomPoints <- st_sample(StudyAreasf, 10*nrow(ObservedPoints), type = "random")
@@ -38,7 +38,7 @@ getRandomPointsStudyArea <- function(TrackDataset, StudyAreasf, StudyRegion, Stu
     # and landuse with extract
     mutate(X = st_coordinates(RandomPoints)[,1],
            Y = st_coordinates(RandomPoints)[,2],
-           case = 0,
+           case = F,
            time = rep(ObservedPoints$time, each = 10),
            temp = rep(ObservedPoints$temp, each = 10),
            hdop = rep(ObservedPoints$hdop, each = 10),
@@ -88,6 +88,111 @@ RSFTotal <- bind_rows(RSFDataKraansvlak, RSFDataMaashorst2016,
                       RSFDataVeluweHab, RSFDataVeluwe)
 
 
+## Create RSF model with best fit
 
+# Visualize proportion used per landuse class, used and available
+RSFTotal %>% 
+  group_by(case, landuse_class) %>% 
+  summarize(n = n()) %>% 
+  mutate(prop = n / sum(n), 
+         label = paste0(round(prop * 100, 1), "%")) %>% 
+  ggplot(aes(landuse_class, prop, fill = case, group=case,label = label)) + 
+  geom_col(position = position_dodge2()) +
+  geom_text(size = 4, vjust = -0.25, position = position_dodge(width = 1)) +
+  labs(x = "Land use class", y = "Proportion", fill = "case")+
+  scale_fill_brewer(palette = "Paired", name="case", 
+                    breaks=c("FALSE", "TRUE"), labels=c("Available", "Used")) +
+  theme_light()
+
+# Fit first simple model
+Landuse_class_RSF <- glm(case ~ landuse_class
+                           , data = RSFTotal, family = binomial(link = "logit"),
+                           offset = rep(qlogis(1/11), nrow(RSFTotal)))
+
+
+# Interpret first simple model
+summary(Landuse_class_RSF)
+
+# View first simple model
+plot_model(Landuse_class_RSF)
+
+# Add landuse dummies to model
+coniferous_forest <- ifelse(RSFTotal$landuse_class == 'coniferous forest', 1, 0)
+deciduous_forest <- ifelse(RSFTotal$landuse_class == 'deciduous forest', 1, 0)
+fresh_water <- ifelse(RSFTotal$landuse_class == 'fresh water', 1, 0)
+grassland <- ifelse(RSFTotal$landuse_class == 'grassland', 1, 0)
+grassy_heathland <- ifelse(RSFTotal$landuse_class == 'grassy heathland', 1, 0)
+heathland <- ifelse(RSFTotal$landuse_class == 'heathland', 1, 0)
+road <- ifelse(RSFTotal$landuse_class == 'road', 1, 0)
+shrubland <- ifelse(RSFTotal$landuse_class == 'shrubland', 1, 0)
+swamp <- ifelse(RSFTotal$landuse_class == 'swamp', 1, 0)
+
+RSFClassDummy <- RSFTotal %>% 
+  mutate(coniferous_forest = coniferous_forest,
+         deciduous_forest = deciduous_forest,
+         fresh_water = fresh_water,
+         grassland = grassland,
+         grassy_heathland = grassy_heathland,
+         heathland = heathland,
+         road = road,
+         shrubland = shrubland,
+         swamp = swamp)
+
+# Fit model to dataset with dummies
+Landuse_Dummy_class_RSF <- glm(case ~ coniferous_forest + deciduous_forest +
+                               fresh_water + grassland + grassy_heathland +
+                               grassy_heathland + heathland + road +
+                               shrubland + swamp, 
+                             data = RSFClassDummy, family = binomial(link = "logit"),
+                             offset = rep(qlogis(1/11), nrow(RSFClassDummy)))
+
+# Interpret model
+summary(Landuse_Dummy_class_RSF)
+
+# View first simple model
+plot_model(Landuse_Dummy_class_RSF)
+
+# Check wether AIC's are the same:
+AIC(Landuse_Dummy_class_RSF) == AIC(Landuse_class_RSF) # TRUE, both 547134.3
+
+
+## Expand the model with CCI (perceived temperature)
+
+# Fit model to dataset with dummies for landuse classes, and add interaction with 
+# CCI. With temperature as factor.
+CCI_in_Model_RSF <- glm(case ~ coniferous_forest + deciduous_forest +
+                               fresh_water + grassland + grassy_heathland +
+                               grassy_heathland + heathland + road +
+                               shrubland + swamp + scale(CCI) + coniferous_forest:scale(CCI) + 
+                               deciduous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                               grassland:scale(CCI) + grassy_heathland:scale(CCI) +
+                               grassy_heathland:scale(CCI) + heathland:scale(CCI) + 
+                               road:scale(CCI) + shrubland:scale(CCI) + swamp:scale(CCI), 
+                             data = RSFClassDummy, family = binomial(link = "logit"),
+                             offset = rep(qlogis(1/11), nrow(RSFClassDummy)))
+# Interpret model
+summary(CCI_in_Model_RSF)
+
+# Get AIC and compare
+AIC(CCI_in_Model_RSF) # 546050.1, 951 lower than Landuse_Dummy_class_RSF
+
+# Fit model to dataset with dummies for landuse classes, and add interaction with 
+# CCI. Without temperature as factor.
+CCI_out_Model_RSF <- glm(case ~ coniferous_forest + deciduous_forest +
+                          fresh_water + grassland + grassy_heathland +
+                          grassy_heathland + heathland + road +
+                          shrubland + swamp + coniferous_forest:scale(CCI) + 
+                          deciduous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                          grassland:scale(CCI) + grassy_heathland:scale(CCI) +
+                          grassy_heathland:scale(CCI) + heathland:scale(CCI) + 
+                          road:scale(CCI) + shrubland:scale(CCI) + swamp:scale(CCI), 
+                        data = RSFClassDummy, family = binomial(link = "logit"),
+                        offset = rep(qlogis(1/11), nrow(RSFClassDummy)))
+# Interpret model
+summary(CCI_out_Model_RSF)
+
+# Get AIC and compare
+AIC(CCI_out_Model_RSF, CCI_in_Model_RSF) # 546052.4, 2.3 higher than Landuse_Dummy_class_RSF
+anova(CCI_out_Model_RSF, CCI_in_Model_RSF)
 
 

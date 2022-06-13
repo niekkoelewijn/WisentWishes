@@ -23,7 +23,20 @@ getRandomPointsStudyArea <- function(TrackDataset, StudyAreasf, StudyRegion, Stu
     
     # Remove speed, angle, turning angle and step length attribute
     select(-c(ID, track_row_ID, speed_in, speed_out, angle, track_ID,
-              time_interval, step_length, time_coded))
+              time_interval, step_length, time_coded)) %>% 
+    
+    # Add proportional availability per landuse class to observed points dataset
+    mutate(grassland_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),2]),
+           conforest_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),4]),
+           decforest_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),5]),
+           freshwater_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),6]),
+           freshwater_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),6]),
+           road_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),9]),
+           baresoil_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),10]),
+           swamp_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),11]),
+           shrub_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),12]),
+           heathland_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),13]),
+           grassheath_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),14]))
   
   # Create 10 random points (pseudo-absences) for each observation point
   RandomPoints <- st_sample(StudyAreasf, 10*nrow(ObservedPoints), type = "random")
@@ -59,7 +72,18 @@ getRandomPointsStudyArea <- function(TrackDataset, StudyAreasf, StudyRegion, Stu
            average_relative_humidity = rep(ObservedPoints$average_relative_humidity, each = 10),
            precipitation_duration_day = rep(ObservedPoints$precipitation_duration_day, each = 10),
            total_precipitation_day = rep(ObservedPoints$total_precipitation_day, each = 10),
-           CCI = rep(ObservedPoints$CCI, each = 10)) %>% 
+           CCI = rep(ObservedPoints$CCI, each = 10),
+           grassland_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),2]),
+           conforest_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),4]),
+           decforest_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),5]),
+           freshwater_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),6]),
+           freshwater_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),6]),
+           road_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),9]),
+           baresoil_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),10]),
+           swamp_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),11]),
+           shrub_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),12]),
+           heathland_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),13]),
+           grassheath_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),14])) %>%
     
     # Join with the LUT to get landuse classes as names
     inner_join(LUTLanduseClasses, by = "landuse_code") %>% 
@@ -233,7 +257,7 @@ RSFIntZero <- RSFIntZero %>%
          night = night)
 
 # Create empty data.frame with size 11*43
-UserDefinedExtraClasses <- tibble(data.frame(matrix(data = NA, nrow = 11, ncol = 43)))
+UserDefinedExtraClasses <- tibble(data.frame(matrix(data = NA, nrow = 11, ncol = 53)))
 for(i in seq_along(UserDefinedExtraClasses)){
   for(j in 1:nrow(UserDefinedExtraClasses)){
     if(i == 1){
@@ -313,9 +337,39 @@ for(i in seq_along(UserDefinedExtraClasses)){
       UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$CCI)
     }
     if(i == 25){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$grassland_avail)
+    }
+    if(i == 26){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$conforest_avail)
+    }
+    if(i == 27){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$decforest_avail)
+    }
+    if(i == 28){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$freshwater_avail)
+    }
+    if(i == 29){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$road_avail)
+    }
+    if(i == 30){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$baresoil_avail)
+    }
+    if(i == 31){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$swamp_avail)
+    }
+    if(i == 32){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$shrub_avail)
+    }
+    if(i == 33){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$heathland_avail)
+    }
+    if(i == 34){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$grassheath_avail)
+    }
+    if(i == 35){
       UserDefinedExtraClasses[j,i] <- "A"
     }
-    if(i >= 26){
+    if(i >= 36){
       UserDefinedExtraClasses[j,i] <- 0
     }
   }
@@ -346,9 +400,6 @@ Landuse_class_RSFIntZeroUD <- glm(case ~ landuse_class,
 
 # Interpret first simple model
 summary(Landuse_class_RSFIntZeroUD)
-
-# View first simple model
-plot_model(Landuse_class_RSFIntZeroUD)
 
 # Fit model that compares each user defined dummy of landuse class with case
 Landuse_Dummy_class_RSFIntZeroUD <- glm(case ~ bare_soil + coniferous_forest + deciduous_forest +
@@ -411,7 +462,7 @@ Landuse_CCI_season_RSFIntZeroUD <- glm(case ~  bare_soil + coniferous_forest + d
                                 data = RSFIntZeroUD, family = binomial(link = "logit"),
                                 offset = rep(qlogis(1/11), nrow(RSFIntZeroUD)))
 
-# Remove innfluence seasons on selection bare soil
+# Remove influence seasons on selection bare soil
 #Landuse_CCI_season_noBS_RSFIntZeroUD <- update(Landuse_CCI_season_RSFIntZeroUD, formula = ~ . - bare_soil:summer - bare_soil:spring - bare_soil:autumn - bare_soil:winter)
 
 # Interpret model
@@ -486,6 +537,11 @@ summary(Landuse_CCI_season_daytime_RSFdaytime)
 AIC(Landuse_CCI_season_RSFIntZeroUD, Landuse_CCI_season_daytime_RSFdaytime) 
 # AIC reduced by 3757.8 compared to model with landuse classes and interaction with CCI
 
+# Remove previous models to create more disk space
+rm(Landuse_class_RSF, Landuse_Dummy_class_RSF, CCI_in_Model_RSF, CCI_out_Model_RSF, 
+   Landuse_class_RSFIntZeroUD, Landuse_Dummy_class_RSFIntZeroUD, Landuse_CCI_RSFIntZeroUD,
+   Landuse_CCI_season_RSFIntZeroUD)
+
 # Create model in which 30 variables with singularities are removed
 Landuse_CCI_season_daytime_singrm_RSFdaytime <- glm(case ~  bare_soil + coniferous_forest + deciduous_forest +
                                                fresh_water + grassland + grassy_heathland +
@@ -524,6 +580,7 @@ summary(Landuse_CCI_season_daytime_singrm_RSFdaytime)
 # Compare models
 AIC(Landuse_CCI_season_daytime_singrm_RSFdaytime, Landuse_CCI_season_daytime_RSFdaytime) 
 # AIC is the same
+rm(Landuse_CCI_season_daytime_RSFdaytime)
 
 # Create model in which non significant variables are removed
 significant_variables_RSF <- glm(case ~ coniferous_forest:scale(CCI) +
@@ -559,6 +616,7 @@ summary(significant_variables_RSF)
 # Compare AIC
 AIC(Landuse_CCI_season_daytime_singrm_RSFdaytime, significant_variables_RSF) 
 # AIC is 7805.7 higher, so keep non-significant relations in
+rm(significant_variables_RSF)
 
 # Expand model with distances to water, forest and road
 Landuse_CCI_season_daytime_singrm_distance_RSFdaytime <- glm(case ~  bare_soil + coniferous_forest + deciduous_forest +
@@ -589,8 +647,8 @@ Landuse_CCI_season_daytime_singrm_distance_RSFdaytime <- glm(case ~  bare_soil +
                                                       road:peaksixes + road:peaktwelves +
                                                       shrubland:peaksixes + shrubland:peaktwelves +
                                                       swamp:peaksixes + swamp:peaktwelves +
-                                                      scale(ForestDistance) + scale(WaterDistance) +
-                                                      scale(RoadDistance), 
+                                                      scale(log(1+ForestDistance)) + scale(log(1+WaterDistance)) +
+                                                      scale(log(1+RoadDistance)), 
                                                     data = RSFdaytime, family = binomial(link = "logit"),
                                                     offset = rep(qlogis(1/11), nrow(RSFdaytime)))
 
@@ -599,4 +657,110 @@ summary(Landuse_CCI_season_daytime_singrm_distance_RSFdaytime)
 
 # Compare models
 AIC(Landuse_CCI_season_daytime_singrm_RSFdaytime, Landuse_CCI_season_daytime_singrm_distance_RSFdaytime) 
-# AIC is 785.2 lower
+# AIC is 271.2 lower
+
+# Expand model with interactions between distances to water and forest with CCI
+Landuse_CCI_season_daytime_singrm_distanceint_RSFdaytime <- glm(case ~  bare_soil + coniferous_forest + deciduous_forest +
+                                                               fresh_water + grassland + grassy_heathland +
+                                                               grassy_heathland + heathland + road +
+                                                               shrubland + swamp + bare_soil:scale(CCI) + coniferous_forest:scale(CCI) + 
+                                                               deciduous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                                                               grassland:scale(CCI) + grassy_heathland:scale(CCI) +
+                                                               grassy_heathland:scale(CCI) + heathland:scale(CCI) + 
+                                                               road:scale(CCI) + shrubland:scale(CCI) + swamp:scale(CCI) +
+                                                               bare_soil:summer + bare_soil:spring + bare_soil:winter+
+                                                               coniferous_forest:summer + coniferous_forest:spring + coniferous_forest:winter +
+                                                               deciduous_forest:summer + deciduous_forest:spring + deciduous_forest:winter + 
+                                                               fresh_water:summer + fresh_water:spring + fresh_water:winter +
+                                                               grassland:summer + grassland:spring + grassland:winter +
+                                                               heathland:summer + heathland:spring + heathland:winter +
+                                                               grassy_heathland:summer + grassy_heathland:spring + grassy_heathland:winter +
+                                                               road:summer + road:spring + road:winter +
+                                                               shrubland:summer + shrubland:spring + shrubland:winter +
+                                                               swamp:summer + swamp:spring + swamp:winter +
+                                                               bare_soil:peaksixes + bare_soil:peaktwelves+
+                                                               coniferous_forest:peaksixes + coniferous_forest:peaktwelves +
+                                                               deciduous_forest:peaksixes + deciduous_forest:peaktwelves + 
+                                                               fresh_water:peaksixes + fresh_water:peaktwelves +
+                                                               grassland:peaksixes + grassland:peaktwelves +
+                                                               heathland:peaksixes + heathland:peaktwelves +
+                                                               grassy_heathland:peaksixes + grassy_heathland:peaktwelves +
+                                                               road:peaksixes + road:peaktwelves +
+                                                               shrubland:peaksixes + shrubland:peaktwelves +
+                                                               swamp:peaksixes + swamp:peaktwelves +
+                                                               scale(log(1+ForestDistance)) + scale(log(1+WaterDistance)) +
+                                                               scale(log(1+RoadDistance)) + scale(log(1+ForestDistance)):scale(CCI) +
+                                                               scale(log(1+WaterDistance)):scale(CCI), 
+                                                             data = RSFdaytime, family = binomial(link = "logit"),
+                                                             offset = rep(qlogis(1/11), nrow(RSFdaytime)))
+
+# Interpret model
+summary(Landuse_CCI_season_daytime_singrm_distanceint_RSFdaytime)
+
+# Compare models
+AIC(Landuse_CCI_season_daytime_singrm_distance_RSFdaytime, Landuse_CCI_season_daytime_singrm_distanceint_RSFdaytime) 
+# AIC is 637.1 lower
+rm(Landuse_CCI_season_daytime_singrm_distance_RSFdaytime, Landuse_CCI_season_daytime_singrm_RSFdaytime)
+
+# Expand model with interactions between landuse class and proportional availability
+Landuse_CCI_season_daytime_singrm_distanceint_avail_RSFdaytime <- glm(case ~  bare_soil + coniferous_forest + deciduous_forest +
+                                                                  fresh_water + grassland + grassy_heathland + heathland + road +
+                                                                  shrubland + swamp + bare_soil:scale(CCI) + coniferous_forest:scale(CCI) + 
+                                                                  deciduous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                                                                  grassland:scale(CCI) + grassy_heathland:scale(CCI) +
+                                                                  grassy_heathland:scale(CCI) + heathland:scale(CCI) + 
+                                                                  road:scale(CCI) + shrubland:scale(CCI) + swamp:scale(CCI) +
+                                                                  bare_soil:summer + bare_soil:spring + bare_soil:winter+
+                                                                  coniferous_forest:summer + coniferous_forest:spring + coniferous_forest:winter +
+                                                                  deciduous_forest:summer + deciduous_forest:spring + deciduous_forest:winter + 
+                                                                  fresh_water:summer + fresh_water:spring + fresh_water:winter +
+                                                                  grassland:summer + grassland:spring + grassland:winter +
+                                                                  heathland:summer + heathland:spring + heathland:winter +
+                                                                  grassy_heathland:summer + grassy_heathland:spring + grassy_heathland:winter +
+                                                                  road:summer + road:spring + road:winter +
+                                                                  shrubland:summer + shrubland:spring + shrubland:winter +
+                                                                  swamp:summer + swamp:spring + swamp:winter +
+                                                                  bare_soil:peaksixes + bare_soil:peaktwelves+
+                                                                  coniferous_forest:peaksixes + coniferous_forest:peaktwelves +
+                                                                  deciduous_forest:peaksixes + deciduous_forest:peaktwelves + 
+                                                                  fresh_water:peaksixes + fresh_water:peaktwelves +
+                                                                  grassland:peaksixes + grassland:peaktwelves +
+                                                                  heathland:peaksixes + heathland:peaktwelves +
+                                                                  grassy_heathland:peaksixes + grassy_heathland:peaktwelves +
+                                                                  road:peaksixes + road:peaktwelves +
+                                                                  shrubland:peaksixes + shrubland:peaktwelves +
+                                                                  swamp:peaksixes + swamp:peaktwelves +
+                                                                  scale(log(1+ForestDistance)) + scale(log(1+WaterDistance)) +
+                                                                  scale(log(1+RoadDistance)) + scale(log(1+ForestDistance)):scale(CCI) +
+                                                                  scale(log(1+WaterDistance)):scale(CCI) +
+                                                                  bare_soil:baresoil_avail + coniferous_forest:conforest_avail + deciduous_forest:decforest_avail +
+                                                                  fresh_water:freshwater_avail + grassland:grassland_avail + grassy_heathland:grassheath_avail +
+                                                                  heathland:heathland_avail + road:road_avail +
+                                                                  shrubland:shrub_avail + swamp:swamp_avail , 
+                                                                data = RSFdaytime, family = binomial(link = "logit"),
+                                                                offset = rep(qlogis(1/11), nrow(RSFdaytime)))
+
+
+# Interpret model
+summary(Landuse_CCI_season_daytime_singrm_distanceint_avail_RSFdaytime)
+
+# Compare models
+AIC(Landuse_CCI_season_daytime_singrm_distanceint_RSFdaytime, Landuse_CCI_season_daytime_singrm_distanceint_avail_RSFdaytime) 
+# AIC is 6648.7 lower
+rm(Landuse_CCI_season_daytime_singrm_distanceint_RSFdaytime, Landuse_CCI_season_daytime_singrm_distance_RSFdaytime)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

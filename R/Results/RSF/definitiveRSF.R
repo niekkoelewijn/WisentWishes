@@ -193,6 +193,410 @@ summary(CCI_out_Model_RSF)
 
 # Get AIC and compare
 AIC(CCI_out_Model_RSF, CCI_in_Model_RSF) # 546052.4, 2.3 higher than Landuse_Dummy_class_RSF
-anova(CCI_out_Model_RSF, CCI_in_Model_RSF)
+# I will not include CCI as a factor, as this doesnt make sence from a ecological point of view
 
 
+## Add rows with self determined landuse class and season to get intercept of 0
+
+# Add bare soil column to RSF dataset
+bare_soil <- ifelse(RSFTotal$landuse_class == 'bare soil', 1, 0)
+
+RSFIntZero <- RSFClassDummy %>% 
+  mutate(bare_soil = bare_soil)
+
+# Create dummy variables for all seasons
+spring <- ifelse(RSFTotal$season == 'spring', 1, 0)
+summer <- ifelse(RSFTotal$season == 'summer', 1, 0)
+autumn <- ifelse(RSFTotal$season == 'autumm', 1, 0)
+winter <- ifelse(RSFTotal$season == 'winter', 1, 0)
+
+RSFIntZero <- RSFIntZero %>% 
+  mutate(spring = spring,
+         summer = summer,
+         autumn = autumn,
+         winter = winter)
+
+# Create dummy variables for all day types
+weekend <- ifelse(RSFTotal$day_type == 'weekend', 1, 0)
+business_day <- ifelse(RSFTotal$day_type == 'business day', 1, 0)
+
+RSFIntZero <- RSFIntZero %>% 
+  mutate(weekend = weekend,
+         business_day = business_day)
+
+# Create dummy variables for day and night
+day <- ifelse(RSFTotal$day_night == 'day', 1, 0)
+night <- ifelse(RSFTotal$day_night == 'night', 1, 0)
+
+RSFIntZero <- RSFIntZero %>% 
+  mutate(day = day,
+         night = night)
+
+# Create empty data.frame with size 11*43
+UserDefinedExtraClasses <- tibble(data.frame(matrix(data = NA, nrow = 11, ncol = 43)))
+for(i in seq_along(UserDefinedExtraClasses)){
+  for(j in 1:nrow(UserDefinedExtraClasses)){
+    if(i == 1){
+      UserDefinedExtraClasses[j,i] <- sample(RSFClassDummy$X, 1)
+    }
+    if(i == 2){
+      UserDefinedExtraClasses[j,i] <- sample(RSFClassDummy$Y, 1)
+    }
+    if(i == 3){
+      if(j == 1){
+        UserDefinedExtraClasses[j,i] <- T
+      }else{
+        UserDefinedExtraClasses[j,i] <- F
+      }
+    }
+    if(i == 4){
+      UserDefinedExtraClasses[j,i] <- sample(RSFClassDummy$time, 1)
+    }
+    if(i == 5){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$temp)
+    }
+    if(i == 6){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$hdop)
+    }
+    if(i == 7){
+      UserDefinedExtraClasses[j,i] <- 14
+    }
+    if(i == 8){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$WaterDistance)
+    }
+    if(i == 9){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$ForestDistance)
+    }
+    if(i == 10){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$RoadDistance)
+    }
+    if(i == 11){
+      UserDefinedExtraClasses[j,i] <- sample(RSFClassDummy$date, 1)
+    }
+    if(i == 12){
+      UserDefinedExtraClasses[j,i] <- sample(RSFClassDummy$hms, 1)
+    }
+    if(i == 13){
+      UserDefinedExtraClasses[j,i] <- "A"
+    }
+    if(i == 14){
+      UserDefinedExtraClasses[j,i] <- "A"
+    }
+    if(i == 15){
+      UserDefinedExtraClasses[j,i] <- "A"
+    }
+    if(i == 16){
+      UserDefinedExtraClasses[j,i] <- "A"
+    }
+    if(i == 17){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$average_windspeed_day)
+    }
+    if(i == 18){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$average_temperature_day)
+    }
+    if(i == 19){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$sunshine_duration_day)
+    }
+    if(i == 20){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$solar_radiation)
+    }
+    if(i == 21){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$average_relative_humidity)
+    }
+    if(i == 22){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$precipitation_duration_day)
+    }
+    if(i == 23){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$total_precipitation_day)
+    }
+    if(i == 24){
+      UserDefinedExtraClasses[j,i] <- mean(RSFClassDummy$CCI)
+    }
+    if(i == 25){
+      UserDefinedExtraClasses[j,i] <- "A"
+    }
+    if(i >= 26){
+      UserDefinedExtraClasses[j,i] <- 0
+    }
+  }
+}
+colnames(UserDefinedExtraClasses) <- colnames(RSFIntZero)
+
+
+# Bind rows to RSFIntZero
+RSFIntZeroUD <- RSFIntZero %>% 
+  bind_rows(UserDefinedExtraClasses)
+
+# Make factors out of the category columns
+RSFIntZeroUD <- RSFIntZeroUD %>% 
+  mutate(weekday = factor(weekday, levels = c(sort(unique(weekday)))),
+         day_night = factor(day_night, levels = c(sort(unique(day_night)))),
+         season = factor(season, levels = c(sort(unique(season)))),
+         landuse_class = factor(landuse_class, levels = c(sort(unique(landuse_class)))),
+         day_type = factor(day_type, levels = c(sort(unique(day_type)))))
+
+
+## Reproduce earlier models to see effect
+
+# Fit model that compares landuse and case
+Landuse_class_RSFIntZeroUD <- glm(case ~ landuse_class, 
+                                  data = RSFIntZeroUD, family = binomial(link = "logit"),
+                                  offset = rep(qlogis(1/11), nrow(RSFIntZeroUD)))
+
+
+# Interpret first simple model
+summary(Landuse_class_RSFIntZeroUD)
+
+# View first simple model
+plot_model(Landuse_class_RSFIntZeroUD)
+
+# Fit model that compares each user defined dummy of landuse class with case
+Landuse_Dummy_class_RSFIntZeroUD <- glm(case ~ bare_soil + coniferous_forest + deciduous_forest +
+                                          fresh_water + grassland + grassy_heathland +
+                                          grassy_heathland + heathland + road +
+                                          shrubland + swamp, 
+                                        data = RSFIntZeroUD, family = binomial(link = "logit"),
+                                        offset = rep(qlogis(1/11), nrow(RSFIntZeroUD)))
+
+# Interpret model
+summary(Landuse_Dummy_class_RSFIntZeroUD)
+
+# Compare model
+AIC(Landuse_class_RSFIntZeroUD) == AIC(Landuse_Dummy_class_RSFIntZeroUD) # TRUE, models are equal to eachother
+
+# Fit model that compares each user defined dummy of landuse class with case, 
+# and the interaction of landuse class and perveived temperature (CCI)
+Landuse_CCI_RSFIntZeroUD <- glm(case ~  bare_soil + coniferous_forest + deciduous_forest +
+                                        fresh_water + grassland + grassy_heathland +
+                                        grassy_heathland + heathland + road +
+                                        shrubland + swamp + bare_soil:scale(CCI) + coniferous_forest:scale(CCI) + 
+                                        deciduous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                                        grassland:scale(CCI) + grassy_heathland:scale(CCI) +
+                                        grassy_heathland:scale(CCI) + heathland:scale(CCI) + 
+                                        road:scale(CCI) + shrubland:scale(CCI) + swamp:scale(CCI), 
+                                        data = RSFIntZeroUD, family = binomial(link = "logit"),
+                                        offset = rep(qlogis(1/11), nrow(RSFIntZeroUD)))
+
+
+
+# Interpret model
+summary(Landuse_CCI_RSFIntZeroUD)
+
+# Compare model
+AIC(Landuse_Dummy_class_RSFIntZeroUD, Landuse_CCI_RSFIntZeroUD) 
+# AIC reduced by 951.7 compared to first model
+
+
+## Add interaction with season to observe effect influence of season on land use class selection
+
+# Model with interactions between all seasons and land use classes
+Landuse_CCI_season_RSFIntZeroUD <- glm(case ~  bare_soil + coniferous_forest + deciduous_forest +
+                                  fresh_water + grassland + grassy_heathland +
+                                  grassy_heathland + heathland + road +
+                                  shrubland + swamp + bare_soil:scale(CCI) + coniferous_forest:scale(CCI) + 
+                                  deciduous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                                  grassland:scale(CCI) + grassy_heathland:scale(CCI) +
+                                  grassy_heathland:scale(CCI) + heathland:scale(CCI) + 
+                                  road:scale(CCI) + shrubland:scale(CCI) + swamp:scale(CCI) +
+                                  bare_soil:summer + bare_soil:spring + bare_soil:autumn + bare_soil:winter+
+                                  coniferous_forest:summer + coniferous_forest:spring + coniferous_forest:autumn + coniferous_forest:winter +
+                                  deciduous_forest:summer + deciduous_forest:spring + deciduous_forest:autumn + deciduous_forest:winter + 
+                                  fresh_water:summer + fresh_water:spring + fresh_water:autumn + fresh_water:winter +
+                                  grassland:summer + grassland:spring + grassland:autumn + grassland:winter +
+                                  heathland:summer + heathland:spring + heathland:autumn + heathland:winter +
+                                  grassy_heathland:summer + grassy_heathland:spring + grassy_heathland:autumn + grassy_heathland:winter +
+                                  road:summer + road:spring + road:autumn + road:winter +
+                                  shrubland:summer + shrubland:spring + shrubland:autumn + shrubland:winter +
+                                  swamp:summer + swamp:spring + swamp:autumn + swamp:winter, 
+                                data = RSFIntZeroUD, family = binomial(link = "logit"),
+                                offset = rep(qlogis(1/11), nrow(RSFIntZeroUD)))
+
+# Remove innfluence seasons on selection bare soil
+#Landuse_CCI_season_noBS_RSFIntZeroUD <- update(Landuse_CCI_season_RSFIntZeroUD, formula = ~ . - bare_soil:summer - bare_soil:spring - bare_soil:autumn - bare_soil:winter)
+
+# Interpret model
+#summary(Landuse_CCI_season_noBS_RSFIntZeroUD)
+
+# Interpret model
+summary(Landuse_CCI_season_RSFIntZeroUD)
+
+# Compare models
+AIC(Landuse_CCI_RSFIntZeroUD, Landuse_CCI_season_RSFIntZeroUD) 
+# AIC reduced by 1077.9 compared to model with landuse classes and interaction with CCI
+# AIC can be reduced by 4 if the interactions with bare soil are excluded. Safe that for later
+
+
+## Add time of the day to the model
+
+# Generate sequence with time (5min spacing)
+times <- RSFIntZeroUD$time
+
+# Convert to decimal time (0.0 = 0:00, 0.5 = 12:00, 1.0 = 24:00)
+times_decimal <- as.numeric(difftime(times, floor_date(times, "days"), units="days"))
+
+# Compute waveforms (decimal time converted to 2pi radians)
+peakthrees <- sin(2*pi*times_decimal+(pi/4))                                    # 1 = 3:00, -1 = 15:00
+peaksixes <- sin(2*pi*times_decimal)                                            # 1 = 6:00, -1 = 18:00
+peaknines <- sin(2*pi*times_decimal-(pi/4))                                     # 1 = 9:00, -1 = 21:00
+peaktwelves <- -cos(2*pi*times_decimal)                                         # 1 = 12:00, -1 = 00:00
+
+# Add waveforms of time input data
+RSFdaytime <- RSFIntZeroUD %>% 
+  mutate(peakthrees = peakthrees,
+         peaksixes = peaksixes,
+         peaknines = peaknines,
+         peaktwelves = peaktwelves)
+
+# Create model with influence time of day on land use class selection
+Landuse_CCI_season_daytime_RSFdaytime <- glm(case ~  bare_soil + coniferous_forest + deciduous_forest +
+                                           fresh_water + grassland + grassy_heathland +
+                                           grassy_heathland + heathland + road +
+                                           shrubland + swamp + bare_soil:scale(CCI) + coniferous_forest:scale(CCI) + 
+                                           deciduous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                                           grassland:scale(CCI) + grassy_heathland:scale(CCI) +
+                                           grassy_heathland:scale(CCI) + heathland:scale(CCI) + 
+                                           road:scale(CCI) + shrubland:scale(CCI) + swamp:scale(CCI) +
+                                           bare_soil:summer + bare_soil:spring + bare_soil:autumn + bare_soil:winter+
+                                           coniferous_forest:summer + coniferous_forest:spring + coniferous_forest:autumn + coniferous_forest:winter +
+                                           deciduous_forest:summer + deciduous_forest:spring + deciduous_forest:autumn + deciduous_forest:winter + 
+                                           fresh_water:summer + fresh_water:spring + fresh_water:autumn + fresh_water:winter +
+                                           grassland:summer + grassland:spring + grassland:autumn + grassland:winter +
+                                           heathland:summer + heathland:spring + heathland:autumn + heathland:winter +
+                                           grassy_heathland:summer + grassy_heathland:spring + grassy_heathland:autumn + grassy_heathland:winter +
+                                           road:summer + road:spring + road:autumn + road:winter +
+                                           shrubland:summer + shrubland:spring + shrubland:autumn + shrubland:winter +
+                                           swamp:summer + swamp:spring + swamp:autumn + swamp:winter +
+                                           bare_soil:peakthrees + bare_soil:peaksixes + bare_soil:peaknines + bare_soil:peaktwelves+
+                                           coniferous_forest:peakthrees + coniferous_forest:peaksixes + coniferous_forest:peaknines + coniferous_forest:peaktwelves +
+                                           deciduous_forest:peakthrees + deciduous_forest:peaksixes + deciduous_forest:peaknines + deciduous_forest:peaktwelves + 
+                                           fresh_water:peakthrees + fresh_water:peaksixes + fresh_water:peaknines + fresh_water:peaktwelves +
+                                           grassland:peakthrees + grassland:peaksixes + grassland:peaknines + grassland:peaktwelves +
+                                           heathland:peakthrees + heathland:peaksixes + heathland:peaknines + heathland:peaktwelves +
+                                           grassy_heathland:peakthrees + grassy_heathland:peaksixes + grassy_heathland:peaknines + grassy_heathland:peaktwelves +
+                                           road:peakthrees + road:peaksixes + road:peaknines + road:peaktwelves +
+                                           shrubland:peakthrees + shrubland:peaksixes + shrubland:peaknines + shrubland:peaktwelves +
+                                           swamp:peakthrees + swamp:peaksixes + swamp:peaknines + swamp:peaktwelves, 
+                                       data = RSFdaytime, family = binomial(link = "logit"),
+                                       offset = rep(qlogis(1/11), nrow(RSFdaytime)))
+
+# Interpret model
+summary(Landuse_CCI_season_daytime_RSFdaytime)
+
+# Compare models
+AIC(Landuse_CCI_season_RSFIntZeroUD, Landuse_CCI_season_daytime_RSFdaytime) 
+# AIC reduced by 3757.8 compared to model with landuse classes and interaction with CCI
+
+# Create model in which 30 variables with singularities are removed
+Landuse_CCI_season_daytime_singrm_RSFdaytime <- glm(case ~  bare_soil + coniferous_forest + deciduous_forest +
+                                               fresh_water + grassland + grassy_heathland +
+                                               grassy_heathland + heathland + road +
+                                               shrubland + swamp + bare_soil:scale(CCI) + coniferous_forest:scale(CCI) + 
+                                               deciduous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                                               grassland:scale(CCI) + grassy_heathland:scale(CCI) +
+                                               grassy_heathland:scale(CCI) + heathland:scale(CCI) + 
+                                               road:scale(CCI) + shrubland:scale(CCI) + swamp:scale(CCI) +
+                                               bare_soil:summer + bare_soil:spring + bare_soil:winter+
+                                               coniferous_forest:summer + coniferous_forest:spring + coniferous_forest:winter +
+                                               deciduous_forest:summer + deciduous_forest:spring + deciduous_forest:winter + 
+                                               fresh_water:summer + fresh_water:spring + fresh_water:winter +
+                                               grassland:summer + grassland:spring + grassland:winter +
+                                               heathland:summer + heathland:spring + heathland:winter +
+                                               grassy_heathland:summer + grassy_heathland:spring + grassy_heathland:winter +
+                                               road:summer + road:spring + road:winter +
+                                               shrubland:summer + shrubland:spring + shrubland:winter +
+                                               swamp:summer + swamp:spring + swamp:winter +
+                                               bare_soil:peaksixes + bare_soil:peaktwelves+
+                                               coniferous_forest:peaksixes + coniferous_forest:peaktwelves +
+                                               deciduous_forest:peaksixes + deciduous_forest:peaktwelves + 
+                                               fresh_water:peaksixes + fresh_water:peaktwelves +
+                                               grassland:peaksixes + grassland:peaktwelves +
+                                               heathland:peaksixes + heathland:peaktwelves +
+                                               grassy_heathland:peaksixes + grassy_heathland:peaktwelves +
+                                               road:peaksixes + road:peaktwelves +
+                                               shrubland:peaksixes + shrubland:peaktwelves +
+                                               swamp:peaksixes + swamp:peaktwelves, 
+                                             data = RSFdaytime, family = binomial(link = "logit"),
+                                             offset = rep(qlogis(1/11), nrow(RSFdaytime)))
+
+# Interpret model
+summary(Landuse_CCI_season_daytime_singrm_RSFdaytime)
+
+# Compare models
+AIC(Landuse_CCI_season_daytime_singrm_RSFdaytime, Landuse_CCI_season_daytime_RSFdaytime) 
+# AIC is the same
+
+# Create model in which non significant variables are removed
+significant_variables_RSF <- glm(case ~ coniferous_forest:scale(CCI) +
+                                  deciduous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                                  grassland:scale(CCI) + grassy_heathland:scale(CCI) +
+                                  grassy_heathland:scale(CCI) + heathland:scale(CCI) + 
+                                  road:scale(CCI) + swamp:scale(CCI) +
+                                  coniferous_forest:summer + coniferous_forest:winter +
+                                  deciduous_forest:summer + deciduous_forest:spring + deciduous_forest:winter + 
+                                  fresh_water:summer + fresh_water:spring + 
+                                  grassland:spring + grassland:winter +
+                                  heathland:summer + heathland:spring + heathland:winter +
+                                  grassy_heathland:summer + grassy_heathland:spring + grassy_heathland:winter +
+                                  road:summer + road:winter +
+                                  shrubland:summer + shrubland:spring + shrubland:winter +
+                                  swamp:summer + swamp:spring + swamp:winter +
+                                  bare_soil:peaktwelves+
+                                  coniferous_forest:peaksixes + coniferous_forest:peaktwelves +
+                                  deciduous_forest:peaksixes + deciduous_forest:peaktwelves + 
+                                  fresh_water:peaksixes + fresh_water:peaktwelves +
+                                  grassland:peaksixes + grassland:peaktwelves +
+                                  heathland:peaksixes + heathland:peaktwelves +
+                                  grassy_heathland:peaktwelves +
+                                  road:peaktwelves +
+                                  shrubland:peaksixes + shrubland:peaktwelves +
+                                  swamp:peaksixes + swamp:peaktwelves, 
+                                  data = RSFdaytime, family = binomial(link = "logit"),
+                                  offset = rep(qlogis(1/11), nrow(RSFdaytime)))
+
+# Interpret model
+summary(significant_variables_RSF)
+
+# Compare AIC
+AIC(Landuse_CCI_season_daytime_singrm_RSFdaytime, significant_variables_RSF) 
+# AIC is 7805.7 higher, so keep non-significant relations in
+
+# Expand model with distances to water, forest and road
+Landuse_CCI_season_daytime_singrm_distance_RSFdaytime <- glm(case ~  bare_soil + coniferous_forest + deciduous_forest +
+                                                      fresh_water + grassland + grassy_heathland +
+                                                      grassy_heathland + heathland + road +
+                                                      shrubland + swamp + bare_soil:scale(CCI) + coniferous_forest:scale(CCI) + 
+                                                      deciduous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                                                      grassland:scale(CCI) + grassy_heathland:scale(CCI) +
+                                                      grassy_heathland:scale(CCI) + heathland:scale(CCI) + 
+                                                      road:scale(CCI) + shrubland:scale(CCI) + swamp:scale(CCI) +
+                                                      bare_soil:summer + bare_soil:spring + bare_soil:winter+
+                                                      coniferous_forest:summer + coniferous_forest:spring + coniferous_forest:winter +
+                                                      deciduous_forest:summer + deciduous_forest:spring + deciduous_forest:winter + 
+                                                      fresh_water:summer + fresh_water:spring + fresh_water:winter +
+                                                      grassland:summer + grassland:spring + grassland:winter +
+                                                      heathland:summer + heathland:spring + heathland:winter +
+                                                      grassy_heathland:summer + grassy_heathland:spring + grassy_heathland:winter +
+                                                      road:summer + road:spring + road:winter +
+                                                      shrubland:summer + shrubland:spring + shrubland:winter +
+                                                      swamp:summer + swamp:spring + swamp:winter +
+                                                      bare_soil:peaksixes + bare_soil:peaktwelves+
+                                                      coniferous_forest:peaksixes + coniferous_forest:peaktwelves +
+                                                      deciduous_forest:peaksixes + deciduous_forest:peaktwelves + 
+                                                      fresh_water:peaksixes + fresh_water:peaktwelves +
+                                                      grassland:peaksixes + grassland:peaktwelves +
+                                                      heathland:peaksixes + heathland:peaktwelves +
+                                                      grassy_heathland:peaksixes + grassy_heathland:peaktwelves +
+                                                      road:peaksixes + road:peaktwelves +
+                                                      shrubland:peaksixes + shrubland:peaktwelves +
+                                                      swamp:peaksixes + swamp:peaktwelves +
+                                                      scale(ForestDistance) + scale(WaterDistance) +
+                                                      scale(RoadDistance), 
+                                                    data = RSFdaytime, family = binomial(link = "logit"),
+                                                    offset = rep(qlogis(1/11), nrow(RSFdaytime)))
+
+# Interpret model
+summary(Landuse_CCI_season_daytime_singrm_distance_RSFdaytime)
+
+# Compare models
+AIC(Landuse_CCI_season_daytime_singrm_RSFdaytime, Landuse_CCI_season_daytime_singrm_distance_RSFdaytime) 
+# AIC is 785.2 lower

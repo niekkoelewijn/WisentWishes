@@ -747,16 +747,107 @@ summary(Landuse_CCI_season_daytime_singrm_distanceint_avail_RSFdaytime)
 # Compare models
 AIC(Landuse_CCI_season_daytime_singrm_distanceint_RSFdaytime, Landuse_CCI_season_daytime_singrm_distanceint_avail_RSFdaytime) 
 # AIC is 6648.7 lower
-rm(Landuse_CCI_season_daytime_singrm_distanceint_RSFdaytime, Landuse_CCI_season_daytime_singrm_distance_RSFdaytime)
+rm(Landuse_CCI_season_daytime_singrm_distanceint_RSFdaytime)
 
 
-
-
-
-
-
-
-
+## Updating last model to get best possible model
+final_RSF <- update(Landuse_CCI_season_daytime_singrm_distanceint_avail_RSFdaytime, formula = ~ . -heathland:heathland_avail)
+# AIC: 533674.1
+final_RSF <- update(final_RSF, formula = ~ . -coniferous_forest:conforest_avail)
+# AIC: 533674.8, less then 2 higher than the one before this one
+final_RSF <- update(final_RSF, formula = ~ . -road:peaksixes)
+# AIC: 533672.9, 1.2 lower than original model
+final_RSF <- update(final_RSF, formula = ~ . -grassy_heathland:peaksixes)
+# AIC: 533670.9, 2 lower than original model
+final_RSF <- update(final_RSF, formula = ~ . -swamp:peaksixes)
+# AIC: 533672.9, so I keep this variable in
+final_RSF <- update(final_RSF, formula = ~ . +swamp:peaksixes)
+# AIC: 533670.9
+final_RSF <- update(final_RSF, formula = ~ . -coniferous_forest:peaksixes)
+# 533674.2, so I should keep this variable in
+final_RSF <- update(final_RSF, formula = ~ . +coniferous_forest:peaksixes)
+# AIC: 533670.9
+final_RSF <- update(final_RSF, formula = ~ . -bare_soil:peaksixes)
+# AIC: 533669, 1.9 lower than previous model
+final_RSF <- update(final_RSF, formula = ~ . -swamp:spring)
+# AIC: 533669.3, which is slightly worse, but less than 2 difference, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . -road:spring)
+# AIC: 533670.5, which is slightly worse, but less than 2 difference, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . -fresh_water:winter)
+# AIC: 533669.1, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . -deciduous_forest:spring)
+# AIC: 533667.5, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . -coniferous_forest:spring)
+# AIC: 533665.8, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . - bare_soil:summer - bare_soil:spring - bare_soil:winter)
+# AIC: 533662.6, so I keep the variables out
+final_RSF <- update(final_RSF, formula = ~ . -shrubland:scale(CCI))
+# AIC: 533662.6, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . -heathland:scale(CCI))
+# AIC: 533662.1, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . -deciduous_forest)
+# AIC: 533660.1, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . -road)
+# AIC: 533658.2, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . -shrubland)
+# AIC: 533664.6, so I keep the variable in
+final_RSF <- update(final_RSF, formula = ~ . +shrubland)
+# AIC:533658.2
+final_RSF <- update(final_RSF, formula = ~ . -coniferous_forest)
+# AIC: 533716.2, so I need to keep it in
+final_RSF <- update(final_RSF, formula = ~ . +coniferous_forest)
+# AIC: 533658.2
+final_RSF <- update(final_RSF, formula = ~ . +road:spring + swamp:spring + coniferous_forest:conforest_avail)
+# AIC: 533656.8, together, these variables do not increase the model with 2 points, so I keep them out.
+final_RSF <- update(final_RSF, formula = ~ . -road:spring - swamp:spring + coniferous_forest:conforest_avail)
+# AIC: 533658.2
+final_RSF <- update(final_RSF, formula = ~ . + bare_soil:day + coniferous_forest:day + deciduous_forest:day +
+                      fresh_water:day + grassland:day + grassy_heathland:day +
+                      heathland:day + road:day +
+                      shrubland:day + swamp:day +
+                      bare_soil:night + coniferous_forest:night + deciduous_forest:night +
+                      fresh_water:night + grassland:night + grassy_heathland:night +
+                      heathland:night + road:night +
+                      shrubland:night + swamp:night)
+# AIC: 533643.8
+final_RSF <- update(final_RSF, formula = ~ . - bare_soil:night - coniferous_forest:night - fresh_water:night -
+                      grassland:night - grassy_heathland:night - heathland:night -
+                      shrubland:night - swamp:night)
+# AIC: 533643.8
+final_RSF <- update(final_RSF, formula = ~ . - bare_soil:day)
+# AIC: 533641.8, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . - grassland:day)
+# AIC: 533639.8, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . - road:night)
+# AIC: 533637.8, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . - deciduous_forest:day - grassy_heathland:day)
+# AIC: 533634.2, so I keep the variables out
+final_RSF <- update(final_RSF, formula = ~ . - road:day - swamp:day)
+# AIC: 533631.4, so I keep the variables out
+final_RSF <- update(final_RSF, formula = ~ . - coniferous_forest:peaksixes - fresh_water:day)
+# AIC: 533628.4, so I keep the variables out
+final_RSF <- update(final_RSF, formula = ~ . - shrubland:day)
+# AIC: 533629.4, so I keep the variable out
+final_RSF <- update(final_RSF, formula = ~ . - deciduous_forest:night + deciduous_forest:day)
+# AIC: 533629.4, the same
+final_RSF <- update(final_RSF, formula = ~ .  - deciduous_forest:day)
+# AIC: 533630.1
+final_RSF <- update(final_RSF, formula = ~ .  + deciduous_forest:day + shrubland:day)
+# AIC: 533628.9, difference not big enough to keep variables in
+final_RSF <- update(final_RSF, formula = ~ . - deciduous_forest:day - shrubland:day)
+# AIC: 533630.1
+final_RSF <- update(final_RSF, formula = ~ . + road:weekend)
+# AIC: 533629.7, not improved enough
+final_RSF <- update(final_RSF, formula = ~ . - road:weekend + scale(log(1+RoadDistance)):weekend)
+# AIC: 533632.1, not improved
+final_RSF <- update(final_RSF, formula = ~ . + road:weekend - scale(log(1+RoadDistance)):weekend +
+                      + deciduous_forest:day + shrubland:day +road:spring + swamp:spring 
+                    + coniferous_forest:conforest_avail)
+# AIC: 533628, so difference not big enough. 6 variables improve the AIC with only 4 points
+final_RSF <- update(final_RSF, formula = ~ . - road:weekend -
+                    deciduous_forest:day - shrubland:day - road:spring - swamp:spring 
+                    - coniferous_forest:conforest_avail)
+# AIC: 533630.1
 
 
 

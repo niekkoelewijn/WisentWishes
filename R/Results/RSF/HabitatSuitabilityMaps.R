@@ -30,12 +30,23 @@ names(VeluweHabStack) <- c("landuse_code", "WaterDistance")
 
 ## General function to create habitat suitability map with input study area,
 ## CCI (degrees), time (time in hh:mm:ss) and season.
-getHSM <- function(StudyArea, StudyAreaData, CCI, time, season){
+getHSM <- function(StudyArea, CCI, time, season){
   
   # Check whether the input for StudyArea is valid
   StudyArea <- match.arg(StudyArea, choices = c("Kraansvlak", "Maashorst2016", "Maashorst20172021",
                                                 "Maashorst2022", "SlikkenvdHeenHabituate", "SlikkenvdHeen", 
                                                 "VeluweHabituate", "Veluwe"))
+  
+  # Get stack with raster data from StudyArea argument
+  StudyAreaData <- switch(StudyArea,
+                          Kraansvlak = KraansvlakStack,
+                          Maashorst2016 = Maashorst2016Stack,
+                          Maashorst20172021 = Maashorst20172021Stack,
+                          Maashorst2022 = Maashorst2022Stack,
+                          SlikkenvdHeenHabituate = SlikkenvdHeenHabStack,
+                          SlikkenvdHeen = SlikkenvdHeenStack,
+                          VeluweHabituate = VeluweHabStack,
+                          Veluwe = VeluweStack)
   
   # Get raster data from specified study area
   PredictDF <- as.data.frame(StudyAreaData) %>% 
@@ -112,7 +123,7 @@ getHSM <- function(StudyArea, StudyAreaData, CCI, time, season){
     decforest_avail = as.numeric(ProportionAvailablePerClass[4, 4])
     freshwater_avail = as.numeric(ProportionAvailablePerClass[4, 6])
     shrub_avail = as.numeric(ProportionAvailablePerClass[4, 12])
-  }else if(StudyArea == "SlikkenvdHeenHab"){
+  }else if(StudyArea == "SlikkenvdHeenHabituate"){
     grassland_avail = as.numeric(ProportionAvailablePerClass[5, 2])
     decforest_avail = as.numeric(ProportionAvailablePerClass[5, 4])
     freshwater_avail = as.numeric(ProportionAvailablePerClass[5, 6])
@@ -122,7 +133,7 @@ getHSM <- function(StudyArea, StudyAreaData, CCI, time, season){
     decforest_avail = as.numeric(ProportionAvailablePerClass[6, 4])
     freshwater_avail = as.numeric(ProportionAvailablePerClass[6, 6])
     shrub_avail = as.numeric(ProportionAvailablePerClass[6, 12])
-  }else if(StudyArea == "VeluweHab"){
+  }else if(StudyArea == "VeluweHabituate"){
     grassland_avail = as.numeric(ProportionAvailablePerClass[7, 2])
     decforest_avail = as.numeric(ProportionAvailablePerClass[7, 4])
     freshwater_avail = as.numeric(ProportionAvailablePerClass[7, 6])
@@ -192,14 +203,23 @@ HabitatSuitabilityRaster # This is made by the loop
 HabitatSuitabilityRasternight # This is made by the loop
 
 
+KraansvlakSummerMidnightCCI = getHSM("Maashorst2016",-1, "00:00:00", "winter")
+plot(KraansvlakSummerMidnightCCI)
 
+writeRaster(KraansvlakSummerMidnightCCI,'~/WisentWishes/MScThesisData/EnvironmentalVariables/Maashorst2016SummerMidnight12.tif',options=c('TFW=YES'), overwrite = T)
 
+KraansvlakSummerMidnight20 = getHSM("Kraansvlak", -0.673081, "00:00:00", "winter")
+plot(KraansvlakSummerMidnight20)
 
+MaashorstSummerDay <- getHSM("Maashorst2016", 21.00276, "12:00:00", "summer")
+plot(MaashorstSummerNight)
+MaashorstSummerNight <- getHSM("Maashorst2016", 13.20998, "00:00:00", "summer")
+plot(MaashorstSummerNight)
 
-
-
-
-
+MaashorstWinterDay <- getHSM("Maashorst2016", 1.567408, "12:00:00", "winter")
+plot(MaashorstWinterDay)
+MaashorstWinterNight <- getHSM("Maashorst2016", -1.878625, "00:00:00", "winter")
+plot(MaashorstWinterNight)
 
 
 

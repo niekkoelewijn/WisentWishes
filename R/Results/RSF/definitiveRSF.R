@@ -1200,11 +1200,17 @@ definitive_RSF <- glm(case ~  grassland + deciduous_forest +
                         swamp:peakthrees +
                         grassland:peaknines + deciduous_forest:peaknines +
                         coniferous_forest:peaknines +
-                        shrubland:peaknines,
+                        shrubland:peaknines +
+                        grassland:spring + grassland:summer + grassland:winter +
+                        deciduous_forest:summer + deciduous_forest:winter +
+                        coniferous_forest:summer + coniferous_forest:winter +
+                        fresh_water:spring + fresh_water:summer + coniferous_forest:winter +
+                        grassy_heathland:spring + grassy_heathland:summer + grassy_heathland:winter +
+                        swamp:autumn + swamp:summer + swamp:winter,
                       data = RSFdaytime, family = binomial(link = "logit"),
                       offset = rep(qlogis(1/11), nrow(RSFdaytime)))
 summary(definitive_RSF)
-AIC(definitive_RSF) # 535041.8
+AIC(definitive_RSF) # 534452.3
 
 
 

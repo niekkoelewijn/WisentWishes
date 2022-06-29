@@ -1184,6 +1184,7 @@ RoadCCISummerTimeframeJIVis <- ggplot(data = TimeframeJICCI[which(TimeframeJICCI
   scale_color_manual(values = c("#FF0033", "#3300FF" ))
 RoadCCISummerTimeframeJIVis
 
+
 # Road Autumn
 RoadCCIAutumnTimeframeJIVis <- ggplot(data = TimeframeJICCI[which(TimeframeJICCI$class == "road" &
                                                                     TimeframeJICCI$season == "Autumn"),],

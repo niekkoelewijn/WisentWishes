@@ -83,7 +83,8 @@ getRandomPointsStudyArea <- function(TrackDataset, StudyAreasf, StudyRegion, Stu
            swamp_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),11]),
            shrub_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),12]),
            heathland_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),13]),
-           grassheath_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),14])) %>%
+           grassheath_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),14]),
+           study_area = StudyArea) %>%
     
     # Join with the LUT to get landuse classes as names
     inner_join(LUTLanduseClasses, by = "landuse_code") %>% 
@@ -257,7 +258,7 @@ RSFIntZero <- RSFIntZero %>%
          night = night)
 
 # Create empty data.frame with size 11*43
-UserDefinedExtraClasses <- tibble(data.frame(matrix(data = NA, nrow = 11, ncol = 53)))
+UserDefinedExtraClasses <- tibble(data.frame(matrix(data = NA, nrow = 11, ncol = 54)))
 for(i in seq_along(UserDefinedExtraClasses)){
   for(j in 1:nrow(UserDefinedExtraClasses)){
     if(i == 1){
@@ -369,7 +370,10 @@ for(i in seq_along(UserDefinedExtraClasses)){
     if(i == 35){
       UserDefinedExtraClasses[j,i] <- "A"
     }
-    if(i >= 36){
+    if(i == 36){
+      UserDefinedExtraClasses[j,i] <- "A"
+    }
+    if(i >= 37){
       UserDefinedExtraClasses[j,i] <- 0
     }
   }
@@ -485,6 +489,24 @@ times <- RSFIntZeroUD$time
 # Convert to decimal time (0.0 = 0:00, 0.5 = 12:00, 1.0 = 24:00)
 times_decimal <- as.numeric(difftime(times, floor_date(times, "days"), units="days"))
 
+times_decimal <- as.numeric(difftime(times, floor_date(times, "days"), units="days"))
+
+
+UserSpecifiedTime <- "3:00:00"
+UserSpecifiedTimeDec <- as.numeric(
+  difftime(
+    as.POSIXct(
+      x = paste0("01-01-2000 ", UserSpecifiedTime), 
+      tryFormats = "%d-%m-%Y %H:%M:%OS"), 
+    floor_date(
+      as.POSIXct(x ="01-01-2000 ", 
+                 tryFormats = "%d-%m-%Y")), 
+    units="days"))
+timeinsixes <- sin(2*pi*UserSpecifiedTimeDec) 
+timeintwelves <- -cos(2*pi*UserSpecifiedTimeDec)
+timeinthrees <- -sin(2*pi*UserSpecifiedTimeDec+(pi/4))
+timeinnines <- sin(2*pi*UserSpecifiedTimeDec-(pi/4))
+
 # Compute waveforms (decimal time converted to 2pi radians)
 peakthrees <- sin(2*pi*times_decimal+(pi/4))                                    # 1 = 3:00, -1 = 15:00
 peaksixes <- sin(2*pi*times_decimal)                                            # 1 = 6:00, -1 = 18:00
@@ -497,6 +519,12 @@ RSFdaytime <- RSFIntZeroUD %>%
          peaksixes = peaksixes,
          peaknines = peaknines,
          peaktwelves = peaktwelves)
+
+# For the user difined rows, take the means of each peak attribute
+RSFdaytime[which(RSFdaytime$landuse_class == "A"),]$peakthrees <- mean(RSFdaytime$peakthrees)
+RSFdaytime[which(RSFdaytime$landuse_class == "A"),]$peaksixes <- mean(RSFdaytime$peaksixes)
+RSFdaytime[which(RSFdaytime$landuse_class == "A"),]$peaknines <- mean(RSFdaytime$peaknines)
+RSFdaytime[which(RSFdaytime$landuse_class == "A"),]$peaktwelves <- mean(RSFdaytime$peaktwelves)
 
 # Create model with influence time of day on land use class selection
 Landuse_CCI_season_daytime_RSFdaytime <- glm(case ~  bare_soil + coniferous_forest + deciduous_forest +
@@ -751,6 +779,7 @@ rm(Landuse_CCI_season_daytime_singrm_distanceint_RSFdaytime)
 
 
 ## Updating last model to get best possible model
+
 final_RSF <- update(Landuse_CCI_season_daytime_singrm_distanceint_avail_RSFdaytime, formula = ~ . -heathland:heathland_avail)
 # AIC: 533674.1
 final_RSF <- update(final_RSF, formula = ~ . -coniferous_forest:conforest_avail)
@@ -799,9 +828,9 @@ final_RSF <- update(final_RSF, formula = ~ . +coniferous_forest)
 # AIC: 533658.2
 final_RSF <- update(final_RSF, formula = ~ . +road:spring + swamp:spring + coniferous_forest:conforest_avail)
 # AIC: 533656.8, together, these variables do not increase the model with 2 points, so I keep them out.
-final_RSF <- update(final_RSF, formula = ~ . -road:spring - swamp:spring + coniferous_forest:conforest_avail)
+final_RSF <- update(final_RSF, formula = ~ . -road:spring - swamp:spring - coniferous_forest:conforest_avail)
 # AIC: 533658.2
-final_RSF <- update(final_RSF, formula = ~ . + bare_soil:day + coniferous_forest:day + deciduous_forest:day +
+final_RSF <- update(final_RSF, formula = ~ . + bare_soil:day + coniferous_forest:day + deciduous_forest:day
                       fresh_water:day + grassland:day + grassy_heathland:day +
                       heathland:day + road:day +
                       shrubland:day + swamp:day +
@@ -848,6 +877,337 @@ final_RSF <- update(final_RSF, formula = ~ . - road:weekend -
                     deciduous_forest:day - shrubland:day - road:spring - swamp:spring 
                     - coniferous_forest:conforest_avail)
 # AIC: 533630.1
+
+
+## Create final_RSF in one line of code
+final_RSF <- glm(case ~  bare_soil + coniferous_forest +
+                   fresh_water + grassland + grassy_heathland + heathland +
+                   shrubland + swamp + bare_soil:scale(CCI) + coniferous_forest:scale(CCI) + 
+                   deciduous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                   grassland:scale(CCI) + grassy_heathland:scale(CCI) +
+                   grassy_heathland:scale(CCI) +
+                   road:scale(CCI) + swamp:scale(CCI) +
+                   coniferous_forest:summer + coniferous_forest:winter +
+                   deciduous_forest:summer + deciduous_forest:winter + 
+                   fresh_water:summer + fresh_water:spring +
+                   grassland:summer + grassland:spring + grassland:winter +
+                   heathland:summer + heathland:spring + heathland:winter +
+                   grassy_heathland:summer + grassy_heathland:spring + grassy_heathland:winter +
+                   road:summer + road:winter +
+                   shrubland:summer + shrubland:spring + shrubland:winter +
+                   swamp:summer + swamp:winter +
+                   bare_soil:peaktwelves+
+                   coniferous_forest:peaktwelves +
+                   deciduous_forest:peaksixes + deciduous_forest:peaktwelves + 
+                   fresh_water:peaksixes + fresh_water:peaktwelves +
+                   grassland:peaksixes + grassland:peaktwelves +
+                   heathland:peaksixes + heathland:peaktwelves +
+                   grassy_heathland:peaktwelves +
+                   road:peaktwelves +
+                   shrubland:peaksixes + shrubland:peaktwelves +
+                   swamp:peaksixes + swamp:peaktwelves +
+                   scale(log(1+ForestDistance)) + scale(log(1+WaterDistance)) +
+                   scale(log(1+RoadDistance)) + scale(log(1+ForestDistance)):scale(CCI) +
+                   scale(log(1+WaterDistance)):scale(CCI) +
+                   bare_soil:baresoil_avail + deciduous_forest:decforest_avail +
+                   fresh_water:freshwater_avail + grassland:grassland_avail + grassy_heathland:grassheath_avail +
+                   road:road_avail +
+                   shrubland:shrub_avail + swamp:swamp_avail +
+                   coniferous_forest:day +
+                   heathland:day, 
+                 data = RSFdaytime, family = binomial(link = "logit"),
+                 offset = rep(qlogis(1/11), nrow(RSFdaytime)))
+
+# View final model
+summary(final_RSF)
+
+## Create test data to predict model on
+
+TestData <- expand_grid(case = c(0,1),
+                        CCI = c(-10, 0, 10, 20, 20),
+                        landuse_class = c("bare_soil", "coniferous_forest", "fresh_water",
+                                          "grassland", "grassy_heathland", "heathland", 
+                                          "shrubland", "swamp"),
+                        season = c("summer"),
+                        peaktwelves = c(1),
+                        peaksixes = c(0),
+                        day_night = c("day"),
+                        WaterDistance = c(seq(0, 100, by = 25)),
+                        ForestDistance = c(seq(0, 100, by = 25)),
+                        RoadDistance = c(seq(0, 100, by = 25)),
+                        baresoil_avail = c(0,0.1,0.5),
+                        coniferous_forest_avail = c(0,0.1,0.5),
+                        decforest_avail = c(0,0.1,0.5),
+                        freshwater_avail = c(0,0.1,0.5),
+                        grassland_avail = c(0,0.1,0.5),
+                        grassheath_avail = c(0,0.1,0.5),
+                        heath_avail = c(0,0.1,0.5),
+                        road_avail = c(0,0.1,0.5),
+                        shrub_avail = c(0,0.1,0.5),
+                        swamp_avail = c(0,0.1,0.5))
+
+predict(final_RSF, newdata = TestData, type = "response")
+
+
+## Prediction map
+
+# Make sure we have prediction scopes that match:
+KraansvlakStack <- raster::stack(MaskedList[["Kraansvlak"]], WaterDistanceList[["Kraansvlak"]],
+                                 ForestDistanceList[["Kraansvlak"]], RoadDistanceList[["Kraansvlak"]])
+KraansvlakStack <- raster::mask(KraansvlakStack, KraansvlakStudyAreaRDNew)
+PredictKraansvlakMap <- KraansvlakStack[[1]]
+PredictKraansvlakMapFactor <- as.factor(PredictKraansvlakMap)
+KraansvlakLevels <- levels(PredictKraansvlakMapFactor)
+KraansvlakLevels$LanduseClass <- c("grassland", "deciduous_forest", "coniferous_forest",  
+                            "fresh_water", "road", "bare_soil", "shrubland")
+levels(PredictKraansvlakMapFactor) <- KraansvlakLevels
+
+PredictKraansvlakMapFactor <- ratify(PredictKraansvlakMapFactor)
+
+rat <- levels(PredictKraansvlakMapFactor)[[1]]
+rat$landcover <- c("grassland", "deciduous_forest", "coniferous_forest",  
+                   "fresh_water", "road", "bare_soil", "shrubland")
+levels(PredictKraansvlakMapFactor) <- rat
+PredictKraansvlakMap[which(PredictKraansvlakMap@data@values == 1)]
+PredictKraansvlakMap@data@values <- factor(PredictKraansvlakMap@data@values, levels = c("grassland", "deciduous_forest", "coniferous_forest",  
+                                                                                        "fresh_water", "road", "bare_soil", "shrubland"))
+
+# Extract the appropriate vectors:
+KraansvlakLanduseVec<- PredictKraansvlakMap@data@values
+KraansvlakWaterDistVec <- KraansvlakStack[[2]]@data@values
+KraansvlakForestDistVec <- floor(KraansvlakStack[[3]]@data@values)
+KraansvlakRoadDistVec <- floor(KraansvlakStack[[4]]@data@values)
+PredictData <- expand_grid(coniferous_forest = 0,
+                           deciduous_forest = 0,
+                           fresh_water = 1,
+                           grassland = 0,
+                           grassy_heathland = 0,
+                           heathland = 0,
+                           road = 0,
+                           shrubland = 0,
+                           swamp = 0,
+                           bare_soil = 0,
+                           water_distance = KraansvlakWaterDistVec, 
+                           forest_distance = KraansvlakForestDistVec,
+                           road_distance = KraansvlakRoadDistVec,
+                           CCI = 10,
+                           spring = 0,
+                           summer = 1,
+                           autumn = 0,
+                           winter = 0,
+                           peaktwelves = 1,
+                           peaksixes = 0,
+                           day = 1,
+                           night = 0,
+                           WaterDistance = 100,
+                           ForestDistance = 100,
+                           RoadDistance = 100,
+                           baresoil_avail = 0.06511803,
+                           coniferous_forest_avail = 0.0583,
+                           decforest_avail = 0.0306,
+                           freshwater_avail = 0.0232,
+                           grassland_avail = 0.773,
+                           grassheath_avail = 0,
+                           heath_avail = 0,
+                           road_avail = 0.01938867,
+                           shrub_avail = 0.03069472,
+                           swamp_avail = 0)
+
+Tibb = tibble(WaterDistance = KraansvlakWaterDistVec[!is.na(KraansvlakWaterDistVec)], 
+            ForestDistance = KraansvlakForestDistVec[!is.na(KraansvlakForestDistVec)],
+            RoadDistance = KraansvlakRoadDistVec[!is.na(KraansvlakRoadDistVec)],
+            landuse_code = PredictKraansvlakMap[!is.na(PredictKraansvlakMap)])
+
+grassland <- ifelse(Tibb$landuse_code == 1, 1, 0)
+deciduous_forest <- ifelse(Tibb$landuse_code == 3, 1, 0)
+coniferous_forest <- ifelse(Tibb$landuse_code == 4, 1, 0)
+fresh_water <- ifelse(Tibb$landuse_code == 5, 1, 0)
+road <- ifelse(Tibb$landuse_code == 8, 1, 0)
+bare_soil <- ifelse(Tibb$landuse_code == 9, 1, 0)
+swamp <- ifelse(Tibb$landuse_code == 10, 1, 0)
+shrubland <- ifelse(Tibb$landuse_code == 11, 1, 0)
+heathland <- ifelse(Tibb$landuse_code == 12, 1, 0)
+grassy_heathland <- ifelse(Tibb$landuse_code == 13, 1, 0)
+
+TibbLanduse <- Tibb %>% 
+  mutate(coniferous_forest = coniferous_forest,
+         deciduous_forest = deciduous_forest,
+         fresh_water = fresh_water,
+         grassland = grassland,
+         grassy_heathland = grassy_heathland,
+         heathland = heathland,
+         road = road,
+         shrubland = shrubland,
+         swamp = swamp,
+         bare_soil)
+
+TibbAvail <- TibbLanduse %>% 
+  mutate(conforest_avail = as.numeric(ProportionAvailablePerClass[1, 5]),
+         decforest_avail = as.numeric(ProportionAvailablePerClass[1, 4]),
+         freshwater_avail = as.numeric(ProportionAvailablePerClass[1, 6]),
+         grassland_avail = as.numeric(ProportionAvailablePerClass[1, 2]),
+         grassheath_avail = as.numeric(ProportionAvailablePerClass[1, 14]),
+         heath_avail = as.numeric(ProportionAvailablePerClass[1, 13]),
+         road_avail = as.numeric(ProportionAvailablePerClass[1, 9]),
+         shrub_avail = as.numeric(ProportionAvailablePerClass[1, 12]),
+         swamp_avail = as.numeric(ProportionAvailablePerClass[1, 11]),
+         baresoil_avail = as.numeric(ProportionAvailablePerClass[1, 10]))
+
+TibbEnv <- TibbAvail %>%
+  mutate(spring = 0,
+         summer = 1,
+         autumn = 0,
+         winter = 0,
+         CCI = 1,
+         peaktwelves = 1,
+         peaksixes = 0,
+         day = 1,
+         night = 0)
+
+# Predict habitat selection based on conditions filled in in TibbEnv
+predvalues <- stats::predict.glm(final_RSF, TibbEnv, type = "response")
+PredictKraansvlakMap@data@values <- stats::predict(final_RSF, TibbEnv, type = "response")[1:nrow(TibbEnv)]
+plot(PredictKraansvlakMap, main = "RSF", col = grey.colors(100, start = 0, end = 1))
+
+predict.glm(final_RSF, newdata = data.frame(bare_soil = 0, coniferous_forest = 0,
+                                            fresh_water = 1, grassland = 0,
+                                        deciduous_forest = 0, road = 0,
+                                        grassy_heathland = 0, heathland = 0,
+                                        shrubland = 0, swamp = 0,
+                                        ForestDistance = 100, WaterDistance = 0,
+                                        RoadDistance = 100, CCI = 20,
+                                        conforest_avail = as.numeric(ProportionAvailablePerClass[1, 5]),
+                                        decforest_avail = as.numeric(ProportionAvailablePerClass[1, 4]),
+                                        freshwater_avail = as.numeric(ProportionAvailablePerClass[1, 6]),
+                                        grassland_avail = as.numeric(ProportionAvailablePerClass[1, 2]),
+                                        grassheath_avail = as.numeric(ProportionAvailablePerClass[1, 14]),
+                                        heath_avail = as.numeric(ProportionAvailablePerClass[1, 13]),
+                                        road_avail = as.numeric(ProportionAvailablePerClass[1, 9]),
+                                        shrub_avail = as.numeric(ProportionAvailablePerClass[1, 12]),
+                                        swamp_avail = as.numeric(ProportionAvailablePerClass[1, 11]),
+                                        baresoil_avail = as.numeric(ProportionAvailablePerClass[1, 10]),
+                                        spring = 0, summer = 1,
+                                        winter = 0, autumn = 0,
+                                        peaktwelves = 1, peaksixes = 0,
+                                        day = 1, night = 0), type = "response")
+
+predict(final_RSF, newdata = data.frame(bare_soil = 0, coniferous_forest = 0,
+                                            fresh_water = 1, grassland = 0,
+                                            deciduous_forest = 0, road = 0,
+                                            grassy_heathland = 0, heathland = 0,
+                                            shrubland = 0, swamp = 0,
+                                            ForestDistance = 100, WaterDistance = 0,
+                                            RoadDistance = 100, CCI = 20,
+                                            decforest_avail = as.numeric(ProportionAvailablePerClass[1, 4]),
+                                            freshwater_avail = as.numeric(ProportionAvailablePerClass[1, 6]),
+                                            grassland_avail = as.numeric(ProportionAvailablePerClass[1, 2]),
+                                            grassheath_avail = as.numeric(ProportionAvailablePerClass[1, 14]),
+                                            heath_avail = as.numeric(ProportionAvailablePerClass[1, 13]),
+                                            road_avail = as.numeric(ProportionAvailablePerClass[1, 9]),
+                                            shrub_avail = as.numeric(ProportionAvailablePerClass[1, 12]),
+                                            swamp_avail = as.numeric(ProportionAvailablePerClass[1, 11]),
+                                            baresoil_avail = as.numeric(ProportionAvailablePerClass[1, 10]),
+                                            spring = 0, summer = 1,
+                                            winter = 0,
+                                            peaktwelves = 1, peaksixes = 0,
+                                            day = 1), type = "response")
+
+View(predict.glm(final_RSF))
+predict <- predict(final_RSF, type = "response")
+predictrow1 <- predict[1]
+
+predictNewDataRow1 <- predict(final_RSF, newdata = RSFdaytime[1,], type = "response")
+
+# Plot the result
+plot(fmch.rsf, main = "RSF", col = grey.colors(100, start = 0, end = 1))
+points(caribou.sp, col = alpha("darkblue", 0.3), cex = 0.5)
+
+# CCI = -1,
+# season = "summer",
+# peaktwelves = 1,
+# peaksixes = 0,
+# day_night = "day",
+# WaterDistance = 100,
+# ForestDistance = 100,
+# RoadDistance = 100,
+# baresoil_avail = 0.06511803,
+# coniferous_forest_avail = 0.0583,
+# decforest_avail = 0.0306,
+# freshwater_avail = 0.0232,
+# grassland_avail = 0.773,
+# grassheath_avail = 0,
+# heath_avail = 0,
+# road_avail = 0.01938867,
+# shrub_avail = 0.03069472,
+# swamp_avail = 0
+
+
+# season = c("spring", "summer", "autumn", "winter"),
+# peaktwelves = c(-1,0,1),
+# peaksixes = c(-1,0,1),
+# day_night = c("day", "night")
+# WaterDistance = c(0, 10, 100, 1000),
+# ForestDistance = c(0, 10, 100, 1000),
+# RoadDistance = c(0, 10, 100, 1000),
+# bare_soil_avail = c(0, 0.01, 0.06, 0.1),
+# coniferous_forest_avail = c(0, 0.01, 0.1, 0.2),
+# decforest_avail = c(0, 0.01, 0.1, 0.5),
+# freshwater_avail = c(0, 0.01, 0.1, 0.5),
+# grassland_avail = c(0, 0.01, 0.1, 0.5),
+# road_avail = c(0, 0.01, 0.1, 0.5),
+# shrub_avail = c(0, 0.01, 0.1, 0.5),
+# swamp_avail = c(0, 0.01, 0.1, 0.5)
+
+
+## Recreating the final model, with only the parameters that make sense from a 
+## ecologic pov.
+
+# I will include all 10 landuse classes as variables in the model
+# I will include the functional response with fresh water, grassland and deciduous 
+# forest, as there was a clear functional response visible in those 3 landuse 
+# classes.
+# I will include the interaction between season and grassland, deciduous forest,
+# coniferous forest, fresh water, grassy heathland and swamp, because the selection
+# for these landuse classes differences clearly per season
+# I will include the interaction between peak twelves and fresh water, shrubland,
+# swamp, grassland, grassy heathland, heathland, coniferous forest and 
+# deciduous forest, as the selection for these landuse classes differences clearly
+# between 00:00 and 12:00
+# I will include the interaction between peak threes and fresh water, heathland 
+# and swamp, as the selection for these landuse classes differences clearly
+# between 03:00 and 15:00
+# I will include the interaction between peak nines and grassland, deciduous forest,
+# coniferous forest, grassy heathland and shrubland, as the selection for these 
+# landuse classes differences clearly between 09:00 and 21:00
+# I will include the water distance and the interaction between temperature and 
+# water distance, as the water distance decreases with increasing temp.
+
+## Create final_RSF in one line of code
+definitive_RSF <- glm(case ~  grassland + deciduous_forest + 
+                        coniferous_forest + fresh_water + bare_soil + heathland +
+                        road + grassy_heathland + swamp + shrubland + 
+                        scale(log(1+WaterDistance)) + scale(log(1+WaterDistance)):scale(CCI) +
+                        grassland:scale(CCI) + deciduous_forest:scale(CCI) + 
+                        coniferous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                        swamp:scale(CCI) + grassy_heathland:scale(CCI) +
+                        fresh_water:freshwater_avail + grassland:grassland_avail +
+                        deciduous_forest:decforest_avail + shrubland:shrub_avail +
+                        grassland:peaktwelves + coniferous_forest:peaktwelves +
+                        deciduous_forest:peaktwelves + swamp:peaktwelves +
+                        fresh_water:peaktwelves + shrubland:peaktwelves +
+                        grassy_heathland:peaktwelves + heathland:peaktwelves +
+                        fresh_water:peakthrees + heathland:peakthrees +
+                        swamp:peakthrees +
+                        grassland:peaknines + deciduous_forest:peaknines +
+                        coniferous_forest:peaknines +
+                        shrubland:peaknines,
+                      data = RSFdaytime, family = binomial(link = "logit"),
+                      offset = rep(qlogis(1/11), nrow(RSFdaytime)))
+summary(definitive_RSF)
+AIC(definitive_RSF) # 535041.8
+
+
+
 
 
 

@@ -311,11 +311,17 @@ VeluweVis
 
 ## Plot relationship Jacobs index and the proportional availability of a landuse class
 
+JI_PropAvail <- JI_PropAvail %>% 
+  mutate(`PA woodland` = `PA deciduous forest` + `PA shrubland` + `PA coniferous forest`,
+         `PA open land (dry)` = `PA grass` + `PA bare soil` + `PA heathland` + `PA grassy heathland`,
+         `PA open land (wet)` = `PA fresh water` + `PA swamp`)
+
+
 # Grass
-GrassJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA grass`, y = `JI grass`)) +
+grass_JIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA open land (dry)`, y = `JI grass`)) +
   geom_point(stat = "identity", shape = 16, size = 2,
-             aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
+             aes(color = factor(StudyAreaNames))) +
+  geom_text(label = StudyAreaNames, vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -329,13 +335,13 @@ GrassJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA grass`, y = `JI grass`))
         axis.title.x = element_text(vjust = -0.35, face = "plain"),
         axis.title.y = element_text(vjust = 0.35, face = "plain"),
         legend.position = "none")
-GrassJIAvail
+grass_JIAvail
 
 # Deciduous forest
 deciduous_forestJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA deciduous forest`, y = `JI deciduous forest`)) +
   geom_point(stat = "identity", shape = 16, size = 2,
-             aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
+             aes(color = factor(StudyAreaNames))) +
+  geom_text(label = StudyAreaNames, vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -351,11 +357,15 @@ deciduous_forestJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA deciduous for
         legend.position = "none")
 deciduous_forestJIAvail
 
+StudyAreaNames <- c("Overall", "Kraansvlak", "Maashorst 2016", "Maashorst 2017-2021", "Maashorst 2022",
+                    "Slikken vd Heen Habituate", "Slikken vd Heen", "Veluwe Habituate",
+                    "Veluwe")
+
 # Coniferous forest
-coniferous_forestJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA coniferous forest`, y = `JI coniferous forest`)) +
+coniferous_forestJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA woodland`, y = `JI coniferous forest`)) +
   geom_point(stat = "identity", shape = 16, size = 2,
-             aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
+             aes(color = factor(StudyAreaNames))) +
+  geom_text(label = StudyAreaNames, vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -372,10 +382,10 @@ coniferous_forestJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA coniferous f
 coniferous_forestJIAvail
 
 # Fresh water
-fresh_waterJIAvail <- ggplot(data = JI_PropAvail, aes(x = car::logit(`PA fresh water`), y = `JI fresh water`)) +
+freshwater_JIAvail <- ggplot(data = JI_PropAvail, aes(x = car::logit(`PA open land (wet)`), y = `JI fresh water`)) +
   geom_point(stat = "identity", shape = 16, size = 2,
-             aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
+             aes(color = factor(StudyAreaNames))) +
+  geom_text(label = StudyAreaNames, vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
@@ -389,7 +399,7 @@ fresh_waterJIAvail <- ggplot(data = JI_PropAvail, aes(x = car::logit(`PA fresh w
         axis.title.x = element_text(vjust = -0.35, face = "plain"),
         axis.title.y = element_text(vjust = 0.35, face = "plain"),
         legend.position = "none")
-fresh_waterJIAvail
+freshwater_JIAvail
 
 # Road
 roadJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA road`, y = `JI road`)) +
@@ -432,16 +442,16 @@ bare_soilJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA bare soil`, y = `JI 
 bare_soilJIAvail
 
 # Swamp
-swampJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA swamp`, y = `JI swamp`)) +
+swamp_JIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA open land (wet)`, y = `JI swamp`)) +
   geom_point(stat = "identity", shape = 16, size = 2,
-             aes(color = factor(rownames(JI_PropAvail)))) +
-  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
+             aes(color = factor(StudyAreaNames))) +
+  geom_text(label = StudyAreaNames, vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +
   ylim(c(-1,1)) +
   ylab("Jacobs index") +
-  xlab("Proportional availability swamp") +
+  xlab("Proportional availability swamp (logit)") +
   ggtitle("Relation Jacobs index and availability of swamp") +
   theme(plot.title = element_text(size = 12, face = "bold",
                                   margin = margin(10,0,10,0),
@@ -449,7 +459,7 @@ swampJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA swamp`, y = `JI swamp`))
         axis.title.x = element_text(vjust = -0.35, face = "plain"),
         axis.title.y = element_text(vjust = 0.35, face = "plain"),
         legend.position = "none")
-swampJIAvail
+swamp_JIAvail
 
 # Shrubland
 shrublandJIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA shrubland`, y = `JI shrubland`)) +

@@ -120,6 +120,9 @@ source("~/WisentWishes/R/Results/RSF/SimpleSSF.R")
 # Step 3: Create definitive RSF
 source("~/WisentWishes/R/Results/RSF/definitiveRSF.R")
 
+# Step 4: Create habitat suitability maps
+source("~/WisentWishes/R/Results/RSF/HabitatSuitabilityMaps.R")
+
 
 
 

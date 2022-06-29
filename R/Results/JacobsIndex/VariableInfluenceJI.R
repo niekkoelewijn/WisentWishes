@@ -288,6 +288,56 @@ Winter <- AllTrackPoints %>%
   filter(season == "winter")
 
 
+## Split overall datasets in time classes
+
+# Select 00:00:00 - 02:00:00
+Overall0002 <- AllTrackPoints %>% 
+  filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+
+# Select 02:00:00 - 04:00:00
+Overall0204 <- AllTrackPoints %>% 
+  filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+
+# Select 04:00:00 - 06:00:00
+Overall0406 <- AllTrackPoints %>% 
+  filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+
+# Select 06:00:00 - 08:00:00
+Overall0608 <- AllTrackPoints %>% 
+  filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+
+# Select 08:00:00 - 10:00:00
+Overall0810 <- AllTrackPoints %>% 
+  filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+
+# Select 10:00:00 - 12:00:00
+Overall1012 <- AllTrackPoints %>% 
+  filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+
+# Select 12:00:00 - 14:00:00
+Overall1214 <- AllTrackPoints %>% 
+  filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+
+# Select 14:00:00 - 16:00:00
+Overall1416 <- AllTrackPoints %>% 
+  filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+
+# Select 16:00:00 - 18:00:00
+Overall1618 <- AllTrackPoints %>% 
+  filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+
+# Select 18:00:00 - 20:00:00
+Overall1820 <- AllTrackPoints %>% 
+  filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+
+# Select 20:00:00 - 22:00:00
+Overall2022 <- AllTrackPoints %>% 
+  filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+
+# Select 22:00:00 - 00:00:00
+Overall2200 <- AllTrackPoints %>% 
+  filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+
 ## Split spring datasets in time classes
 
 # Select 00:00:00 - 02:00:00
@@ -494,6 +544,11 @@ Winter2200 <- Winter %>%
 
 ## Create lists of timeframes per season
 
+# Overall
+OverallTimeframeList <- list(Overall0002, Overall0204, Overall0406, Overall0608,
+                             Overall0810, Overall1012, Overall1214, Overall1416,
+                             Overall1618, Overall1820, Overall2022, Overall2200)
+
 # Spring
 SpringTimeframeList <- list(Spring0002, Spring0204, Spring0406, Spring0608,
                             Spring0810, Spring1012, Spring1214, Spring1416,
@@ -549,12 +604,18 @@ JIperTimeframe <- function(SeasonTimeList){
 }
 
 # Call JIperTimeframe for each season
+OverallTimeframeJITable <- JIperTimeframe(OverallTimeframeList)
 SpringTimeframeJITable <- JIperTimeframe(SpringTimeframeList)
 SummerTimeframeJITable <- JIperTimeframe(SummerTimeframeList)
 AutumnTimeframeJITable <- JIperTimeframe(AutumnTimeframeList)
 WinterTimeframeJITable <- JIperTimeframe(WinterTimeframeList)
 
 # Melt the tables for visualization purposes
+OverallTimeframeJITable$timeframe <- rownames(OverallTimeframeJITable)
+OverallTimeframeJIMelt <- melt(OverallTimeframeJITable, id = "timeframe") %>% 
+  mutate(season = "Overall")
+colnames(OverallTimeframeJIMelt) <- c("timeframe", "class", "JI", "Season")
+
 SpringTimeframeJITable$timeframe <- rownames(SpringTimeframeJITable)
 SpringTimeframeJIMelt <- melt(SpringTimeframeJITable, id = "timeframe") %>% 
   mutate(season = "Spring")
@@ -577,6 +638,24 @@ colnames(WinterTimeframeJIMelt) <- c("timeframe", "class", "JI", "Season")
 
 
 ## Visualize development JI per landuse class over the day per season
+
+# Overall
+OverallTimeframeJIVis <- ggplot(data = OverallTimeframeJIMelt, aes(x = timeframe,
+                                                                 y = JI,
+                                                                 group = class,
+                                                                 colour = class)) +
+  geom_line() +
+  geom_point() +
+  ylim(c(-1,1)) +
+  ylab("Jacobs index") +
+  xlab("Timeframe of day (hours)") +
+  ggtitle("Diurnal variation in Jacobs index (Overall)") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+        legend.position = "right") +
+  scale_color_discrete(name = "Landuse class")
+OverallTimeframeJIVis
 
 # Spring
 SpringTimeframeJIVis <- ggplot(data = SpringTimeframeJIMelt, aes(x = timeframe,

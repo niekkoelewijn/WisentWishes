@@ -124,7 +124,10 @@ getMeanCCI <- function(StudyArea, season, time){
     
     # Filter for specified season and hour
     dplyr::filter(date_season == season,
-                  HH == hour)
+                  HH == hour) %>% 
+    
+    # Drop NA values for CCI
+    drop_na()
   
   # Get mean CCI
   meanCCI <- mean(CCIdata$CCI)
@@ -133,9 +136,9 @@ getMeanCCI <- function(StudyArea, season, time){
   return(meanCCI)
 }
 
-getMeanCCI("Maashorst2016", "summer", "00:00:00")
+SlikkenvdHeenSummer <- getMeanCCI("SlikkenvdHeen", "summer", "15:00:00")
 
-
+SlikkenvdHeenWinter <- getMeanCCI("Veluwe", "winter", "05:00:00")
 
 
 

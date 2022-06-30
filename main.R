@@ -123,6 +123,10 @@ source("~/WisentWishes/R/Results/RSF/definitiveRSF.R")
 # Step 4: Create habitat suitability maps
 source("~/WisentWishes/R/Results/RSF/HabitatSuitabilityMaps.R")
 
+# Step 5: Get average CCI values a specific time of the day during a specific season
+source()
+
+
 
 
 

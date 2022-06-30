@@ -211,15 +211,25 @@ writeRaster(KraansvlakSummerMidnightCCI,'~/WisentWishes/MScThesisData/Environmen
 KraansvlakSummerMidnight20 = getHSM("Kraansvlak", -0.673081, "00:00:00", "winter")
 plot(KraansvlakSummerMidnight20)
 
-MaashorstSummerDay <- getHSM("Maashorst2016", 21.00276, "12:00:00", "summer")
-plot(MaashorstSummerNight)
-MaashorstSummerNight <- getHSM("Maashorst2016", 13.20998, "00:00:00", "summer")
-plot(MaashorstSummerNight)
+SlikkenvdHeenSummerDay <- getHSM("Veluwe", getMeanCCI("Veluwe", "summer", "12:00:00"), "12:00:00", "summer")
+plot(SlikkenvdHeenSummerDay)
+SlikkenvdHeenSummerNight <- getHSM("Veluwe", getMeanCCI("Veluwe", "summer", "00:00:00"), "00:00:00", "summer")
+plot(SlikkenvdHeenSummerNight)
 
-MaashorstWinterDay <- getHSM("Maashorst2016", 1.567408, "12:00:00", "winter")
-plot(MaashorstWinterDay)
-MaashorstWinterNight <- getHSM("Maashorst2016", -1.878625, "00:00:00", "winter")
-plot(MaashorstWinterNight)
+SlikkenvdHeenWinterDay <- getHSM("Veluwe", getMeanCCI("Veluwe", "winter", "12:00:00"), "12:00:00", "winter")
+plot(SlikkenvdHeenWinterDay)
+SlikkenvdHeenWinterNight <- getHSM("Veluwe", getMeanCCI("Veluwe", "winter", "00:00:00"), "00:00:00", "winter")
+plot(SlikkenvdHeenWinterNight)
+
+VeluweSummerDay <- getHSM("Veluwe", getMeanCCI("Veluwe", "summer", "12:00:00"), "12:00:00", "summer")
+plot(VeluweSummerDay)
+VeluweSummerNight <- getHSM("Veluwe", getMeanCCI("Veluwe", "summer", "00:00:00"), "00:00:00", "summer")
+plot(VeluweSummerNight)
+
+VeluweWinterDay <- getHSM("Veluwe", getMeanCCI("Veluwe", "winter", "12:00:00"), "12:00:00", "winter")
+plot(VeluweWinterDay)
+VeluweWinterNight <- getHSM("Veluwe", getMeanCCI("Veluwe", "winter", "00:00:00"), "00:00:00", "winter")
+plot(VeluweWinterNight)
 
 
 

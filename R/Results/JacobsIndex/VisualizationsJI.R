@@ -318,10 +318,10 @@ JI_PropAvail <- JI_PropAvail %>%
 
 
 # Grass
-grass_JIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA open land (dry)`, y = `JI grass`)) +
+grass_JIAvail <- ggplot(data = JI_PropAvail, aes(x = `PA grass`, y = `JI grass`)) +
   geom_point(stat = "identity", shape = 16, size = 2,
              aes(color = factor(StudyAreaNames))) +
-  geom_text(label = StudyAreaNames, vjust = 2, size = 3) +
+  geom_text(label = rownames(JI_PropAvail), vjust = 2, size = 3) +
   geom_smooth(method="lm", se=F, fullrange=T, level=0.95,
               color = "black", size = 0.5) +
   theme_bw() +

@@ -117,8 +117,7 @@ getHSM <- function(StudyArea, CCI, time, season){
     decforest_avail = as.numeric(ProportionAvailablePerClass[3, 4])
     freshwater_avail = as.numeric(ProportionAvailablePerClass[3, 6])
     shrub_avail = as.numeric(ProportionAvailablePerClass[3, 12])
-  }
-  else if(StudyArea == "Maashorst2022"){
+  }else if(StudyArea == "Maashorst2022"){
     grassland_avail = as.numeric(ProportionAvailablePerClass[4, 2])
     decforest_avail = as.numeric(ProportionAvailablePerClass[4, 4])
     freshwater_avail = as.numeric(ProportionAvailablePerClass[4, 6])
@@ -189,31 +188,41 @@ getHSM <- function(StudyArea, CCI, time, season){
   PredictDF$pred <- as.numeric(predict.glm(definitive_RSF, newdata = PredictDF, type= "response")[1:nrow(PredictDF)])
   
   # Replace NA values wiht prediction values
-  HabitatSuitabilityRaster[PredictDF$celID] <- PredictDF$pred # rpred is raster van je study area, waardes zijn NA
+  HabitatSuitabilityRaster[PredictDF$celID] <- PredictDF$pred
   
   # Return the habitat suitability raster
   return(HabitatSuitabilityRaster)
 }
 
-KraansvlakSummerNoon20 = getHSM("Kraansvlak", KraansvlakStack, 20, "12:00:00", "summer")
-KraansvlakSummerMidnight20 = getHSM("Kraansvlak", KraansvlakStack, 20, "00:00:00", "summer")
-writeRaster(HabitatSuitabilityRasternight,'~/WisentWishes/MScThesisData/EnvironmentalVariables/HabitatSuitabilityRasternight.tif',options=c('TFW=YES'), overwrite = T)
+KraansvlakSummerDay <- getHSM("Kraansvlak", getMeanCCI("Kraansvlak", "summer", "12:00:00"), "12:00:00", "summer")
+plot(KraansvlakSummerDay)
+KraansvlakSummerNight <- getHSM("Kraansvlak", getMeanCCI("Kraansvlak", "summer", "00:00:00"), "00:00:00", "summer")
+plot(KraansvlakSummerNight)
 
-HabitatSuitabilityRaster # This is made by the loop
-HabitatSuitabilityRasternight # This is made by the loop
+KraansvlakWinterDay <- getHSM("Kraansvlak", getMeanCCI("Kraansvlak", "winter", "12:00:00"), "12:00:00", "winter")
+plot(KraansvlakWinterDay)
+KraansvlakWinterNight <- getHSM("Kraansvlak", getMeanCCI("Kraansvlak", "winter", "00:00:00"), "00:00:00", "winter")
+plot(KraansvlakWinterNight)
+
+writeRaster(KraansvlakSummerDay,'~/WisentWishes/ResultsRSF/Kraansvlak/KraansvlakSummerDay',options=c('TFW=YES'), overwrite = T)
+writeRaster(KraansvlakSummerNight,'~/WisentWishes/ResultsRSF/Kraansvlak/KraansvlakSummerNight',options=c('TFW=YES'), overwrite = T)
+writeRaster(KraansvlakWinterDay,'~/WisentWishes/ResultsRSF/Kraansvlak/KraansvlakWinterDay',options=c('TFW=YES'), overwrite = T)
+writeRaster(KraansvlakWinterNight,'~/WisentWishes/ResultsRSF/Kraansvlak/KraansvlakWinterNight',options=c('TFW=YES'), overwrite = T)
 
 
-KraansvlakSummerMidnightCCI = getHSM("Maashorst2016",-1, "00:00:00", "winter")
-plot(KraansvlakSummerMidnightCCI)
+MaashorstSummerDay <- getHSM("Maashorst20172021", getMeanCCI("Maashorst20172021", "summer", "12:00:00"), "12:00:00", "summer")
+plot(MaashorstSummerDay)
+MaashorstSummerNight <- getHSM("Maashorst20172021", getMeanCCI("Maashorst20172021", "summer", "00:00:00"), "00:00:00", "summer")
+plot(MaashorstSummerNight)
 
-writeRaster(KraansvlakSummerMidnightCCI,'~/WisentWishes/MScThesisData/EnvironmentalVariables/Maashorst2016SummerMidnight12.tif',options=c('TFW=YES'), overwrite = T)
+MaashorstWinterDay <- getHSM("Maashorst20172021", getMeanCCI("Maashorst20172021", "winter", "12:00:00"), "12:00:00", "winter")
+plot(MaashorstWinterDay)
+MaashorstWinterNight <- getHSM("Maashorst20172021", getMeanCCI("Maashorst20172021", "winter", "00:00:00"), "00:00:00", "winter")
+plot(MaashorstWinterNight)
 
-KraansvlakSummerMidnight20 = getHSM("Kraansvlak", -0.673081, "00:00:00", "winter")
-plot(KraansvlakSummerMidnight20)
-
-SlikkenvdHeenSummerDay <- getHSM("Veluwe", getMeanCCI("Veluwe", "summer", "12:00:00"), "12:00:00", "summer")
+SlikkenvdHeenSummerDay <- getHSM("SlikkenvdHeen", getMeanCCI("SlikkenvdHeen", "summer", "12:00:00"), "12:00:00", "summer")
 plot(SlikkenvdHeenSummerDay)
-SlikkenvdHeenSummerNight <- getHSM("Veluwe", getMeanCCI("Veluwe", "summer", "00:00:00"), "00:00:00", "summer")
+SlikkenvdHeenSummerNight <- getHSM("SlikkenvdHeen", getMeanCCI("SlikkenvdHeen", "summer", "00:00:00"), "00:00:00", "summer")
 plot(SlikkenvdHeenSummerNight)
 
 SlikkenvdHeenWinterDay <- getHSM("Veluwe", getMeanCCI("Veluwe", "winter", "12:00:00"), "12:00:00", "winter")
@@ -232,7 +241,11 @@ VeluweWinterNight <- getHSM("Veluwe", getMeanCCI("Veluwe", "winter", "00:00:00")
 plot(VeluweWinterNight)
 
 
+VeluweWinterDay_scale <- 0 + (VeluweWinterDay - cellStats(VeluweWinterDay, "min")) * ((1 - 0) / (cellStats(VeluweWinterDay, "max") - cellStats(VeluweWinterDay, "min")))
+plot(VeluweWinterDay_scale)
 
+VeluweWinterNight_scale <- 0 + (VeluweWinterNight - cellStats(VeluweWinterNight, "min")) * ((1 - 0) / (cellStats(VeluweWinterNight, "max") - cellStats(VeluweWinterNight, "min")))
+plot(VeluweWinterDay_scale, col = RColorBrewer::brewer.pal(n = "PiYG", name = "PiYG"))
 
 
 

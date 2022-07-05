@@ -126,16 +126,16 @@ Maashorst20172021Points <- ClusterTracks("Maashorst", year = 20172021)
 Maashorst2022Points <- ClusterTracks("Maashorst", year = 2022)
 
 
-## Put datasets in 1 list
-PointsList <- list()
-PointsList[[1]] <- KraansvlakPoints
-PointsList[[2]] <- Maashorst2016Points
-PointsList[[3]] <- Maashorst20172021Points
-PointsList[[4]] <- Maashorst2022Points
-PointsList[[5]] <- SlikkenvdHeenHabPoints
-PointsList[[6]] <- SlikkenvdHeenPoints
-PointsList[[7]] <- VeluweHabPoints
-PointsList[[8]] <- VeluwePoints
+# Rename autumm to autumn in all study areas
+KraansvlakPoints$season[KraansvlakPoints$season == "autumm"] <- "autumn"
+Maashorst2016Points$season[Maashorst2016Points$season == "autumm"] <- "autumn"
+Maashorst20172021Points$season[Maashorst20172021Points$season == "autumm"] <- "autumn"
+Maashorst2022Points$season[Maashorst2022Points$season == "autumm"] <- "autumn"
+SlikkenvdHeenHabPoints$season[SlikkenvdHeenHabPoints$season == "autumm"] <- "autumn"
+SlikkenvdHeenPoints$season[SlikkenvdHeenPoints$season == "autumm"] <- "autumn"
+VeluweHabPoints$season[VeluweHabPoints$season == "autumm"] <- "autumn"
+VeluwePoints$season[VeluwePoints$season == "autumm"] <- "autumn"
+
 
 
 

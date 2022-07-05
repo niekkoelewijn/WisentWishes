@@ -100,7 +100,7 @@ getMeanCCI <- function(StudyArea, season, time){
     mutate(date = make_date(year = year, month = month, day = day)) %>% 
     
     # Get date_season column
-    mutate(date_season = time2season(date, out.fmt = "seasons")) %>% 
+    mutate(date_season = time2season(date, out.fmt = "seasons")) %>%  
     
     # Select columns of interest: needed for CCI: T (Ta), FF (WS), U (RH), and Q (RAD)
     select(date, date_season, HH, "T", FF, U, Q) %>% 
@@ -118,6 +118,9 @@ getMeanCCI <- function(StudyArea, season, time){
     
     # Create CCI column
     mutate(CCI = CCI(Ta, RH, WS, RAD))
+    
+  # Bug in time2season: autumm should be autumn
+  HourWeatherData$date_season[HourWeatherData$date_season == "autumm"] <- "autumn"
   
   # Now get CCI data for the specified time and season
   CCIdata <- HourWeatherData %>% 
@@ -136,9 +139,6 @@ getMeanCCI <- function(StudyArea, season, time){
   return(meanCCI)
 }
 
-SlikkenvdHeenSummer <- getMeanCCI("SlikkenvdHeen", "summer", "15:00:00")
-
-SlikkenvdHeenWinter <- getMeanCCI("Veluwe", "winter", "05:00:00")
 
 
 

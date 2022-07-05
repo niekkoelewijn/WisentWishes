@@ -32,7 +32,7 @@ getRandomPointsStudyArea <- function(TrackDataset, StudyAreasf, StudyRegion, Stu
            freshwater_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),6]),
            freshwater_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),6]),
            road_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),9]),
-           baresoil_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),10]),
+           baresoil_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == c),10]),
            swamp_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),11]),
            shrub_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),12]),
            heathland_avail = as.numeric(ProportionAvailablePerClass[which(ProportionAvailablePerClass$`Study area` == StudyArea),13]),
@@ -1182,7 +1182,7 @@ points(caribou.sp, col = alpha("darkblue", 0.3), cex = 0.5)
 # I will include the water distance and the interaction between temperature and 
 # water distance, as the water distance decreases with increasing temp.
 
-## Create final_RSF in one line of code
+## Create definitive_RSF 
 definitive_RSF <- glm(case ~  grassland + deciduous_forest + 
                         coniferous_forest + fresh_water + bare_soil + heathland +
                         road + grassy_heathland + swamp + shrubland + 
@@ -1212,10 +1212,38 @@ definitive_RSF <- glm(case ~  grassland + deciduous_forest +
 summary(definitive_RSF)
 AIC(definitive_RSF) # 534452.3
 
-
-
-
-
+# Created weighted model, like Tal Avgar
+RSFweighted <- RSFdaytime
+RSFweighted$w <- ifelse(RSFweighted$case, 1, 5000)
+weighted_RSF <- glm(case ~  grassland + deciduous_forest + 
+                        coniferous_forest + fresh_water + bare_soil + heathland +
+                        road + grassy_heathland + swamp + shrubland + 
+                        scale(log(1+WaterDistance)) + scale(log(1+WaterDistance)):scale(CCI) +
+                        grassland:scale(CCI) + deciduous_forest:scale(CCI) + 
+                        coniferous_forest:scale(CCI) + fresh_water:scale(CCI) + 
+                        swamp:scale(CCI) + grassy_heathland:scale(CCI) +
+                        fresh_water:freshwater_avail + grassland:grassland_avail +
+                        deciduous_forest:decforest_avail + shrubland:shrub_avail +
+                        grassland:peaktwelves + coniferous_forest:peaktwelves +
+                        deciduous_forest:peaktwelves + swamp:peaktwelves +
+                        fresh_water:peaktwelves + shrubland:peaktwelves +
+                        grassy_heathland:peaktwelves + heathland:peaktwelves +
+                        fresh_water:peakthrees + heathland:peakthrees +
+                        swamp:peakthrees +
+                        grassland:peaknines + deciduous_forest:peaknines +
+                        coniferous_forest:peaknines +
+                        shrubland:peaknines +
+                        grassland:spring + grassland:summer + grassland:winter +
+                        deciduous_forest:summer + deciduous_forest:winter +
+                        coniferous_forest:summer + coniferous_forest:winter +
+                        fresh_water:spring + fresh_water:summer + coniferous_forest:winter +
+                        grassy_heathland:spring + grassy_heathland:summer + grassy_heathland:winter +
+                        swamp:autumn + swamp:summer + swamp:winter,
+                      data = RSFweighted, family = binomial(link = "logit"),
+                      offset = rep(qlogis(1/11), nrow(RSFdaytime)),
+                      weights = w)
+summary(weighted_RSF)
+AIC(weighted_RSF)
 
 
 

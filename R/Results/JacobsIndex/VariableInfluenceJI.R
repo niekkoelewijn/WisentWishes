@@ -9,27 +9,22 @@
 ### index  of a landuse class.
 
 
-## Temperature
-
-# filter out track 38 and 39, as these tracks have no temp attribute
-TempDataset <- AllTrackPoints %>% 
-  filter(track_ID != 38 &
-           track_ID != 39)
+## CCI
 
 # get the lowest and highest 10% of the data
-lowest10 <- as.numeric(quantile(TempDataset$temp, probs = seq(0, 1, 0.1))["10%"])
-highest10 <- as.numeric(quantile(TempDataset$temp, probs = seq(0, 1, 0.1))["90%"])
+lowest10 <- as.numeric(quantile(AllTrackPoints$CCI, probs = seq(0, 1, 0.1))["10%"])
+highest10 <- as.numeric(quantile(AllTrackPoints$CCI, probs = seq(0, 1, 0.1))["90%"])
 
-# Filter TempDataset to get only the points with the lowest 10% temperatures
-Lowest10 <- TempDataset %>% 
-  filter(temp <= lowest10)
+# Filter AllTrackPoints to get only the points with the lowest 10% temperatures
+Lowest10 <- AllTrackPoints %>% 
+  filter(CCI <= lowest10)
 
 # Filter TempDataset to get only the points with the higest 10% temperatures
 Highest10 <- TempDataset %>% 
-  filter(temp > highest10)
+  filter(CCI > highest10)
 
 
-## Calculate Jacob's index for lowest 10% temperatures
+## Calculate Jacob's index for lowest 10% CCI
 
 # Determine landuse class used 
 Lowest10ClassUsed <- table(Lowest10$landuse_code)
@@ -56,7 +51,7 @@ for(i in seq_along(JILowest10)){
   JILowest10[i] <- JacobsIndex(as.numeric(PropUsedLowest10[i]), as.numeric(PropAvail[i]))
 }
 
-## Calculate Jacob's index for lowest 10% temperatures
+## Calculate Jacob's index for highest 10% CCI
 
 # Determine landuse class used 
 Highest10ClassUsed <- table(Highest10$landuse_code)
@@ -144,49 +139,49 @@ JIHighest10Vis
 ## Explore influence temperature on distances
 
 # Get mean distances per temperature class, step size 0.1
-lowest10 <- as.numeric(quantile(TempDataset$temp, probs = seq(0, 1, 0.1))["10%"])
-temp20 <- as.numeric(quantile(TempDataset$temp, probs = seq(0, 1, 0.1))["20%"])
-temp30 <- as.numeric(quantile(TempDataset$temp, probs = seq(0, 1, 0.1))["30%"])
-temp40 <- as.numeric(quantile(TempDataset$temp, probs = seq(0, 1, 0.1))["40%"])
-temp50 <- as.numeric(quantile(TempDataset$temp, probs = seq(0, 1, 0.1))["50%"])
-temp60 <- as.numeric(quantile(TempDataset$temp, probs = seq(0, 1, 0.1))["60%"])
-temp70 <- as.numeric(quantile(TempDataset$temp, probs = seq(0, 1, 0.1))["70%"])
-temp80 <- as.numeric(quantile(TempDataset$temp, probs = seq(0, 1, 0.1))["80%"])
-highest10 <- as.numeric(quantile(TempDataset$temp, probs = seq(0, 1, 0.1))["90%"])
+lowest10 <- as.numeric(quantile(AllTrackPoints$CCI, probs = seq(0, 1, 0.1))["10%"])
+temp20 <- as.numeric(quantile(AllTrackPoints$CCI, probs = seq(0, 1, 0.1))["20%"])
+temp30 <- as.numeric(quantile(AllTrackPoints$CCI, probs = seq(0, 1, 0.1))["30%"])
+temp40 <- as.numeric(quantile(AllTrackPoints$CCI, probs = seq(0, 1, 0.1))["40%"])
+temp50 <- as.numeric(quantile(AllTrackPoints$CCI, probs = seq(0, 1, 0.1))["50%"])
+temp60 <- as.numeric(quantile(AllTrackPoints$CCI, probs = seq(0, 1, 0.1))["60%"])
+temp70 <- as.numeric(quantile(AllTrackPoints$CCI, probs = seq(0, 1, 0.1))["70%"])
+temp80 <- as.numeric(quantile(AllTrackPoints$CCI, probs = seq(0, 1, 0.1))["80%"])
+highest10 <- as.numeric(quantile(AllTrackPoints$CCI, probs = seq(0, 1, 0.1))["90%"])
 
 # Filter TempDataset to get datasets with other all quantiles than the 
 # lowest 10 and highest 10
-Temp20 <- TempDataset %>% 
-  filter(temp > lowest10 &
-           temp <= temp20)
+Temp20 <- AllTrackPoints %>% 
+  filter(CCI > lowest10 &
+           CCI <= temp20)
 
-Temp30 <- TempDataset %>% 
-  filter(temp > temp20 &
-           temp <= temp30)
+Temp30 <- AllTrackPoints %>% 
+  filter(CCI > temp20 &
+           CCI <= temp30)
 
-Temp40 <- TempDataset %>% 
-  filter(temp > temp30 &
-           temp <= temp40)
+Temp40 <- AllTrackPoints %>% 
+  filter(CCI > temp30 &
+           CCI <= temp40)
 
-Temp50 <- TempDataset %>% 
-  filter(temp > temp40 &
-           temp <= temp50)
+Temp50 <- AllTrackPoints %>% 
+  filter(CCI > temp40 &
+           CCI <= temp50)
 
-Temp60 <- TempDataset %>% 
-  filter(temp > temp50 &
-           temp <= temp60)
+Temp60 <- AllTrackPoints %>% 
+  filter(CCI > temp50 &
+           CCI <= temp60)
 
-Temp70 <- TempDataset %>% 
-  filter(temp > temp60 &
-           temp <= temp70)
+Temp70 <- AllTrackPoints %>% 
+  filter(CCI > temp60 &
+           CCI <= temp70)
 
-Temp80 <- TempDataset %>% 
-  filter(temp > temp70 &
-           temp <= temp80)
+Temp80 <- AllTrackPoints %>% 
+  filter(CCI > temp70 &
+           CCI <= temp80)
 
-Temp90 <- TempDataset %>% 
-  filter(temp > temp80 &
-           temp <= highest10)
+Temp90 <- AllTrackPoints %>% 
+  filter(CCI > temp80 &
+           CCI <= highest10)
 
 # Get mean distance to water for each temperature quantile
 Lowest10MeanWaterDistance <- mean(Lowest10$WaterDistance)
@@ -269,308 +264,10 @@ TempDistForestVis <- ggplot(data = TempDist, aes(x = Classes, y = MeanForestDist
 TempDistForestVis
 
 
-## Comparing JI per season
-
-# Select spring
-Spring <- AllTrackPoints %>% 
-  filter(season == "spring")
-
-# Select summer
-Summer <- AllTrackPoints %>% 
-  filter(season == "summer")
-
-# Select autumn
-Autumn <- AllTrackPoints %>% 
-  filter(season == "autumm")
-
-# Select winter
-Winter <- AllTrackPoints %>% 
-  filter(season == "winter")
-
-
-## Split overall datasets in time classes
-
-# Select 00:00:00 - 02:00:00
-Overall0002 <- AllTrackPoints %>% 
-  filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
-
-# Select 02:00:00 - 04:00:00
-Overall0204 <- AllTrackPoints %>% 
-  filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
-
-# Select 04:00:00 - 06:00:00
-Overall0406 <- AllTrackPoints %>% 
-  filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
-
-# Select 06:00:00 - 08:00:00
-Overall0608 <- AllTrackPoints %>% 
-  filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
-
-# Select 08:00:00 - 10:00:00
-Overall0810 <- AllTrackPoints %>% 
-  filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
-
-# Select 10:00:00 - 12:00:00
-Overall1012 <- AllTrackPoints %>% 
-  filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
-
-# Select 12:00:00 - 14:00:00
-Overall1214 <- AllTrackPoints %>% 
-  filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
-
-# Select 14:00:00 - 16:00:00
-Overall1416 <- AllTrackPoints %>% 
-  filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
-
-# Select 16:00:00 - 18:00:00
-Overall1618 <- AllTrackPoints %>% 
-  filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
-
-# Select 18:00:00 - 20:00:00
-Overall1820 <- AllTrackPoints %>% 
-  filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
-
-# Select 20:00:00 - 22:00:00
-Overall2022 <- AllTrackPoints %>% 
-  filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
-
-# Select 22:00:00 - 00:00:00
-Overall2200 <- AllTrackPoints %>% 
-  filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
-
-## Split spring datasets in time classes
-
-# Select 00:00:00 - 02:00:00
-Spring0002 <- Spring %>% 
-  filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
-
-# Select 02:00:00 - 04:00:00
-Spring0204 <- Spring %>% 
-  filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
-
-# Select 04:00:00 - 06:00:00
-Spring0406 <- Spring %>% 
-  filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
-
-# Select 06:00:00 - 08:00:00
-Spring0608 <- Spring %>% 
-  filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
-
-# Select 08:00:00 - 10:00:00
-Spring0810 <- Spring %>% 
-  filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
-
-# Select 10:00:00 - 12:00:00
-Spring1012 <- Spring %>% 
-  filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
-
-# Select 12:00:00 - 14:00:00
-Spring1214 <- Spring %>% 
-  filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
-
-# Select 14:00:00 - 16:00:00
-Spring1416 <- Spring %>% 
-  filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
-
-# Select 16:00:00 - 18:00:00
-Spring1618 <- Spring %>% 
-  filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
-
-# Select 18:00:00 - 20:00:00
-Spring1820 <- Spring %>% 
-  filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
-
-# Select 20:00:00 - 22:00:00
-Spring2022 <- Spring %>% 
-  filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
-
-# Select 22:00:00 - 00:00:00
-Spring2200 <- Spring %>% 
-  filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
-
-
-## Split summer datasets in time classes
-
-# Select 00:00:00 - 02:00:00
-Summer0002 <- Summer %>% 
-  filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
-
-# Select 02:00:00 - 04:00:00
-Summer0204 <- Summer %>% 
-  filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
-
-# Select 04:00:00 - 06:00:00
-Summer0406 <- Summer %>% 
-  filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
-
-# Select 06:00:00 - 08:00:00
-Summer0608 <- Summer %>% 
-  filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
-
-# Select 08:00:00 - 10:00:00
-Summer0810 <- Summer %>% 
-  filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
-
-# Select 10:00:00 - 12:00:00
-Summer1012 <- Summer %>% 
-  filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
-
-# Select 12:00:00 - 14:00:00
-Summer1214 <- Summer %>% 
-  filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
-
-# Select 14:00:00 - 16:00:00
-Summer1416 <- Summer %>% 
-  filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
-
-# Select 16:00:00 - 18:00:00
-Summer1618 <- Summer %>% 
-  filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
-
-# Select 18:00:00 - 20:00:00
-Summer1820 <- Summer %>% 
-  filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
-
-# Select 20:00:00 - 22:00:00
-Summer2022 <- Summer %>% 
-  filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
-
-# Select 22:00:00 - 00:00:00
-Summer2200 <- Summer %>% 
-  filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
-
-
-## Split autumn datasets in time classes
-
-# Select 00:00:00 - 02:00:00
-Autumn0002 <- Autumn %>% 
-  filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
-
-# Select 02:00:00 - 04:00:00
-Autumn0204 <- Autumn %>% 
-  filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
-
-# Select 04:00:00 - 06:00:00
-Autumn0406 <- Autumn %>% 
-  filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
-
-# Select 06:00:00 - 08:00:00
-Autumn0608 <- Autumn %>% 
-  filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
-
-# Select 08:00:00 - 10:00:00
-Autumn0810 <- Autumn %>% 
-  filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
-
-# Select 10:00:00 - 12:00:00
-Autumn1012 <- Autumn %>% 
-  filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
-
-# Select 12:00:00 - 14:00:00
-Autumn1214 <- Autumn %>% 
-  filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
-
-# Select 14:00:00 - 16:00:00
-Autumn1416 <- Autumn %>% 
-  filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
-
-# Select 16:00:00 - 18:00:00
-Autumn1618 <- Autumn %>% 
-  filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
-
-# Select 18:00:00 - 20:00:00
-Autumn1820 <- Autumn %>% 
-  filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
-
-# Select 20:00:00 - 22:00:00
-Autumn2022 <- Autumn %>% 
-  filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
-
-# Select 22:00:00 - 00:00:00
-Autumn2200 <- Autumn %>% 
-  filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
-
-
-## Split winter datasets in time classes
-
-# Select 00:00:00 - 02:00:00
-Winter0002 <- Winter %>% 
-  filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
-
-# Select 02:00:00 - 04:00:00
-Winter0204 <- Winter %>% 
-  filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
-
-# Select 04:00:00 - 06:00:00
-Winter0406 <- Winter %>% 
-  filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
-
-# Select 06:00:00 - 08:00:00
-Winter0608 <- Winter %>% 
-  filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
-
-# Select 08:00:00 - 10:00:00
-Winter0810 <- Winter %>% 
-  filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
-
-# Select 10:00:00 - 12:00:00
-Winter1012 <- Winter %>% 
-  filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
-
-# Select 12:00:00 - 14:00:00
-Winter1214 <- Winter %>% 
-  filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
-
-# Select 14:00:00 - 16:00:00
-Winter1416 <- Winter %>% 
-  filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
-
-# Select 16:00:00 - 18:00:00
-Winter1618 <- Winter %>% 
-  filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
-
-# Select 18:00:00 - 20:00:00
-Winter1820 <- Winter %>% 
-  filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
-
-# Select 20:00:00 - 22:00:00
-Winter2022 <- Winter %>% 
-  filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
-
-# Select 22:00:00 - 00:00:00
-Winter2200 <- Winter %>% 
-  filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
-
-
-## Create lists of timeframes per season
-
-# Overall
-OverallTimeframeList <- list(Overall0002, Overall0204, Overall0406, Overall0608,
-                             Overall0810, Overall1012, Overall1214, Overall1416,
-                             Overall1618, Overall1820, Overall2022, Overall2200)
-
-# Spring
-SpringTimeframeList <- list(Spring0002, Spring0204, Spring0406, Spring0608,
-                            Spring0810, Spring1012, Spring1214, Spring1416,
-                            Spring1618, Spring1820, Spring2022, Spring2200)
-
-# Summer
-SummerTimeframeList <- list(Summer0002, Summer0204, Summer0406, Summer0608,
-                            Summer0810, Summer1012, Summer1214, Summer1416,
-                            Summer1618, Summer1820, Summer2022, Summer2200)
-
-# Autumn
-AutumnTimeframeList <- list(Autumn0002, Autumn0204, Autumn0406, Autumn0608,
-                            Autumn0810, Autumn1012, Autumn1214, Autumn1416,
-                            Autumn1618, Autumn1820, Autumn2022, Autumn2200)
-
-# Winter
-WinterTimeframeList <- list(Winter0002, Winter0204, Winter0406, Winter0608,
-                            Winter0810, Winter1012, Winter1214, Winter1416,
-                            Winter1618, Winter1820, Winter2022, Winter2200)
+## Comparing JI per season and time of the day
 
 # Create function to efficiently calculate JI per time frame
-JIperTimeframe <- function(SeasonTimeList){
+JIperTimeframe <- function(TimeframeList){
   
   # Create empty result table
   Result <- data.frame(matrix(data = NA, nrow = 12, ncol = 10))
@@ -591,7 +288,7 @@ JIperTimeframe <- function(SeasonTimeList){
     
     # Calculate JI per row
     for(j in 1:nrow(Result)){
-      PointsList <- SeasonTimeList[[j]]
+      PointsList <- TimeframeList[[j]]
       FreqLanduseClass <- nrow(PointsList[which(PointsList$landuse_class == i),])
       TotalPoints <- nrow(PointsList)
       Used <- FreqLanduseClass / TotalPoints
@@ -603,1265 +300,793 @@ JIperTimeframe <- function(SeasonTimeList){
   return(Result)
 }
 
-# Call JIperTimeframe for each season
-OverallTimeframeJITable <- JIperTimeframe(OverallTimeframeList)
-SpringTimeframeJITable <- JIperTimeframe(SpringTimeframeList)
-SummerTimeframeJITable <- JIperTimeframe(SummerTimeframeList)
-AutumnTimeframeJITable <- JIperTimeframe(AutumnTimeframeList)
-WinterTimeframeJITable <- JIperTimeframe(WinterTimeframeList)
-
-# Melt the tables for visualization purposes
-OverallTimeframeJITable$timeframe <- rownames(OverallTimeframeJITable)
-OverallTimeframeJIMelt <- melt(OverallTimeframeJITable, id = "timeframe") %>% 
-  mutate(season = "Overall")
-colnames(OverallTimeframeJIMelt) <- c("timeframe", "class", "JI", "Season")
-
-SpringTimeframeJITable$timeframe <- rownames(SpringTimeframeJITable)
-SpringTimeframeJIMelt <- melt(SpringTimeframeJITable, id = "timeframe") %>% 
-  mutate(season = "Spring")
-colnames(SpringTimeframeJIMelt) <- c("timeframe", "class", "JI", "Season")
-
-SummerTimeframeJITable$timeframe <- rownames(SummerTimeframeJITable)
-SummerTimeframeJIMelt <- melt(SummerTimeframeJITable, id = "timeframe") %>% 
-  mutate(season = "Summer")
-colnames(SummerTimeframeJIMelt) <- c("timeframe", "class", "JI", "Season")
-
-AutumnTimeframeJITable$timeframe <- rownames(AutumnTimeframeJITable)
-AutumnTimeframeJIMelt <- melt(AutumnTimeframeJITable, id = "timeframe") %>% 
-  mutate(season = "Autumn")
-colnames(AutumnTimeframeJIMelt) <- c("timeframe", "class", "JI", "Season")
-
-WinterTimeframeJITable$timeframe <- rownames(WinterTimeframeJITable)
-WinterTimeframeJIMelt <- melt(WinterTimeframeJITable, id = "timeframe") %>% 
-  mutate(season = "Winter")
-colnames(WinterTimeframeJIMelt) <- c("timeframe", "class", "JI", "Season")
-
-
-## Visualize development JI per landuse class over the day per season
-
-# Overall
-OverallTimeframeJIVis <- ggplot(data = OverallTimeframeJIMelt, aes(x = timeframe,
-                                                                 y = JI,
-                                                                 group = class,
-                                                                 colour = class)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Overall)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-OverallTimeframeJIVis
-
-# Spring
-SpringTimeframeJIVis <- ggplot(data = SpringTimeframeJIMelt, aes(x = timeframe,
-                                                                  y = JI,
-                                                                  group = class,
-                                                                  colour = class)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Spring)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-SpringTimeframeJIVis
-
-# Summer
-SummerTimeframeJIVis <- ggplot(data = SummerTimeframeJIMelt, aes(x = timeframe,
-                                                                 y = JI,
-                                                                 group = class,
-                                                                 colour = class)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Summer)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-SummerTimeframeJIVis
-
-# Summer
-SummerTimeframeJIVis <- ggplot(data = SummerTimeframeJIMelt, aes(x = timeframe,
-                                                                 y = JI,
-                                                                 group = class,
-                                                                 colour = class)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Summer)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-SummerTimeframeJIVis
-
-# Autumn
-AutumnTimeframeJIVis <- ggplot(data = AutumnTimeframeJIMelt, aes(x = timeframe,
-                                                                 y = JI,
-                                                                 group = class,
-                                                                 colour = class)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Autumn)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-AutumnTimeframeJIVis
-
-# Winter
-WinterTimeframeJIVis <- ggplot(data = WinterTimeframeJIMelt, aes(x = timeframe,
-                                                                 y = JI,
-                                                                 group = class,
-                                                                 colour = class)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Winter)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-WinterTimeframeJIVis
-
-
-## Compare development JI for specific landuse class over day per season
-
-# Create merged JI per time of day table
-TimeframeJI <- rbind(SpringTimeframeJIMelt, SummerTimeframeJIMelt,
-                     AutumnTimeframeJIMelt, WinterTimeframeJIMelt)
-
-# Grassland
-GrasslandTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "grassland"),],
-                                  aes(x = timeframe, y = JI, group = Season, colour = Season)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Grassland)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-GrasslandTimeframeJIVis
-
-# Deciduous forest
-DecForestTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "deciduous forest"),],
-                                  aes(x = timeframe, y = JI, group = Season, colour = Season)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Deciduous forest)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-DecForestTimeframeJIVis
-
-# Coniferous forest
-ConForestTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "coniferous forest"),],
-                                  aes(x = timeframe, y = JI, group = Season, colour = Season)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Coniferous forest)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-ConForestTimeframeJIVis
-
-# Fresh water
-FreshWaterTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "fresh water"),],
-                                   aes(x = timeframe, y = JI, group = Season, colour = Season)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Fresh water)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-FreshWaterTimeframeJIVis
-
-# Bare soil
-BareSoilTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "bare soil"),],
-                                  aes(x = timeframe, y = JI, group = Season, colour = Season)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Bare soil)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-BareSoilTimeframeJIVis
-
-# Heathland
-HeathTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "heathland"),],
-                                 aes(x = timeframe, y = JI, group = Season, colour = Season)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Heathland)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-HeathTimeframeJIVis
-
-# Grassy heathland
-GrasHeathTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "grassy heathland"),],
-                              aes(x = timeframe, y = JI, group = Season, colour = Season)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Grassy heathland)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-GrasHeathTimeframeJIVis
-
-# Swamp
-SwampTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "swamp"),],
-                                  aes(x = timeframe, y = JI, group = Season, colour = Season)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Swamp)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-SwampTimeframeJIVis
-
-# Road
-RoadTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "road"),],
-                              aes(x = timeframe, y = JI, group = Season, colour = Season)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Road)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-RoadTimeframeJIVis
-
-# Shrubland
-ShrublandTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == "shrubland"),],
-                             aes(x = timeframe, y = JI, group = Season, colour = Season)) +
-  geom_line() +
-  geom_point() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Timeframe of day (hours)") +
-  ggtitle("Diurnal variation in Jacobs index (Shrubland)") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set3") +
-  theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
-        legend.position = "right") +
-  scale_color_discrete(name = "Landuse class")
-ShrublandTimeframeJIVis
-
-
-
-
-
-## JI spring
-
-# Determine landuse class used 
-SpringClassUsed <- table(Spring$landuse_code)
-NumberOfPoints <- length(Spring$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedSpring <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedSpring) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedSpring with proportion used per landuse class
-for(i in seq_along(PropUsedSpring)){
-  if(is.na(SpringClassUsed[as.character(i)])){
-    SpringClassUsed[as.character(i)] <- 0
+# Create general funcion to calculate JI per season
+getJIVisualization <- function(StudyArea, season, landuse_class){
+  
+  # Check whether the input for StudyArea is valid
+  StudyArea <- match.arg(StudyArea, choices = c("Kraansvlak", "Maashorst2016", "Maashorst20172021",
+                                                "Maashorst2022", "SlikkenvdHeenHabituate", "SlikkenvdHeen", 
+                                                "VeluweHabituate", "Veluwe", "all"))
+  
+  # Check  whether the input for season is valid
+  season <- match.arg(season, choices = c("spring", "summer", "autumn", "winter", "all"))
+  
+  # Check  whether the input for landuse_class is valid
+  landuse_class <- match.arg(landuse_class, choices = c("grassland", "deciduous forest", "coniferous forest", "fresh water",
+                                          "bare soil", "shrubland", "swamp", "grassy heathland", "heathland",
+                                          "road", "all"))
+  
+  # Get stack with raster data from StudyArea argument
+  StudyAreaData <- switch(StudyArea,
+                          Kraansvlak = KraansvlakPoints,
+                          Maashorst2016 = Maashorst2016Points,
+                          Maashorst20172021 = Maashorst20172021Points,
+                          Maashorst2022 = Maashorst2022Points,
+                          SlikkenvdHeenHabituate = SlikkenvdHeenHabPoints,
+                          SlikkenvdHeen = SlikkenvdHeenPoints,
+                          VeluweHabituate = VeluweHabPoints,
+                          Veluwe = VeluwePoints,
+                          all = AllTrackPoints)
+  
+  # Create subset of StudyAreaData based on input season
+  if(season == "spring"){
+    
+    # Select spring
+    StudyAreaData <- StudyAreaData %>% 
+      filter(season == "spring")
+    
+  }else if(season == "summer"){
+    
+    # Select summer
+    StudyAreaData <- StudyAreaData %>% 
+      filter(season == "summer")
+    
+  }else if(season == "autumn"){
+    
+    # Select autumn
+    StudyAreaData <- StudyAreaData %>% 
+      filter(season == "autumn")
+    
+  }else if(season == "winter"){
+    
+    # Select winter
+    StudyAreaData <- StudyAreaData %>% 
+      filter(season == "winter")
+    
+  }else{
+    StudyAreaDataSpring <- StudyAreaData %>% 
+      filter(season == "spring")
+    
+    StudyAreaDataSummer <- StudyAreaData %>% 
+      filter(season == "summer")
+    
+    StudyAreaDataAutumn <- StudyAreaData %>% 
+      filter(season == "autumn")
+    
+    StudyAreaDataWinter <- StudyAreaData %>% 
+      filter(season == "winter")
   }
-  PropUsedSpring[1,i] <- SpringClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JISpring <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JISpring) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JISpring
-for(i in seq_along(JISpring)){
-  JISpring[i] <- JacobsIndex(as.numeric(PropUsedSpring[i]), as.numeric(PropAvail[i]))
-}
-
-## JI summer
-
-# Determine landuse class used 
-SummerClassUsed <- table(Summer$landuse_code)
-NumberOfPoints <- length(Summer$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedSummer <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedSummer) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedSummer with proportion used per landuse class
-for(i in seq_along(PropUsedSummer)){
-  if(is.na(SummerClassUsed[as.character(i)])){
-    SummerClassUsed[as.character(i)] <- 0
+  
+  # Split StudyAreaData in 12 time classes
+  if(landuse_class == "all"){
+    
+    # Select 00:00:00 - 02:00:00
+    twelvetwo <- StudyAreaData %>% 
+      filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+    
+    # Select 02:00:00 - 04:00:00
+    twofour <- StudyAreaData %>% 
+      filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+    
+    # Select 04:00:00 - 06:00:00
+    foursix <- StudyAreaData %>% 
+      filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+    
+    # Select 06:00:00 - 08:00:00
+    sixeight <- StudyAreaData %>% 
+      filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+    
+    # Select 08:00:00 - 10:00:00
+    eightten <- StudyAreaData %>% 
+      filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+    
+    # Select 10:00:00 - 12:00:00
+    tentwelve <- StudyAreaData %>% 
+      filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+    
+    # Select 12:00:00 - 14:00:00
+    twelvetwoaft <- StudyAreaData %>% 
+      filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+    
+    # Select 14:00:00 - 16:00:00
+    twofouraft <- StudyAreaData %>% 
+      filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+    
+    # Select 16:00:00 - 18:00:00
+    foursixaft <- StudyAreaData %>% 
+      filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+    
+    # Select 18:00:00 - 20:00:00
+    sixeightaft <- StudyAreaData %>% 
+      filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+    
+    # Select 20:00:00 - 22:00:00
+    eighttenaft <- StudyAreaData %>% 
+      filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+    
+    # Select 22:00:00 - 00:00:00
+    tentwelveaft <- StudyAreaData %>% 
+      filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+    
+    
+    # Create lists of timeframes
+    TimeframeList <- list(twelvetwo, twofour, foursix, sixeight,
+                          eightten, tentwelve, twelvetwoaft, twofouraft,
+                          foursixaft, sixeightaft, eighttenaft, tentwelveaft)
+    
+    # Call JIperTimeframe for created list
+    TimeframeJITable <- JIperTimeframe(TimeframeList)
+    
+    # Melt the tables for visualization purposes
+    TimeframeJITable$timeframe <- rownames(TimeframeJITable)
+    TimeframeJIMelt <- melt(TimeframeJITable, id = "timeframe") %>% 
+      mutate(season = season)
+    colnames(TimeframeJIMelt) <- c("timeframe", "class", "JI", "season")
   }
-  PropUsedSummer[1,i] <- SummerClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JISummer <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JISummer) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JISummer
-for(i in seq_along(JISummer)){
-  JISummer[i] <- JacobsIndex(as.numeric(PropUsedSummer[i]), as.numeric(PropAvail[i]))
-}
-
-## JI autumn
-
-# Determine landuse class used 
-AutumnClassUsed <- table(Autumn$landuse_code)
-NumberOfPoints <- length(Autumn$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedAutumn <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedAutumn) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedAutumn with proportion used per landuse class
-for(i in seq_along(PropUsedAutumn)){
-  if(is.na(AutumnClassUsed[as.character(i)])){
-    AutumnClassUsed[as.character(i)] <- 0
+  else if(season != "all" & landuse_class == "all"){
+    
+    # Select 00:00:00 - 02:00:00
+    twelvetwo <- StudyAreaData %>% 
+      filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+    
+    # Select 02:00:00 - 04:00:00
+    twofour <- StudyAreaData %>% 
+      filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+    
+    # Select 04:00:00 - 06:00:00
+    foursix <- StudyAreaData %>% 
+      filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+    
+    # Select 06:00:00 - 08:00:00
+    sixeight <- StudyAreaData %>% 
+      filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+    
+    # Select 08:00:00 - 10:00:00
+    eightten <- StudyAreaData %>% 
+      filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+    
+    # Select 10:00:00 - 12:00:00
+    tentwelve <- StudyAreaData %>% 
+      filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+    
+    # Select 12:00:00 - 14:00:00
+    twelvetwoaft <- StudyAreaData %>% 
+      filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+    
+    # Select 14:00:00 - 16:00:00
+    twofouraft <- StudyAreaData %>% 
+      filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+    
+    # Select 16:00:00 - 18:00:00
+    foursixaft <- StudyAreaData %>% 
+      filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+    
+    # Select 18:00:00 - 20:00:00
+    sixeightaft <- StudyAreaData %>% 
+      filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+    
+    # Select 20:00:00 - 22:00:00
+    eighttenaft <- StudyAreaData %>% 
+      filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+    
+    # Select 22:00:00 - 00:00:00
+    tentwelveaft <- StudyAreaData %>% 
+      filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+    
+    
+    # Create lists of timeframes
+    TimeframeList <- list(twelvetwo, twofour, foursix, sixeight,
+                          eightten, tentwelve, twelvetwoaft, twofouraft,
+                          foursixaft, sixeightaft, eighttenaft, tentwelveaft)
+    
+    # Call JIperTimeframe for created list
+    TimeframeJITable <- JIperTimeframe(TimeframeList)
+    
+    # Melt the tables for visualization purposes
+    TimeframeJITable$timeframe <- rownames(TimeframeJITable)
+    TimeframeJIMelt <- melt(TimeframeJITable, id = "timeframe") %>% 
+      mutate(season = season)
+    colnames(TimeframeJIMelt) <- c("timeframe", "class", "JI", "season")
   }
-  PropUsedAutumn[1,i] <- AutumnClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JIAutumn <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JIAutumn) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JIAutumn
-for(i in seq_along(JIAutumn)){
-  JIAutumn[i] <- JacobsIndex(as.numeric(PropUsedAutumn[i]), as.numeric(PropAvail[i]))
-}
-
-## JI winter
-
-# Determine landuse class used 
-WinterClassUsed <- table(Winter$landuse_code)
-NumberOfPoints <- length(Winter$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedWinter <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedWinter) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedWinter with proportion used per landuse class
-for(i in seq_along(PropUsedWinter)){
-  if(is.na(WinterClassUsed[as.character(i)])){
-    WinterClassUsed[as.character(i)] <- 0
+  else if(season == "all" & landuse_class != "all"){
+    
+    ## Spring
+    
+    # Select 00:00:00 - 02:00:00
+    twelvetwoSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+    
+    # Select 02:00:00 - 04:00:00
+    twofourSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+    
+    # Select 04:00:00 - 06:00:00
+    foursixSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+    
+    # Select 06:00:00 - 08:00:00
+    sixeightSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+    
+    # Select 08:00:00 - 10:00:00
+    eighttenSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+    
+    # Select 10:00:00 - 12:00:00
+    tentwelveSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+    
+    # Select 12:00:00 - 14:00:00
+    twelvetwoaftSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+    
+    # Select 14:00:00 - 16:00:00
+    twofouraftSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+    
+    # Select 16:00:00 - 18:00:00
+    foursixaftSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+    
+    # Select 18:00:00 - 20:00:00
+    sixeightaftSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+    
+    # Select 20:00:00 - 22:00:00
+    eighttenaftSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+    
+    # Select 22:00:00 - 00:00:00
+    tentwelveaftSpring <- StudyAreaDataSpring %>% 
+      filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+    
+    
+    # Create lists of timeframes
+    SpringTimeframeList <- list(twelvetwoSpring, twofourSpring, foursixSpring, sixeightSpring,
+                                eighttenSpring, tentwelveSpring, twelvetwoaftSpring, twofouraftSpring,
+                                foursixaftSpring, sixeightaftSpring, eighttenaftSpring, tentwelveaftSpring)
+    
+    # Call JIperTimeframe for created list
+    SpringTimeframeJITable <- JIperTimeframe(SpringTimeframeList)
+    
+    # Melt the tables for visualization purposes
+    SpringTimeframeJITable$timeframe <- rownames(SpringTimeframeJITable)
+    SpringTimeframeJIMelt <- melt(SpringTimeframeJITable, id = "timeframe") %>% 
+      mutate(season = "spring")
+    colnames(SpringTimeframeJIMelt) <- c("timeframe", "class", "JI", "season")
+    
+    
+    ## Summer
+    
+    # Select 00:00:00 - 02:00:00
+    twelvetwoSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+    
+    # Select 02:00:00 - 04:00:00
+    twofourSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+    
+    # Select 04:00:00 - 06:00:00
+    foursixSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+    
+    # Select 06:00:00 - 08:00:00
+    sixeightSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+    
+    # Select 08:00:00 - 10:00:00
+    eighttenSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+    
+    # Select 10:00:00 - 12:00:00
+    tentwelveSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+    
+    # Select 12:00:00 - 14:00:00
+    twelvetwoaftSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+    
+    # Select 14:00:00 - 16:00:00
+    twofouraftSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+    
+    # Select 16:00:00 - 18:00:00
+    foursixaftSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+    
+    # Select 18:00:00 - 20:00:00
+    sixeightaftSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+    
+    # Select 20:00:00 - 22:00:00
+    eighttenaftSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+    
+    # Select 22:00:00 - 00:00:00
+    tentwelveaftSummer <- StudyAreaDataSummer %>% 
+      filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+    
+    
+    # Create lists of timeframes
+    SummerTimeframeList <- list(twelvetwoSummer, twofourSummer, foursixSummer, sixeightSummer,
+                                eighttenSummer, tentwelveSummer, twelvetwoaftSummer, twofouraftSummer,
+                                foursixaftSummer, sixeightaftSummer, eighttenaftSummer, tentwelveaftSummer)
+    
+    # Call JIperTimeframe for created list
+    SummerTimeframeJITable <- JIperTimeframe(SummerTimeframeList)
+    
+    # Melt the tables for visualization purposes
+    SummerTimeframeJITable$timeframe <- rownames(SummerTimeframeJITable)
+    SummerTimeframeJIMelt <- melt(SummerTimeframeJITable, id = "timeframe") %>% 
+      mutate(season = "summer")
+    colnames(SummerTimeframeJIMelt) <- c("timeframe", "class", "JI", "season")
+    
+    
+    ## Autumn
+    
+    # Select 00:00:00 - 02:00:00
+    twelvetwoAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+    
+    # Select 02:00:00 - 04:00:00
+    twofourAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+    
+    # Select 04:00:00 - 06:00:00
+    foursixAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+    
+    # Select 06:00:00 - 08:00:00
+    sixeightAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+    
+    # Select 08:00:00 - 10:00:00
+    eighttenAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+    
+    # Select 10:00:00 - 12:00:00
+    tentwelveAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+    
+    # Select 12:00:00 - 14:00:00
+    twelvetwoaftAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+    
+    # Select 14:00:00 - 16:00:00
+    twofouraftAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+    
+    # Select 16:00:00 - 18:00:00
+    foursixaftAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+    
+    # Select 18:00:00 - 20:00:00
+    sixeightaftAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+    
+    # Select 20:00:00 - 22:00:00
+    eighttenaftAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+    
+    # Select 22:00:00 - 00:00:00
+    tentwelveaftAutumn <- StudyAreaDataAutumn %>% 
+      filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+    
+    
+    # Create lists of timeframes
+    AutumnTimeframeList <- list(twelvetwoAutumn, twofourAutumn, foursixAutumn, sixeightAutumn,
+                                eighttenAutumn, tentwelveAutumn, twelvetwoaftAutumn, twofouraftAutumn,
+                                foursixaftAutumn, sixeightaftAutumn, eighttenaftAutumn, tentwelveaftAutumn)
+    
+    # Call JIperTimeframe for created list
+    AutumnTimeframeJITable <- JIperTimeframe(AutumnTimeframeList)
+    
+    # Melt the tables for visualization purposes
+    AutumnTimeframeJITable$timeframe <- rownames(AutumnTimeframeJITable)
+    AutumnTimeframeJIMelt <- melt(AutumnTimeframeJITable, id = "timeframe") %>% 
+      mutate(season = "autumn")
+    colnames(AutumnTimeframeJIMelt) <- c("timeframe", "class", "JI", "season")
+    
+    
+    ## Winter
+    
+    # Select 00:00:00 - 02:00:00
+    twelvetwoWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+    
+    # Select 02:00:00 - 04:00:00
+    twofourWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+    
+    # Select 04:00:00 - 06:00:00
+    foursixWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+    
+    # Select 06:00:00 - 08:00:00
+    sixeightWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+    
+    # Select 08:00:00 - 10:00:00
+    eighttenWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+    
+    # Select 10:00:00 - 12:00:00
+    tentwelveWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+    
+    # Select 12:00:00 - 14:00:00
+    twelvetwoaftWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+    
+    # Select 14:00:00 - 16:00:00
+    twofouraftWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+    
+    # Select 16:00:00 - 18:00:00
+    foursixaftWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+    
+    # Select 18:00:00 - 20:00:00
+    sixeightaftWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+    
+    # Select 20:00:00 - 22:00:00
+    eighttenaftWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+    
+    # Select 22:00:00 - 00:00:00
+    tentwelveaftWinter <- StudyAreaDataWinter %>% 
+      filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+    
+    
+    # Create lists of timeframes
+    WinterTimeframeList <- list(twelvetwoWinter, twofourWinter, foursixWinter, sixeightWinter,
+                                eighttenWinter, tentwelveWinter, twelvetwoaftWinter, twofouraftWinter,
+                                foursixaftWinter, sixeightaftWinter, eighttenaftWinter, tentwelveaftWinter)
+    
+    # Call JIperTimeframe for created list
+    WinterTimeframeJITable <- JIperTimeframe(WinterTimeframeList)
+    
+    # Melt the tables for visualization purposes
+    WinterTimeframeJITable$timeframe <- rownames(WinterTimeframeJITable)
+    WinterTimeframeJIMelt <- melt(WinterTimeframeJITable, id = "timeframe") %>% 
+      mutate(season = "winter")
+    colnames(WinterTimeframeJIMelt) <- c("timeframe", "class", "JI", "season")
+    
+    # Create merged JI per time of day table
+    TimeframeJI <- rbind(SpringTimeframeJIMelt, SummerTimeframeJIMelt,
+                         AutumnTimeframeJIMelt, WinterTimeframeJIMelt)
   }
-  PropUsedWinter[1,i] <- WinterClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JIWinter <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JIWinter) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JIWinter
-for(i in seq_along(JIWinter)){
-  JIWinter[i] <- JacobsIndex(as.numeric(PropUsedWinter[i]), as.numeric(PropAvail[i]))
-}
-
-## Visualize difference in JI per season
-
-# Spring
-
-# Make the data suitable for the visualization
-Class <- colnames(JISpring)
-JI_value <- as.numeric(JISpring)
-JISpringtibble <- tibble(Class, JI_value) %>% 
-  drop_na()
-
-# Plot the data via ggplot2
-JISpringVis <- ggplot(data = JISpringtibble, aes(x = Class, y = JI_value, 
-                                                       fill = Class, 
-                                                       label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class in Spring") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JISpringVis
-
-# Summer
-
-# Make the data suitable for the visualization
-Class <- colnames(JISummer)
-JI_value <- as.numeric(JISummer)
-JISummertibble <- tibble(Class, JI_value) %>% 
-  drop_na()
-
-# Plot the data via ggplot2
-JISummerVis <- ggplot(data = JISummertibble, aes(x = Class, y = JI_value, 
-                                                 fill = Class, 
-                                                 label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class in Summer") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JISummerVis
-
-# Autumn
-
-# Make the data suitable for the visualization
-Class <- colnames(JIAutumn)
-JI_value <- as.numeric(JIAutumn)
-JIAutumntibble <- tibble(Class, JI_value) %>% 
-  drop_na()
-
-# Plot the data via ggplot2
-JIAutumnVis <- ggplot(data = JIAutumntibble, aes(x = Class, y = JI_value, 
-                                                 fill = Class, 
-                                                 label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class in Autumn") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JIAutumnVis
-
-# Winter
-
-# Make the data suitable for the visualization
-Class <- colnames(JIWinter)
-JI_value <- as.numeric(JIWinter)
-JIWintertibble <- tibble(Class, JI_value) %>% 
-  drop_na()
-
-# Plot the data via ggplot2
-JIWinterVis <- ggplot(data = JIWintertibble, aes(x = Class, y = JI_value, 
-                                                 fill = Class, 
-                                                 label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class in Winter") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JIWinterVis
-
-## Compare mean distances per season
-
-# Distance to water
-SpringMeanWaterDistance <- mean(Spring$WaterDistance)
-SummerMeanWaterDistance <- mean(Summer$WaterDistance)
-AutumnMeanWaterDistance <- mean(Autumn$WaterDistance)
-WinterMeanWaterDistance <- mean(Winter$WaterDistance)
-
-# Distance to forest
-SpringMeanForestDistance <- mean(Spring$ForestDistance)
-SummerMeanForestDistance <- mean(Summer$ForestDistance)
-AutumnMeanForestDistance <- mean(Autumn$ForestDistance)
-WinterMeanForestDistance <- mean(Winter$ForestDistance)
-
-# Create tibble to prepare plotting
-Classes <- c("Spring", "Summer", "Autumn", "Winter")
-MeanWaterDistance <- c(SpringMeanWaterDistance, SummerMeanWaterDistance,
-                       AutumnMeanWaterDistance, WinterMeanWaterDistance)
-MeanForestDistance <- c(SpringMeanForestDistance, SummerMeanForestDistance,
-                        AutumnMeanForestDistance, WinterMeanForestDistance)
-SeasonDist <- tibble(Classes, MeanWaterDistance, MeanForestDistance)
-SeasonDist$Classes <- factor(SeasonDist$Classes, levels = unique(SeasonDist$Classes))
-
-# Plot the data via ggplot2
-SeasonWaterDistVis <- ggplot(data = SeasonDist, aes(x = Classes, y = MeanWaterDistance, 
-                                                           fill = Classes, 
-                                                           label=sprintf("%0.2f", round(MeanWaterDistance, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  coord_cartesian(ylim = c(180, 250))+
-  ylab("Average distance to water (m)") +
-  xlab("Season") +
-  ggtitle("Average distance to water per season") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-SeasonWaterDistVis
-
-SeasonForestDistVis <- ggplot(data = SeasonDist, aes(x = Classes, y = MeanForestDistance, 
-                                                      fill = Classes, 
-                                                      label=sprintf("%0.2f", round(MeanForestDistance, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  coord_cartesian(ylim = c(50, 120))+
-  ylab("Average distance to forest (m)") +
-  xlab("Season") +
-  ggtitle("Average distance to forest per season") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-SeasonForestDistVis
-
-## Comparing JI weekend vs businessday
-
-# Select weekend
-Weekend <- AllTrackPoints %>% 
-  filter(day_type == "weekend")
-
-# Select business day
-Businessday <- AllTrackPoints %>% 
-  filter(day_type == "business day")
-
-
-## JI weekend
-
-# Determine landuse class used 
-WeekendClassUsed <- table(Weekend$landuse_code)
-NumberOfPoints <- length(Weekend$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedWeekend <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedWeekend) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedWeekend with proportion used per landuse class
-for(i in seq_along(PropUsedWeekend)){
-  if(is.na(WeekendClassUsed[as.character(i)])){
-    WeekendClassUsed[as.character(i)] <- 0
+  else if(season != "all" & landuse_class != "all"){
+    
+    # Select high and low CCI
+    LowCCI <- StudyAreaData %>% 
+      filter(CCI <= as.numeric(quantile(StudyAreaData$CCI, 0.20)))
+    
+    HighCCI <- StudyAreaData %>% 
+      filter(CCI >= as.numeric(quantile(StudyAreaData$CCI, 0.80)))
+    
+    
+    ## Split spring low CCI datasets in time classes
+    
+    # Select 00:00:00 - 02:00:00
+    LowCCI0002 <- LowCCI %>% 
+      filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+    
+    # Select 02:00:00 - 04:00:00
+    LowCCI0204 <- LowCCI %>% 
+      filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+    
+    # Select 04:00:00 - 06:00:00
+    LowCCI0406 <- LowCCI %>% 
+      filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+    
+    # Select 06:00:00 - 08:00:00
+    LowCCI0608 <- LowCCI %>% 
+      filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+    
+    # Select 08:00:00 - 10:00:00
+    LowCCI0810 <- LowCCI %>% 
+      filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+    
+    # Select 10:00:00 - 12:00:00
+    LowCCI1012 <- LowCCI %>% 
+      filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+    
+    # Select 12:00:00 - 14:00:00
+    LowCCI1214 <- LowCCI %>% 
+      filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+    
+    # Select 14:00:00 - 16:00:00
+    LowCCI1416 <- LowCCI %>% 
+      filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+    
+    # Select 16:00:00 - 18:00:00
+    LowCCI1618 <- LowCCI %>% 
+      filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+    
+    # Select 18:00:00 - 20:00:00
+    LowCCI1820 <- LowCCI %>% 
+      filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+    
+    # Select 20:00:00 - 22:00:00
+    LowCCI2022 <- LowCCI %>% 
+      filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+    
+    # Select 22:00:00 - 00:00:00
+    LowCCI2200 <- LowCCI %>% 
+      filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+    
+    
+    ## Split spring high CCI datasets in time classes
+    
+    # Select 00:00:00 - 02:00:00
+    HighCCI0002 <- HighCCI %>% 
+      filter(hms >= hms("00:00:00"), hms < hms("02:00:00"))
+    
+    # Select 02:00:00 - 04:00:00
+    HighCCI0204 <- HighCCI %>% 
+      filter(hms >= hms("02:00:00"), hms < hms("04:00:00"))
+    
+    # Select 04:00:00 - 06:00:00
+    HighCCI0406 <- HighCCI %>% 
+      filter(hms >= hms("04:00:00"), hms < hms("06:00:00"))
+    
+    # Select 06:00:00 - 08:00:00
+    HighCCI0608 <- HighCCI %>% 
+      filter(hms >= hms("06:00:00"), hms < hms("08:00:00"))
+    
+    # Select 08:00:00 - 10:00:00
+    HighCCI0810 <- HighCCI %>% 
+      filter(hms >= hms("08:00:00"), hms < hms("10:00:00"))
+    
+    # Select 10:00:00 - 12:00:00
+    HighCCI1012 <- HighCCI %>% 
+      filter(hms >= hms("10:00:00"), hms < hms("12:00:00"))
+    
+    # Select 12:00:00 - 14:00:00
+    HighCCI1214 <- HighCCI %>% 
+      filter(hms >= hms("12:00:00"), hms < hms("14:00:00"))
+    
+    # Select 14:00:00 - 16:00:00
+    HighCCI1416 <- HighCCI %>% 
+      filter(hms >= hms("14:00:00"), hms < hms("16:00:00"))
+    
+    # Select 16:00:00 - 18:00:00
+    HighCCI1618 <- HighCCI %>% 
+      filter(hms >= hms("16:00:00"), hms < hms("18:00:00"))
+    
+    # Select 18:00:00 - 20:00:00
+    HighCCI1820 <- HighCCI %>% 
+      filter(hms >= hms("18:00:00"), hms < hms("20:00:00"))
+    
+    # Select 20:00:00 - 22:00:00
+    HighCCI2022 <- HighCCI %>% 
+      filter(hms >= hms("20:00:00"), hms < hms("22:00:00"))
+    
+    # Select 22:00:00 - 00:00:00
+    HighCCI2200 <- HighCCI %>% 
+      filter(hms >= hms("22:00:00"), hms <= hms("23:59:59"))
+    
+    ## Create lists of timeframes (low CCI)
+    
+    # Low CCI
+    LowCCITimeframeList <- list(LowCCI0002, LowCCI0204, LowCCI0406, LowCCI0608,
+                                LowCCI0810, LowCCI1012, LowCCI1214, LowCCI1416,
+                                LowCCI1618, LowCCI1820, LowCCI2022, LowCCI2200)
+    
+    # High CCI
+    HighCCITimeframeList <- list(HighCCI0002, HighCCI0204, HighCCI0406, HighCCI0608,
+                                 HighCCI0810, HighCCI1012, HighCCI1214, HighCCI1416,
+                                 HighCCI1618, HighCCI1820, HighCCI2022, HighCCI2200)
+    
+    # Call JIperTimeframe
+    LowCCITimeframeJITable <- JIperTimeframe(LowCCITimeframeList)
+    HighCCITimeframeJITable <- JIperTimeframe(HighCCITimeframeList)
+    
+    
+    ## Melt the tables for visualization purposes
+    
+    # Low CCI
+    LowCCITimeframeJITable$timeframe <- rownames(LowCCITimeframeJITable)
+    LowCCITimeframeJIMelt <- melt(LowCCITimeframeJITable, id = "timeframe") %>% 
+      mutate(season = "") %>% 
+      mutate(CCI = "lowest CCI 20%")
+    colnames(LowCCITimeframeJIMelt) <- c("timeframe", "class", "JI", "season", "CCI class")
+    
+    # High CCI
+    HighCCITimeframeJITable$timeframe <- rownames(HighCCITimeframeJITable)
+    HighCCITimeframeJIMelt <- melt(HighCCITimeframeJITable, id = "timeframe") %>% 
+      mutate(season = "") %>% 
+      mutate(CCI = "Highest CCI 20%")
+    colnames(HighCCITimeframeJIMelt) <- c("timeframe", "class", "JI", "season", "CCI class")
+    
+    # Create merged JI per time of day table
+    TimeframeJICCI <- rbind(LowCCITimeframeJIMelt, HighCCITimeframeJIMelt)
   }
-  PropUsedWeekend[1,i] <- WeekendClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JIWeekend <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JIWeekend) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JIWeekend
-for(i in seq_along(JIWeekend)){
-  JIWeekend[i] <- JacobsIndex(as.numeric(PropUsedWeekend[i]), as.numeric(PropAvail[i]))
-}
-
-
-## JI business day
-
-# Determine landuse class used 
-BusinessdayClassUsed <- table(Businessday$landuse_code)
-NumberOfPoints <- length(Businessday$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedBusinessday <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedBusinessday) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedBusinessday with proportion used per landuse class
-for(i in seq_along(PropUsedBusinessday)){
-  if(is.na(BusinessdayClassUsed[as.character(i)])){
-    BusinessdayClassUsed[as.character(i)] <- 0
+  
+  
+  # Visualize development JI per landuse class over the day per season
+  if(landuse_class == "all"){
+    TimeframeJIVis <- ggplot(data = TimeframeJIMelt, aes(x = timeframe,
+                                                         y = JI,
+                                                         group = class,
+                                                         colour = class)) +
+      geom_line() +
+      geom_point() +
+      ylim(c(-1,1)) +
+      ylab("Jacobs index") +
+      xlab("Timeframe of day (hours)") +
+      ggtitle(paste0("Diurnal variation in Jacobs index (", StudyArea, ", ", season, ")")) +
+      theme_bw() +
+      scale_fill_brewer(palette = "Set3") +
+      theme(axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+            legend.position = "right") +
+      scale_color_discrete(name = "Landuse class")
+    
+    # Return ggplot result
+    return(TimeframeJIVis)
   }
-  PropUsedBusinessday[1,i] <- BusinessdayClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JIBusinessday <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JIBusinessday) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JIBusinessday
-for(i in seq_along(JIBusinessday)){
-  JIBusinessday[i] <- JacobsIndex(as.numeric(PropUsedBusinessday[i]), as.numeric(PropAvail[i]))
-}
-
-## Visualize difference in JI per day type
-
-# Weekend
-
-# Make the data suitable for the visualization
-Class <- colnames(JIWeekend)
-JI_value <- as.numeric(JIWeekend)
-JIWeekendtibble <- tibble(Class, JI_value) %>% 
-  drop_na()
-
-# Plot the data via ggplot2
-JIWeekendVis <- ggplot(data = JIWeekendtibble, aes(x = Class, y = JI_value, 
-                                                   fill = Class, 
-                                                   label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class on weekend days") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JIWeekendVis
-
-# Business day
-
-# Make the data suitable for the visualization
-Class <- colnames(JIBusinessday)
-JI_value <- as.numeric(JIBusinessday)
-JIBusinessdaytibble <- tibble(Class, JI_value) %>% 
-  drop_na()
-
-# Plot the data via ggplot2
-JIBusinessdayVis <- ggplot(data = JIBusinessdaytibble, aes(x = Class, y = JI_value, 
-                                                           fill = Class, 
-                                                           label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class on business days") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JIBusinessdayVis
-
-
-## Compare mean distance to road business days and weekend days
-
-# Only 1 meter difference, both ~110 meter
-MeanRoadDistanceWeekend <- mean(Weekend$RoadDistance)
-MeanRoadDistanceBusinessday <- mean(Businessday$RoadDistance)
-
-
-## Comparing JI day vs night
-
-# Select day
-Day <- AllTrackPoints %>% 
-  filter(day_night == "day")
-
-# Select night
-Night <- AllTrackPoints %>% 
-  filter(day_night == "night")
-
-
-## JI day
-
-# Determine landuse class used 
-DayClassUsed <- table(Day$landuse_code)
-NumberOfPoints <- length(Day$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedDay <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedDay) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedDay with proportion used per landuse class
-for(i in seq_along(PropUsedDay)){
-  if(is.na(DayClassUsed[as.character(i)])){
-    DayClassUsed[as.character(i)] <- 0
+  else if(season == "all" & landuse_class != "all"){
+    LanduseClassTimeframeJIVis <- ggplot(data = TimeframeJI[which(TimeframeJI$class == landuse_class),],
+                                      aes(x = timeframe, y = JI, group = season, colour = season)) +
+      geom_line() +
+      geom_point() +
+      ylim(c(-1,1)) +
+      ylab("Jacobs index") +
+      xlab("Timeframe of day (hours)") +
+      ggtitle(paste0("Diurnal variation in Jacobs index (", StudyArea, ", ", landuse_class, ")")) +
+      theme_bw() +
+      scale_fill_brewer(palette = "Set3") +
+      theme(plot.title = element_text(size = 10),
+            axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+            legend.position = "right") +
+      scale_color_discrete(name = "Landuse class")
+    
+    # Return ggplot result
+    return(LanduseClassTimeframeJIVis)
   }
-  PropUsedDay[1,i] <- DayClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JIDay <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JIDay) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JIDay
-for(i in seq_along(JIDay)){
-  JIDay[i] <- JacobsIndex(as.numeric(PropUsedDay[i]), as.numeric(PropAvail[i]))
-}
-
-
-## JI night
-
-# Determine landuse class used 
-NightClassUsed <- table(Night$landuse_code)
-NumberOfPoints <- length(Night$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedNight <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedNight) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedNight with proportion used per landuse class
-for(i in seq_along(PropUsedNight)){
-  if(is.na(NightClassUsed[as.character(i)])){
-    NightClassUsed[as.character(i)] <- 0
+  else if(season != "all" & landuse_class != "all"){
+    CCITimeframeJIVis <- ggplot(data = TimeframeJICCI[which(TimeframeJICCI$class == landuse_class),],
+                                               aes(x = timeframe, y = JI, group = `CCI class`, colour = `CCI class`)) +
+      geom_line() +
+      geom_point() +
+      ylim(c(-1,1)) +
+      ylab("Jacobs index") +
+      xlab("Timeframe of day (hours)") +
+      ggtitle(paste0("Diurnal variation in Jacobs index in ", season, " (", StudyArea, ", ", landuse_class, ")")) +
+      theme_bw() +
+      theme(plot.title = element_text(size = 10),
+            axis.text.x = element_text(angle = 50, size = 10, vjust = 1, hjust = 1),
+            legend.position = "right") +
+      scale_color_manual(values = c("#FF0033", "#3300FF" ))
+    GrasslandCCISpringTimeframeJIVis
+    
+    # Return ggplot result
+    return(CCITimeframeJIVis)
   }
-  PropUsedNight[1,i] <- NightClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JINight <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JINight) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JINight
-for(i in seq_along(JINight)){
-  JINight[i] <- JacobsIndex(as.numeric(PropUsedNight[i]), as.numeric(PropAvail[i]))
-}
-
-## Visualize difference day / night
-
-# Day
-
-# Make the data suitable for the visualization
-Class <- colnames(JIDay)
-JI_value <- as.numeric(JIDay)
-JIDaytibble <- tibble(Class, JI_value) %>% 
-  drop_na()
-
-# Plot the data via ggplot2
-JIDayVis <- ggplot(data = JIDaytibble, aes(x = Class, y = JI_value, 
-                                           fill = Class, 
-                                           label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class during daylight") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JIDayVis
-
-# Night
-
-# Make the data suitable for the visualization
-Class <- colnames(JINight)
-JI_value <- as.numeric(JINight)
-JINighttibble <- tibble(Class, JI_value) %>% 
-  drop_na()
-
-# Plot the data via ggplot2
-JINightVis <- ggplot(data = JINighttibble, aes(x = Class, y = JI_value, 
-                                               fill = Class, 
-                                               label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class during night") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JINightVis
-
-
-## Compare distances day / night
-
-# Distances during day
-MeanRoadDistDay <- mean(Day$RoadDistance)
-MeanWaterDistDay <- mean(Day$WaterDistance)
-MeanForestDistDay <- mean(Day$ForestDistance)
-
-# Distances during night
-MeanRoadDistNight <- mean(Night$RoadDistance)
-MeanWaterDistNight <- mean(Night$WaterDistance)
-MeanForestDistNight <- mean(Night$ForestDistance)
-# No spectacular differences. Distance to forest higher during night, which seems contrary
-
-
-## Determine influence of sunshine
-
-# get the lowest and highest 10% sunshine hours of the Day dataset
-lowest10 <- as.numeric(quantile(Day$sunshine_duration_day, probs = seq(0, 1, 0.1))["10%"])
-highest10 <- as.numeric(quantile(Day$sunshine_duration_day, probs = seq(0, 1, 0.1))["90%"])
-
-# Filter Day to get only the points with the lowest 10% sunshine hours
-Lowest10 <- Day %>% 
-  filter(sunshine_duration_day <= lowest10)
-
-# Filter Day to get only the points with the highest 10% sunshine hours
-Highest10 <- Day %>% 
-  filter(sunshine_duration_day > highest10)
-
-
-## Calculate Jacob's index for lowest 10% sunshine hours
-
-# Determine landuse class used 
-Lowest10ClassUsed <- table(Lowest10$landuse_code)
-NumberOfPoints <- length(Lowest10$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedLowest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedLowest10) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedLowest10 with proportion used per landuse class
-for(i in seq_along(PropUsedLowest10)){
-  if(is.na(Lowest10ClassUsed[as.character(i)])){
-    Lowest10ClassUsed[as.character(i)] <- 0
-  }
-  PropUsedLowest10[1,i] <- Lowest10ClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JILowest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JILowest10) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JILowest10
-for(i in seq_along(JILowest10)){
-  JILowest10[i] <- JacobsIndex(as.numeric(PropUsedLowest10[i]), as.numeric(PropAvail[i]))
-}
-
-## Calculate Jacob's index for lowest 10% sunshine hours
-
-# Determine landuse class used 
-Highest10ClassUsed <- table(Highest10$landuse_code)
-NumberOfPoints <- length(Highest10$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedHighest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedHighest10) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedHighest10 with proportion used per landuse class
-for(i in seq_along(PropUsedHighest10)){
-  if(is.na(Highest10ClassUsed[as.character(i)])){
-    Highest10ClassUsed[as.character(i)] <- 0
-  }
-  PropUsedHighest10[1,i] <- Highest10ClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JIHighest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JIHighest10) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JIHighest10
-for(i in seq_along(JIHighest10)){
-  JIHighest10[i] <- JacobsIndex(as.numeric(PropUsedHighest10[i]), as.numeric(PropAvail[i]))
 }
 
 
-## Create bar plots to compare lowest and highest 10% sunshine hours
+### Create visualizations of development of JI under different circumstances
 
-# Make the data suitable for the visualization
-Class <- colnames(JILowest10)
-JI_value <- as.numeric(JILowest10)
-JILowest10tibble <- tibble(Class, JI_value) %>% 
-  drop_na()
+## All study areas
 
-# Plot the data via ggplot2
-JILowest10SunVis <- ggplot(data = JILowest10tibble, aes(x = Class, y = JI_value, 
-                                                     fill = Class, 
-                                                     label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class lowest 10% sunshine hours") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JILowest10SunVis
+# All seasons, all landuse classes
+AllStudyAreasAllSeasons <- getJIVisualization("all", "all", "all")
 
-# Make the data suitable for the visualization
-Class <- colnames(JIHighest10)
-JI_value <- as.numeric(JIHighest10)
-JIHighest10tibble <- tibble(Class, JI_value) %>% 
-  drop_na()
+# Specific season, all landuse classes
+AllStudyAreasSpring <- getJIVisualization("all", "spring", "all")
+AllStudyAreasSummer <- getJIVisualization("all", "summer", "all")
+AllStudyAreasAutumn <- getJIVisualization("all", "autumn", "all")
+AllStudyAreasWinter <- getJIVisualization("all", "winter", "all")
 
-# Plot the data via ggplot2
-JIHighest10SunVis <- ggplot(data = JIHighest10tibble, aes(x = Class, y = JI_value, 
-                                                       fill = Class, 
-                                                       label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class highest 10% sunshine hours") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JIHighest10SunVis
+# All seasons, specific landuse classes
+AllStudyAreasAllSeasonsGrassland <- getJIVisualization("all", "all", "grassland")
+AllStudyAreasAllSeasonsDeciduousForest <- getJIVisualization("all", "all", "deciduous forest")
+AllStudyAreasAllSeasonsConiferousForest <- getJIVisualization("all", "all", "coniferous forest")
+AllStudyAreasAllSeasonsFreshWater <- getJIVisualization("all", "all", "fresh water")
+AllStudyAreasAllSeasonsBareSoil <- getJIVisualization("all", "all", "bare soil")
+AllStudyAreasAllSeasonsGrassyHeathland <- getJIVisualization("all", "all", "grassy heathland")
+AllStudyAreasAllSeasonsHeathland <- getJIVisualization("all", "all", "heathland")
+AllStudyAreasAllSeasonsSwamp <- getJIVisualization("all", "all", "swamp")
+AllStudyAreasAllSeasonsShrubland <- getJIVisualization("all", "all", "shrubland")
+AllStudyAreasAllSeasonsRoad <- getJIVisualization("all", "all", "road")
 
+# Specific season, specific landuse classes
+AllStudyAreasSpringGrassland <- getJIVisualization("all", "spring", "grassland")
+AllStudyAreasSpringDeciduousForest <- getJIVisualization("all", "spring", "deciduous forest")
+AllStudyAreasSpringConiferousForest <- getJIVisualization("all", "spring", "coniferous forest")
+AllStudyAreasSpringFreshWater <- getJIVisualization("all", "spring", "fresh water")
+AllStudyAreasSpringBareSoil <- getJIVisualization("all", "spring", "bare soil")
+AllStudyAreasSpringGrassyHeathland <- getJIVisualization("all", "spring", "grassy heathland")
+AllStudyAreasSpringHeathland <- getJIVisualization("all", "spring", "heathland")
+AllStudyAreasSpringSwamp <- getJIVisualization("all", "spring", "swamp")
+AllStudyAreasSpringShrubland <- getJIVisualization("all", "spring", "shrubland")
+AllStudyAreasSpringRoad <- getJIVisualization("all", "spring", "road")
 
-## Determine influence of rain
+AllStudyAreasSummerGrassland <- getJIVisualization("all", "summer", "grassland")
+AllStudyAreasSummerDeciduousForest <- getJIVisualization("all", "summer", "deciduous forest")
+AllStudyAreasSummerConiferousForest <- getJIVisualization("all", "summer", "coniferous forest")
+AllStudyAreasSummerFreshWater <- getJIVisualization("all", "summer", "fresh water")
+AllStudyAreasSummerBareSoil <- getJIVisualization("all", "summer", "bare soil")
+AllStudyAreasSummerGrassyHeathland <- getJIVisualization("all", "summer", "grassy heathland")
+AllStudyAreasSummerHeathland <- getJIVisualization("all", "summer", "heathland")
+AllStudyAreasSummerSwamp <- getJIVisualization("all", "summer", "swamp")
+AllStudyAreasSummerShrubland <- getJIVisualization("all", "summer", "shrubland")
+AllStudyAreasSummerRoad <- getJIVisualization("all", "summer", "road")
 
-# get the lowest and highest 10% precipitation hours of the AllTracksPoints dataset
-lowest10 <- as.numeric(quantile(AllTrackPoints$precipitation_duration_day, probs = seq(0, 1, 0.1))["10%"])
-highest10 <- as.numeric(quantile(AllTrackPoints$precipitation_duration_day, probs = seq(0, 1, 0.1))["90%"])
+AllStudyAreasAutumnGrassland <- getJIVisualization("all", "autumn", "grassland")
+AllStudyAreasAutumnDeciduousForest <- getJIVisualization("all", "autumn", "deciduous forest")
+AllStudyAreasAutumnConiferousForest <- getJIVisualization("all", "autumn", "coniferous forest")
+AllStudyAreasAutumnFreshWater <- getJIVisualization("all", "autumn", "fresh water")
+AllStudyAreasAutumnBareSoil <- getJIVisualization("all", "autumn", "bare soil")
+AllStudyAreasAutumnGrassyHeathland <- getJIVisualization("all", "autumn", "grassy heathland")
+AllStudyAreasAutumnHeathland <- getJIVisualization("all", "autumn", "heathland")
+AllStudyAreasAutumnSwamp <- getJIVisualization("all", "autumn", "swamp")
+AllStudyAreasAutumnShrubland <- getJIVisualization("all", "autumn", "shrubland")
+AllStudyAreasAutumnRoad <- getJIVisualization("all", "autumn", "road")
 
-# Filter AllTrackPoints to get only the points with the lowest 10% precipitation hours
-Lowest10 <- AllTrackPoints %>% 
-  filter(precipitation_duration_day <= lowest10)
-
-# Filter AllTrackPoints to get only the points with the highest 10% precipitation hours
-Highest10 <- AllTrackPoints %>% 
-  filter(precipitation_duration_day > highest10)
-
-
-## Calculate Jacob's index for lowest 10% precipitation hours
-
-# Determine landuse class used 
-Lowest10ClassUsed <- table(Lowest10$landuse_code)
-NumberOfPoints <- length(Lowest10$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedLowest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedLowest10) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedLowest10 with proportion used per landuse class
-for(i in seq_along(PropUsedLowest10)){
-  if(is.na(Lowest10ClassUsed[as.character(i)])){
-    Lowest10ClassUsed[as.character(i)] <- 0
-  }
-  PropUsedLowest10[1,i] <- Lowest10ClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JILowest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JILowest10) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JILowest10
-for(i in seq_along(JILowest10)){
-  JILowest10[i] <- JacobsIndex(as.numeric(PropUsedLowest10[i]), as.numeric(PropAvail[i]))
-}
-
-## Calculate Jacob's index for highest 10% precipitation hours
-
-# Determine landuse class used 
-Highest10ClassUsed <- table(Highest10$landuse_code)
-NumberOfPoints <- length(Highest10$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedHighest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedHighest10) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedHighest10 with proportion used per landuse class
-for(i in seq_along(PropUsedHighest10)){
-  if(is.na(Highest10ClassUsed[as.character(i)])){
-    Highest10ClassUsed[as.character(i)] <- 0
-  }
-  PropUsedHighest10[1,i] <- Highest10ClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JIHighest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JIHighest10) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JIHighest10
-for(i in seq_along(JIHighest10)){
-  JIHighest10[i] <- JacobsIndex(as.numeric(PropUsedHighest10[i]), as.numeric(PropAvail[i]))
-}
+AllStudyAreasWinterGrassland <- getJIVisualization("all", "winter", "grassland")
+AllStudyAreasWinterDeciduousForest <- getJIVisualization("all", "winter", "deciduous forest")
+AllStudyAreasWinterConiferousForest <- getJIVisualization("all", "winter", "coniferous forest")
+AllStudyAreasWinterFreshWater <- getJIVisualization("all", "winter", "fresh water")
+AllStudyAreasWinterBareSoil <- getJIVisualization("all", "winter", "bare soil")
+AllStudyAreasWinterGrassyHeathland <- getJIVisualization("all", "winter", "grassy heathland")
+AllStudyAreasWinterHeathland <- getJIVisualization("all", "winter", "heathland")
+AllStudyAreasWinterSwamp <- getJIVisualization("all", "winter", "swamp")
+AllStudyAreasWinterShrubland <- getJIVisualization("all", "winter", "shrubland")
+AllStudyAreasWinterRoad <- getJIVisualization("all", "winter", "road")
 
 
-## Create bar plots to compare lowest and highest 10% precipitation hours
+# Kraansvlak
+KraansvlakAllSeasonAll <- getJIVisualization("Kraansvlak", "all", "all")
+KraansvlakSpringAll <- getJIVisualization("Kraansvlak", "spring", "all")
+KraansvlakSummerAll <- getJIVisualization("Kraansvlak", "summer", "all")
+KraansvlakAutumnAll <- getJIVisualization("Kraansvlak", "autumn", "all")
+KraansvlakWinterAll <- getJIVisualization("Kraansvlak", "winter", "all")
 
-# Make the data suitable for the visualization
-Class <- colnames(JILowest10)
-JI_value <- as.numeric(JILowest10)
-JILowest10tibble <- tibble(Class, JI_value) %>% 
-  drop_na()
+KraansvlakGrassland <- getJIVisualization("Kraansvlak", "all", "grassland")
+KraansvlakDeciduousForest <- getJIVisualization("Kraansvlak", "all", "deciduous forest")
+KraansvlakConiferousForest <- getJIVisualization("Kraansvlak", "all", "coniferous forest")
+KraansvlakFreshWater <- getJIVisualization("Kraansvlak", "all", "fresh water")
 
-# Plot the data via ggplot2
-JILowest10PrecVis <- ggplot(data = JILowest10tibble, aes(x = Class, y = JI_value, 
-                                                        fill = Class, 
-                                                        label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class lowest 10% precipitation hours") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JILowest10PrecVis
+KraansvlakWinterGrassland <- getJIVisualization("Kraansvlak", "winter", "grassland")
+KraansvlakWinterGrassland <- getJIVisualization("Kraansvlak", "winter", "deciduous forest")
 
-# Make the data suitable for the visualization
-Class <- colnames(JIHighest10)
-JI_value <- as.numeric(JIHighest10)
-JIHighest10tibble <- tibble(Class, JI_value) %>% 
-  drop_na()
+# Maashorst20172021
+Maashorst20172021AllSeasonAll <- getJIVisualization("Maashorst20172021", "all", "all")
+Maashorst20172021SpringAll <- getJIVisualization("Maashorst20172021", "spring", "all")
+Maashorst20172021SummerAll <- getJIVisualization("Maashorst20172021", "summer", "all")
+Maashorst20172021AutumnAll <- getJIVisualization("Maashorst20172021", "autumn", "all")
+Maashorst20172021WinterAll <- getJIVisualization("Maashorst20172021", "winter", "all")
 
-# Plot the data via ggplot2
-JIHighest10PrecVis <- ggplot(data = JIHighest10tibble, aes(x = Class, y = JI_value, 
-                                                          fill = Class, 
-                                                          label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class highest 10% precipitation hours") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JIHighest10PrecVis
+# SlikkenvdHeen
+SlikkenvdHeenAllSeasonAll <- getJIVisualization("SlikkenvdHeen", "all", "all")
+SlikkenvdHeenSpringAll <- getJIVisualization("SlikkenvdHeen", "spring", "all")
+SlikkenvdHeenSummerAll <- getJIVisualization("SlikkenvdHeen", "summer", "all")
+SlikkenvdHeenAutumnAll <- getJIVisualization("SlikkenvdHeen", "autumn", "all")
+SlikkenvdHeenWinterAll <- getJIVisualization("SlikkenvdHeen", "winter", "all")
+
+# Veluwe
+VeluweAllSeasonAll <- getJIVisualization("Veluwe", "all", "all")
+VeluweSpringAll <- getJIVisualization("Veluwe", "spring", "all")
+VeluweSummerAll <- getJIVisualization("Veluwe", "summer", "all")
+VeluweAutumnAll <- getJIVisualization("Veluwe", "autumn", "all")
+VeluweWinterAll <- getJIVisualization("Veluwe", "winter", "all")
 
 
-## Determine influence of wind
 
-# get the lowest and highest 10% precipitation hours of the AllTracksPoints dataset
-lowest10 <- as.numeric(quantile(AllTrackPoints$average_windspeed_day, probs = seq(0, 1, 0.1))["10%"])
-highest10 <- as.numeric(quantile(AllTrackPoints$average_windspeed_day, probs = seq(0, 1, 0.1))["90%"])
-
-# Filter AllTrackPoints to get only the points with the lowest 10% precipitation hours
-Lowest10 <- AllTrackPoints %>% 
-  filter(average_windspeed_day <= lowest10)
-
-# Filter AllTrackPoints to get only the points with the highest 10% precipitation hours
-Highest10 <- AllTrackPoints %>% 
-  filter(average_windspeed_day > highest10)
-
-
-## Calculate Jacob's index for lowest 10% average daily windspeed 
-
-# Determine landuse class used 
-Lowest10ClassUsed <- table(Lowest10$landuse_code)
-NumberOfPoints <- length(Lowest10$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedLowest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedLowest10) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedLowest10 with proportion used per landuse class
-for(i in seq_along(PropUsedLowest10)){
-  if(is.na(Lowest10ClassUsed[as.character(i)])){
-    Lowest10ClassUsed[as.character(i)] <- 0
-  }
-  PropUsedLowest10[1,i] <- Lowest10ClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JILowest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JILowest10) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JILowest10
-for(i in seq_along(JILowest10)){
-  JILowest10[i] <- JacobsIndex(as.numeric(PropUsedLowest10[i]), as.numeric(PropAvail[i]))
-}
-
-## Calculate Jacob's index for highest 10% average daily windspeed
-
-# Determine landuse class used 
-Highest10ClassUsed <- table(Highest10$landuse_code)
-NumberOfPoints <- length(Highest10$landuse_code)
-
-# Create table with proportion used per of landuse class
-PropUsedHighest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(PropUsedHighest10) <- as.character(LUTLanduseClasses$landuse_class)
-
-# Fill empty table PropUsedHighest10 with proportion used per landuse class
-for(i in seq_along(PropUsedHighest10)){
-  if(is.na(Highest10ClassUsed[as.character(i)])){
-    Highest10ClassUsed[as.character(i)] <- 0
-  }
-  PropUsedHighest10[1,i] <- Highest10ClassUsed[as.character(i)] / NumberOfPoints
-}
-
-# Create empty table to store result
-JIHighest10 <- as_tibble(data.frame(matrix(data = NA, nrow = 1, ncol = 13)))
-colnames(JIHighest10) <- LUTLanduseClasses$landuse_class
-
-# Iterate over elements of JIHighest10
-for(i in seq_along(JIHighest10)){
-  JIHighest10[i] <- JacobsIndex(as.numeric(PropUsedHighest10[i]), as.numeric(PropAvail[i]))
-}
-
-
-## Create bar plots to compare lowest and highest 10% average daily windspeed
-
-# Make the data suitable for the visualization
-Class <- colnames(JILowest10)
-JI_value <- as.numeric(JILowest10)
-JILowest10tibble <- tibble(Class, JI_value) %>% 
-  drop_na()
-
-# Plot the data via ggplot2
-JILowest10WindVis <- ggplot(data = JILowest10tibble, aes(x = Class, y = JI_value, 
-                                                         fill = Class, 
-                                                         label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class lowest 10% windspeed") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JILowest10WindVis
-
-# Make the data suitable for the visualization
-Class <- colnames(JIHighest10)
-JI_value <- as.numeric(JIHighest10)
-JIHighest10tibble <- tibble(Class, JI_value) %>% 
-  drop_na()
-
-# Plot the data via ggplot2
-JIHighest10WindVis <- ggplot(data = JIHighest10tibble, aes(x = Class, y = JI_value, 
-                                                           fill = Class, 
-                                                           label=sprintf("%0.2f", round(JI_value, digits = 2)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  ylim(c(-1,1)) +
-  ylab("Jacobs index") +
-  xlab("Landuse class") +
-  ggtitle("Jacobs index per landuse class highest 10% windspeed") +
-  theme(plot.title = element_text(size = 12, face = "bold",
-                                  margin = margin(10,0,10,0),
-                                  hjust = 0.5),
-        axis.title.x = element_text(vjust = -0.35, face = "plain"),
-        axis.title.y = element_text(vjust = 0.35, face = "plain"),
-        axis.text.x = element_text(angle = 50, size = 10, vjust = 0.5),
-        legend.position = "none") +
-  geom_text(vjust = -0.2, size = 2)
-JIHighest10WindVis
 
 
 

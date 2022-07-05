@@ -8,7 +8,7 @@
 ### Script calculate the Jacobs index per land use class for all points. This
 ### is a exploratory step to see the general patterns. It is not completely
 ### accurate, as the habitat available difference per year in the Maashorst, 
-### but this difference in availability cannot be accounted for in this study.
+### but this difference in availability cannot be accounted for in this calculation
 
 
 ## Cluster all tracks into 1 tibble
@@ -22,6 +22,8 @@ colnames(TrackPoints) <- colnames(WeatherTracks$KraansvlakTrack1)
 
 # Iterate over elements of TrackFiles to read them and add them to TrackPoints
 for(i in seq_along(TrackVec)){
+  
+  # Important step! Here I exclude the supplementary feeding tracks from the analysis
   if(i %in% c(27:32)){
     next
   }else{
@@ -40,6 +42,8 @@ AllTrackPoints <- TrackPoints %>%
   dplyr::rename(track_row_ID = ID) %>% 
   rowid_to_column("ID")
 
+# Bug in time2season: autumm should be autumn
+AllTrackPoints$season[AllTrackPoints$season == "autumm"] <- "autumn"
 
 ## Sum of landuse code values of all study areas 
 

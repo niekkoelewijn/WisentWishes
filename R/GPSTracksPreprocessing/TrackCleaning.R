@@ -125,6 +125,7 @@ TrackCleaning <- function(GPSTrackList, NameVec){
   return(CleanedTrackList)
 }
 
+# Call TrackCleaning function
 CleanedTrackList <- TrackCleaning(Step7Tracks, NameVec)
 
 
